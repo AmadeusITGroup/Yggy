@@ -1,0 +1,162 @@
+{#-
+  Landing page template.
+
+  Extends the default Material page and fills the `hero` block, which sits inside
+  `.md-container` *above* `.md-main`. That placement is what lets the hero run
+  edge to edge and own a full viewport height without fighting the content grid's
+  padding. The rest of the page is ordinary Markdown rendered by `content`.
+-#}
+{% extends "main.html" %}
+
+{% block htmltitle %}
+  <title>Yggy — declarative connectivity for hybrid and multi-cloud</title>
+{% endblock %}
+
+{#-
+  The landing page hides the tab bar, but it must not *remove* it. That is done in
+  CSS, in assets/stylesheets/landing.css — see the comment there for why the
+  header has to stay byte-identical on every page.
+-#}
+
+{#-
+  Render the Markdown body only. The stock content partial injects an <h1> with
+  the page title whenever the body has none, which on this page would mean a
+  second, duplicate top-level heading ("Home") underneath the hero's own <h1>.
+-#}
+{% block content %}
+  {{ page.content }}
+{% endblock %}
+
+{% block hero %}
+  <section class="yggy-hero" aria-labelledby="yggy-hero-title">
+
+    <!-- Decorative backdrop: a slowly drifting grid and an idle connectivity
+         mesh. Hidden from assistive technology, disabled under
+         prefers-reduced-motion. -->
+    <div class="yggy-hero__backdrop" aria-hidden="true">
+      <div class="yggy-hero__grid"></div>
+      <svg
+        class="yggy-hero__mesh"
+        viewBox="0 0 1200 700"
+        preserveAspectRatio="xMidYMid meet"
+        focusable="false"
+      >
+        <g class="yggy-hero__edges">
+          <line x1="80"   y1="90"  x2="240"  y2="180"/>
+          <line x1="240"  y1="180" x2="300"  y2="55"/>
+          <line x1="300"  y1="55"  x2="560"  y2="120"/>
+          <line x1="560"  y1="120" x2="820"  y2="60"/>
+          <line x1="820"  y1="60"  x2="1080" y2="110"/>
+          <line x1="240"  y1="180" x2="170"  y2="300"/>
+          <line x1="300"  y1="55"  x2="430"  y2="240"/>
+          <line x1="560"  y1="120" x2="430"  y2="240"/>
+          <line x1="560"  y1="120" x2="690"  y2="310"/>
+          <line x1="820"  y1="60"  x2="950"  y2="250"/>
+          <line x1="1080" y1="110" x2="950"  y2="250"/>
+          <line x1="1080" y1="110" x2="1150" y2="330"/>
+          <line x1="170"  y1="300" x2="430"  y2="240"/>
+          <line x1="430"  y1="240" x2="690"  y2="310"/>
+          <line x1="690"  y1="310" x2="950"  y2="250"/>
+          <line x1="950"  y1="250" x2="1150" y2="330"/>
+          <line x1="170"  y1="300" x2="60"   y2="500"/>
+          <line x1="170"  y1="300" x2="320"  y2="450"/>
+          <line x1="430"  y1="240" x2="320"  y2="450"/>
+          <line x1="690"  y1="310" x2="580"  y2="520"/>
+          <line x1="690"  y1="310" x2="840"  y2="460"/>
+          <line x1="950"  y1="250" x2="1000" y2="420"/>
+          <line x1="1000" y1="420" x2="840"  y2="460"/>
+          <line x1="1000" y1="420" x2="1150" y2="330"/>
+          <line x1="1150" y1="330" x2="1100" y2="520"/>
+          <line x1="60"   y1="500" x2="320"  y2="450"/>
+          <line x1="320"  y1="450" x2="580"  y2="520"/>
+          <line x1="580"  y1="520" x2="840"  y2="460"/>
+          <line x1="840"  y1="460" x2="1100" y2="520"/>
+          <line x1="60"   y1="500" x2="150"  y2="650"/>
+          <line x1="320"  y1="450" x2="410"  y2="610"/>
+          <line x1="580"  y1="520" x2="410"  y2="610"/>
+          <line x1="580"  y1="520" x2="670"  y2="660"/>
+          <line x1="840"  y1="460" x2="930"  y2="620"/>
+          <line x1="1100" y1="520" x2="930"  y2="620"/>
+          <line x1="1100" y1="520" x2="1160" y2="640"/>
+          <line x1="150"  y1="650" x2="410"  y2="610"/>
+          <line x1="410"  y1="610" x2="670"  y2="660"/>
+          <line x1="670"  y1="660" x2="930"  y2="620"/>
+          <line x1="930"  y1="620" x2="1160" y2="640"/>
+        </g>
+        <g class="yggy-hero__nodes">
+          <circle cx="80"   cy="90"  r="4"/>
+          <circle cx="300"  cy="55"  r="3"/>
+          <circle cx="560"  cy="120" r="5"/>
+          <circle cx="820"  cy="60"  r="3"/>
+          <circle cx="1080" cy="110" r="4"/>
+          <circle cx="240"  cy="180" r="3"/>
+          <circle cx="170"  cy="300" r="4"/>
+          <circle cx="430"  cy="240" r="5"/>
+          <circle cx="690"  cy="310" r="4"/>
+          <circle cx="950"  cy="250" r="5"/>
+          <circle cx="1150" cy="330" r="4"/>
+          <circle cx="60"   cy="500" r="3"/>
+          <circle cx="320"  cy="450" r="4"/>
+          <circle cx="580"  cy="520" r="5"/>
+          <circle cx="840"  cy="460" r="4"/>
+          <circle cx="1000" cy="420" r="3"/>
+          <circle cx="1100" cy="520" r="4"/>
+          <circle cx="150"  cy="650" r="4"/>
+          <circle cx="410"  cy="610" r="3"/>
+          <circle cx="670"  cy="660" r="4"/>
+          <circle cx="930"  cy="620" r="3"/>
+          <circle cx="1160" cy="640" r="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="yggy-hero__inner">
+      <img
+        class="yggy-hero__logo"
+        src="{{ 'assets/brand/logo-white.svg' | url }}"
+        alt=""
+        width="112"
+        height="112"
+      />
+
+      <h1 class="yggy-hero__title" id="yggy-hero-title">Yggy</h1>
+
+      <p class="yggy-hero__tagline">
+        Declarative connectivity for hybrid and multi&#8209;cloud
+      </p>
+
+      <p class="yggy-hero__lede">
+        Describe the connectivity you want once, as an abstract descriptor. Yggy
+        holds that descriptor as the single source of truth and turns it into the
+        configuration each platform expects &mdash; so the documentation and the
+        network can no longer drift apart.
+      </p>
+
+      <div class="yggy-hero__actions">
+        <a class="yggy-btn yggy-btn--primary" href="{{ 'understanding/why-yggy/' | url }}">
+          Why Yggy?
+          {% include ".icons/octicons/arrow-right-24.svg" %}
+        </a>
+        <a class="yggy-btn" href="{{ 'understanding/concepts/' | url }}">
+          Core concepts
+        </a>
+        <a class="yggy-btn yggy-btn--ghost" href="{{ config.repo_url }}">
+          {% include ".icons/octicons/mark-github-16.svg" %}
+          GitHub
+        </a>
+      </div>
+
+      <p class="yggy-hero__meta">
+        Descriptor&#8209;driven &middot; Intent&#8209;based &middot;
+        Provider&#8209;pluggable
+      </p>
+    </div>
+
+    <a class="yggy-hero__scroll" href="#what-is-yggy">
+      <span class="yggy-hero__scroll-label">What is Yggy?</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7.4 8.6 12 13.2l4.6-4.6L18 10l-6 6-6-6z"/>
+      </svg>
+    </a>
+  </section>
+{% endblock %}

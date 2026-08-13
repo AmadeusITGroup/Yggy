@@ -1,0 +1,47 @@
+name: Question
+description: Ask about how Yggy works, or about something you are unsure of.
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Questions are welcome. The same caveat as for feature requests applies: the
+        team's time here is not unlimited, so a response time cannot be promised.
+
+        Two redirections first:
+
+        - **Suspected security problem?** Do not ask here. Email
+          `opensource@amadeus.com`, per
+          [SECURITY.md](https://github.com/AmadeusITGroup/Yggy/blob/main/SECURITY.md).
+        - **Think it might be a bug?** Use the bug report form instead — you do not
+          need to be sure, and it collects the detail that saves a round trip.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description:
+        What you are trying to do, and where you got stuck. Concrete beats general.
+    validations:
+      required: true
+
+  - type: textarea
+    id: looked-at
+    attributes:
+      label: What you have already looked at (optional)
+      description:
+        Pages you read or things you tried. It stops us from suggesting what you
+        have already ruled out.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label:
+            I checked the [documentation](https://AmadeusITGroup.github.io/Yggy/)
+            and the existing issues.
+          required: true

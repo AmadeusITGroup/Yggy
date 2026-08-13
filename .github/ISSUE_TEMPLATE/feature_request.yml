@@ -1,0 +1,81 @@
+name: Feature request
+description: Suggest a capability or a change of direction for Yggy.
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You are welcome to open one of these. Setting expectations honestly up
+        front: **the roadmap is driven by internal requirements**, so the team may
+        not be able to commit to a request, or to a response time. A request that
+        does not fit the roadmap is not a rejected idea — it is a scheduling
+        reality.
+
+        Worth knowing before you write: the published pages describe the
+        architecture Yggy is built *towards*, while this release ships the v1
+        codebase with one provider integration (Azure network security groups). See
+        the scope note on
+        [Architecture](https://AmadeusITGroup.github.io/Yggy/system-design/architecture)
+        — what you are asking for may already be designed but not yet published.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description:
+        The situation you are in, not the solution you have in mind. This is the
+        part that shapes the design.
+      placeholder: |
+        When I …, I have to … because …
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like Yggy to do?
+      description: Your proposed behaviour, at whatever level of detail you have.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Roughly where this would live.
+      options:
+        - Not sure
+        - Connectivity descriptors / model objects
+        - Infrastructure model
+        - Application model
+        - A new provider integration (Azure, GCP, Palo Alto, OVN, other)
+        - An orchestrator integration (Kratix, Humanitec, Backstage, Terraform, other)
+        - APIs / services
+        - Documentation
+        - Build / tooling
+        - Something else (describe above)
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+      description:
+        Including any workaround you are using today, and why it is not enough.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label:
+            I searched the existing issues and this has not already been requested.
+          required: true
+        - label:
+            I understand that pull requests cannot be merged into this repository,
+            and that the roadmap is set internally.
+          required: true

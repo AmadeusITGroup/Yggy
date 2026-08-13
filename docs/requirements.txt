@@ -1,0 +1,11 @@
+# Pinned exactly so the published site is reproducible: an unpinned upgrade can
+# change rendering, or fail the --strict build, without any change to the content.
+#
+# mkdocs is pinned as well even though it arrives transitively via mkdocs-material.
+# It is the one dependency whose next major version is already known to break this
+# site: MkDocs 2.0 removes the plugin system, which every entry below relies on.
+# Leaving it unpinned means the docs deployment breaks on the day 2.0 is released,
+# with no change to this repository.
+mkdocs==1.6.1
+mkdocs-material==9.7.7
+mkdocs-minify-plugin==0.8.0

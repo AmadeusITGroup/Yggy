@@ -1,0 +1,336 @@
+package com.amadeus.aud.services.apis.services.endpoints.v2;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.amadeus.aud.libraries.aud.AudService;
+import com.amadeus.aud.libraries.backend.models.v2.Pagination;
+import com.amadeus.aud.libraries.backend.models.v2.Response;
+import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
+import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
+import com.amadeus.aud.libraries.models.core.db.base.BomElement;
+import io.smallrye.mutiny.Uni;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+@Execution(ExecutionMode.SAME_THREAD)
+@DisplayName("ListOfObjectOfTypeService Tests")
+class ListOfObjectOfTypeServiceTest {
+
+  @Mock private AudService audService;
+
+  private ListOfObjectOfTypeService service;
+
+  @BeforeEach
+  void setUp() {
+    service = new ListOfObjectOfTypeService(audService);
+  }
+
+  @Nested
+  @DisplayName("Version Loading")
+  class VersionLoadingTests {
+
+    @Test
+    @DisplayName("should throw NotFoundException when version not found")
+    void testGetObjectTypeResponseWithVersionNotFound() {
+      when(audService.getVersion("99.0.0")).thenReturn(Uni.createFrom().item((Version) null));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("99.0.0", "components", null, null)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown).isInstanceOf(NullPointerException.class);
+    }
+  }
+
+  @Nested
+  @DisplayName("Object Type Validation")
+  class ObjectTypeValidationTests {
+
+    @Test
+    @DisplayName("should throw NotFoundException when object type is invalid")
+    void testGetObjectTypeResponseWithInvalidObjectType() {
+      Version version = mock(Version.class);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("1.0.0", "invalid", null, null)
+                      .await()
+                      .indefinitely());
+      assertThat(thrown).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should accept valid object types")
+    void testGetObjectTypeResponseWithValidObjectType() {
+      Version version = mock(Version.class);
+
+      @SuppressWarnings("unchecked")
+      ConcurrentRepository<BomElement> repository = mock(ConcurrentRepository.class);
+      when(repository.getData()).thenReturn(new ConcurrentHashMap<>());
+      when(version.getRepository("component")).thenReturn(repository);
+
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<?> response =
+          service.getObjectTypeResponse("1.0.0", "components", null, null).await().indefinitely();
+
+      assertThat(response).isNotNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("Pagination Validation")
+  class PaginationValidationTests {
+
+    @Test
+    @DisplayName("should reject pageSize < 1")
+    void testGetObjectTypeResponseWithPageSizeZero() {
+      Version version = createVersionWithElements(10);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("1.0.0", "components", 1, 0)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown).isInstanceOf(BadRequestException.class);
+      assertThat(thrown.getMessage()).contains("pageSize must be >= 1");
+    }
+
+    @Test
+    @DisplayName("should reject pageSize > MAX_PAGE_SIZE")
+    void testGetObjectTypeResponseWithPageSizeExceeded() {
+      Version version = createVersionWithElements(10);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("1.0.0", "components", 1, 10001)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown).isInstanceOf(BadRequestException.class);
+      assertThat(thrown.getMessage()).contains("pageSize must be <=");
+    }
+
+    @Test
+    @DisplayName("should reject pageNum < 1")
+    void testGetObjectTypeResponseWithPageNumZero() {
+      Version version = createVersionWithElements(10);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("1.0.0", "components", 0, 10)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown).isInstanceOf(BadRequestException.class);
+      assertThat(thrown.getMessage()).contains("pageNum must be >= 1");
+    }
+
+    @Test
+    @DisplayName("should reject pageNum exceeding lastPage")
+    void testGetObjectTypeResponseWithPageNumExceeded() {
+      Version version = createVersionWithElements(5);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse("1.0.0", "components", 2, 10)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown).isInstanceOf(BadRequestException.class);
+      assertThat(thrown.getMessage()).contains("pageNum");
+      assertThat(thrown.getMessage()).contains("exceeds last page");
+    }
+  }
+
+  @Nested
+  @DisplayName("Pagination Functionality")
+  class PaginationFunctionalityTests {
+
+    @Test
+    @DisplayName("should apply default pageSize when null")
+    void testGetObjectTypeResponseWithDefaultPageSize() {
+      Version version = createVersionWithElements(5);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", null, null).await().indefinitely();
+
+      assertThat(response).isNotNull();
+      assertThat(response.metadata()).isNotNull();
+      Pagination pagination = response.metadata().pagination();
+      assertThat(pagination).isNotNull();
+      assertThat(pagination.pageSize()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("should apply default pageNum when null")
+    void testGetObjectTypeResponseWithDefaultPageNum() {
+      Version version = createVersionWithElements(50);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", null, 10).await().indefinitely();
+
+      assertThat(response).isNotNull();
+      assertThat(response.metadata().pagination().pageNum()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("should return correct items for page 1")
+    void testGetObjectTypeResponsePage1() {
+      Version version = createVersionWithElements(25);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
+
+      assertThat(response.data()).hasSize(10);
+      assertThat(response.metadata().pagination().count()).isEqualTo(25);
+      assertThat(response.metadata().pagination().pageNum()).isEqualTo(1);
+      assertThat(response.metadata().pagination().pageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("should return correct items for page 2")
+    void testGetObjectTypeResponsePage2() {
+      Version version = createVersionWithElements(25);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 2, 10).await().indefinitely();
+
+      assertThat(response.data()).hasSize(10);
+      assertThat(response.metadata().pagination().pageNum()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("should return remaining items on last page")
+    void testGetObjectTypeResponseLastPage() {
+      Version version = createVersionWithElements(25);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 3, 10).await().indefinitely();
+
+      assertThat(response.data()).hasSize(5);
+      assertThat(response.metadata().pagination().pageNum()).isEqualTo(3);
+    }
+  }
+
+  @Nested
+  @DisplayName("Edge Cases")
+  class EdgeCasesTests {
+
+    @Test
+    @DisplayName("should handle empty data")
+    void testGetObjectTypeResponseWithEmptyData() {
+      Version version = mock(Version.class);
+
+      @SuppressWarnings("unchecked")
+      ConcurrentRepository<BomElement> repository = mock(ConcurrentRepository.class);
+      when(repository.getData()).thenReturn(new ConcurrentHashMap<>());
+      when(version.getRepository("component")).thenReturn(repository);
+
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
+
+      assertThat(response.data()).isEmpty();
+      assertThat(response.metadata().pagination().count()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("should handle single item")
+    void testGetObjectTypeResponseWithSingleItem() {
+      Version version = createVersionWithElements(1);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
+
+      assertThat(response.data()).hasSize(1);
+      assertThat(response.metadata().pagination().count()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("should sort items by ID")
+    void testGetObjectTypeResponseSortsByID() {
+      Version version = createVersionWithElements(3);
+      when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
+
+      List<String> ids = new ArrayList<>();
+      for (BomElement element : response.data()) {
+        ids.add(element.id());
+      }
+
+      assertThat(ids).isSorted();
+    }
+  }
+
+  private Version createVersionWithElements(int count) {
+    Version version = mock(Version.class);
+
+    @SuppressWarnings("unchecked")
+    ConcurrentRepository<BomElement> repository = mock(ConcurrentRepository.class);
+
+    java.util.concurrent.ConcurrentHashMap<String, BomElement> data =
+        new java.util.concurrent.ConcurrentHashMap<>();
+
+    for (int i = 0; i < count; i++) {
+      String id = String.format("component-%03d", i);
+      BomElement element = mock(BomElement.class);
+      when(element.id()).thenReturn(id);
+      data.put(id, element);
+    }
+
+    when(repository.getData()).thenReturn(data);
+    when(version.getRepository("component")).thenReturn(repository);
+
+    return version;
+  }
+}

@@ -1,0 +1,78 @@
+name: Documentation issue
+description:
+  Something on the documentation site is wrong, missing, unclear or broken.
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For the published site at
+        [AmadeusITGroup.github.io/Yggy](https://AmadeusITGroup.github.io/Yggy/) and
+        the Markdown behind it in `docs/`.
+
+        "I could not work out what this page meant" is a perfectly good report. If
+        the docs describe behaviour that the code does not have, that is a
+        documentation issue too — though do check the scope note on
+        [Architecture](https://AmadeusITGroup.github.io/Yggy/system-design/architecture)
+        first, since the pages deliberately describe the target architecture rather
+        than only what ships today.
+
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The URL, or the path of the source file under `docs/content/`.
+      placeholder:
+        "e.g. https://AmadeusITGroup.github.io/Yggy/understanding/concepts/"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem is it?
+      options:
+        - Factually wrong or out of date
+        - Unclear or hard to follow
+        - Something is missing
+        - Broken link, image or download
+        - Rendering or layout problem
+        - Typo or wording
+        - Something else (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description:
+        What the page says now, what is wrong with it, and what it should say
+        instead if you know. Quote the passage if it helps.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Browser and theme (optional)
+      description:
+        Only needed for a rendering or layout problem. Include the browser and
+        version, the viewport width, and whether you were in light, dark or system
+        appearance.
+      placeholder: |
+        Browser: Firefox 141 on Windows 11
+        Width:   1280px
+        Theme:   dark
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label:
+            I searched the existing issues and this has not already been reported.
+          required: true

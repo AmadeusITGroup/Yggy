@@ -1,0 +1,40 @@
+# Line endings are decided here, not by whoever happens to commit.
+#
+# spotless is configured with <lineEndings>UNIX</lineEndings> in aud/pom.xml, and
+# no published workflow runs spotless, so a CRLF file arriving from a Windows
+# checkout would not be caught by anything downstream - it would simply fail the
+# next `just fmt` for whoever ran it. Declaring the policy here makes git enforce
+# it on the way in.
+#
+# `text=auto eol=lf` stores LF in the repository and checks out LF on every
+# platform. Every text file this project ships is fine with LF, including the
+# shell and PowerShell scripts.
+* text=auto eol=lf
+
+# Files where a CRLF is an outright bug rather than a nuisance: a `#!` line with a
+# trailing CR is not a valid interpreter path, and Docker copies bytes verbatim.
+*.sh         text eol=lf
+*.dockerfile text eol=lf
+Dockerfile   text eol=lf
+justfile     text eol=lf
+
+# Better diff hunk headers for the language that makes up most of the repository.
+*.java text diff=java
+
+# Never normalise and never diff as text. Only logo.ico exists today; the rest are
+# declared up front so a future asset cannot be quietly corrupted by the rule at
+# the top of this file.
+*.ico   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.pdf   binary
+*.jar   binary
+*.zip   binary
+*.gz    binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary

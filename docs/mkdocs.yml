@@ -1,0 +1,129 @@
+site_name: Yggy
+site_description: Declarative connectivity management for hybrid and multi-cloud environments
+site_url: https://AmadeusITGroup.github.io/Yggy/
+repo_url: https://github.com/AmadeusITGroup/Yggy
+repo_name: AmadeusITGroup/Yggy
+
+docs_dir: content
+site_dir: ../site
+
+theme:
+  name: material
+  # Holds home.html, the landing page template. Material resolves templates from
+  # here first, so anything added later can also override a stock partial.
+  custom_dir: overrides
+  palette:
+    # Three-way toggle: system -> light -> dark -> system. The first entry has no
+    # scheme on purpose; it delegates the choice to the operating system and
+    # re-evaluates when the OS switches appearance, without a page reload. The
+    # media queries are evaluated in order on a first visit, so this is also the
+    # default for anyone arriving without a stored preference.
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    # navigation.sections and navigation.expand are deliberately absent: the
+    # first renders groups as flat, non-collapsible labels and the second forces
+    # every group open. Without them the sidebar sections are collapsible and
+    # start collapsed, with only the section the reader is in expanded.
+    - navigation.tabs
+    # Sticky is what keeps the tab bar out of the landing page's way. Without it
+    # base.html renders the tabs *after* the hero block, so the bar lands under
+    # the hero; sticky moves it inside the header element instead, above the
+    # hero, where a global navigation belongs.
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+  logo: assets/brand/logo-white.svg
+  favicon: assets/brand/logo.ico
+
+# The directory layout under content/ mirrors this tree, so a page's location on
+# disk tells you where it sits in the navigation, and its URL matches both.
+nav:
+  - Home: index.md
+  - Understanding Yggy:
+      - Why Yggy?: understanding/why-yggy.md
+      - Core Concepts: understanding/concepts.md
+      - Yggy Model Objects:
+          - Infrastructure Model v1: understanding/model/infrastructure-model-v1.md
+          - Infrastructure Model v2 (design): understanding/model/infrastructure-model-v2.md
+          - Application Model v1: understanding/model/application-model-v1.md
+  - System Design:
+      - Architecture: system-design/architecture.md
+      - Change Flow: system-design/change-flow.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.keys
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AmadeusITGroup/Yggy
+  generator: false
+
+extra_css:
+  - assets/stylesheets/extra.css
+  - assets/stylesheets/landing.css
+
+copyright: >
+  Copyright &copy; 2025-2026 Yggy Project Contributors &mdash;
+  released under the
+  <a href="https://github.com/AmadeusITGroup/Yggy/blob/main/LICENSE">Apache License 2.0</a>
+
+
+

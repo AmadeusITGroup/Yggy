@@ -1,0 +1,22 @@
+# Docker reads .dockerignore from the root of the build context, not from the
+# repository root. The documented build is
+#
+#     docker build . -f local.dockerfile -t aud-local
+#
+# run from this directory (see README.md and the justfile), so the context is
+# aud/ and this file is the one that applies. The .dockerignore at the repository
+# root is never consulted by that command.
+
+# Build output. local.dockerfile does `COPY libraries libraries` and
+# `COPY services services`, so without this a local `mvn package` leaves
+# hundreds of megabytes of target/ to be copied into the image, and any change
+# under target/ invalidates the layer cache.
+**/target
+
+# Local build-tool state. `COPY .mvn ./.mvn` would otherwise pick up the
+# Develocity build-cache directory.
+**/.develocity
+
+# IDE state.
+.idea
+.vscode

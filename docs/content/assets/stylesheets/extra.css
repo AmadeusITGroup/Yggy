@@ -1,0 +1,122 @@
+/* ===================================================
+   Yggy — Custom Theme
+   Color palette derived from logo.ico
+   Primary blue: #0284fc
+   Light blue:   #06b8fe
+   Dark blue:    #0260b8
+   =================================================== */
+
+/* ---------- Light mode ---------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #0284fc;
+  --md-primary-fg-color--light: #3da1fd;
+  --md-primary-fg-color--dark: #0260b8;
+  --md-accent-fg-color: #06b8fe;
+  --md-typeset-a-color: #0284fc;
+}
+
+/* Header */
+[data-md-color-scheme="default"] .md-header {
+  background-color: #0260b8;
+}
+
+/* Navigation tabs bar. With navigation.tabs.sticky the tab list is rendered
+   inside the header element, so letting it stay transparent makes the two read
+   as one continuous bar in every scheme — and, on the landing page, as one
+   surface with the top of the hero gradient. */
+.md-tabs {
+  background-color: transparent;
+}
+
+/* ---------- Dark mode ---------- */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0272d4;
+  --md-primary-fg-color--light: #3da1fd;
+  --md-primary-fg-color--dark: #014a8a;
+  --md-accent-fg-color: #06b8fe;
+  --md-typeset-a-color: #3da1fd;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #012a50;
+}
+
+/* ---------- Admonitions ---------- */
+
+/* Info admonitions use the logo blue */
+.md-typeset .admonition.info,
+.md-typeset details.info {
+  border-color: #0284fc;
+}
+
+.md-typeset .info > .admonition-title,
+.md-typeset .info > summary {
+  background-color: rgba(2, 132, 252, 0.1);
+}
+
+/* Quote admonitions use the light blue */
+.md-typeset .admonition.quote,
+.md-typeset details.quote {
+  border-color: #06b8fe;
+}
+
+.md-typeset .quote > .admonition-title,
+.md-typeset .quote > summary {
+  background-color: rgba(6, 184, 254, 0.1);
+}
+
+/* ---------- Code blocks ---------- */
+.md-typeset code {
+  color: #0260b8;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  color: #3da1fd;
+}
+
+/* ---------- Footer ---------- */
+.md-footer {
+  background-color: #012a50;
+}
+
+/* The copyright line carries the licence link. Footer links inherit the muted
+   footer colour, so mark it up as a link rather than leaving it looking like
+   plain text. */
+.md-copyright a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+  text-underline-offset: 0.15em;
+}
+
+.md-copyright a:hover,
+.md-copyright a:focus-visible {
+  color: #fff;
+  text-decoration-color: currentcolor;
+}
+
+/* ---------- Excalidraw diagrams ---------- */
+.md-content img[src*="excalidraw"] {
+  display: block;
+  margin: 1.5rem auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Light/dark image toggling */
+[data-md-color-scheme="default"] .only-dark {
+  display: none;
+}
+[data-md-color-scheme="slate"] .only-light {
+  display: none;
+}
+
+/* ---------- Scrollbar accent (webkit) ---------- */
+::-webkit-scrollbar-thumb {
+  background-color: #0284fc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0260b8;
+}

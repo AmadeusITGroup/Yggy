@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Constraint mapping override for generated model classes.
+
+  Problem: openapi-generator (useBeanValidation=true) places @Valid on
+  getMetadata() in every class. Because V1BaseInstance and V1BaseConfig
+  extend V1Base (via REF_AS_PARENT_IN_ALLOF=true), both parent and child
+  declare @Valid on the same method chain. Hibernate Validator 9 raises
+  HV000131 for this.
+
+  Fix: use "ignore-annotations=true" on the overriding getMetadata() in
+  the two subclasses. The @Valid from V1Base still applies via inheritance,
+  so cascaded validation is NOT lost — it just stops being declared twice.
+-->
+<constraint-mappings
+    xmlns="https://jakarta.ee/xml/ns/validation/mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/validation/mapping
+        https://jakarta.ee/xml/ns/validation/validation-mapping-3.0.xsd"
+    version="3.0">
+
+  <bean class="com.amadeus.aud.libraries.yaml.models.V1BaseInstance"
+        ignore-annotations="false">
+    <getter name="metadata" ignore-annotations="true"/>
+  </bean>
+
+  <bean class="com.amadeus.aud.libraries.yaml.models.V1BaseConfig"
+        ignore-annotations="false">
+    <getter name="metadata" ignore-annotations="true"/>
+  </bean>
+
+</constraint-mappings>

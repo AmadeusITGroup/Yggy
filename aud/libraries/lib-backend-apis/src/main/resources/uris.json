@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "title": "Scopes",
+      "uri": "/v2/version/latest/data/scopes",
+      "category": "Governance"
+    },
+    {
+      "title": "Approvals",
+      "uri": "/v2/version/latest/data/connection-approvals",
+      "category": "Applications"
+    }
+  ]
+}

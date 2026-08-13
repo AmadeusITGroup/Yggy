@@ -1,0 +1,96 @@
+#!/usr/bin/env just --justfile
+
+default:
+    @ just --list
+
+# setup java and maven versions using sdkman
+setup:
+    #!/usr/bin/env -S bash --login
+    # Two things about the line above, both load-bearing:
+    #   - it must stay the FIRST line of this recipe, or just stops treating the
+    #     recipe as a shebang recipe and rejects the indented blocks below;
+    #   - `env -S` splits the rest of it into separate arguments. Without -S the
+    #     Linux kernel passes "bash --login" to env as one argument, env looks for
+    #     a program of that exact name, and the recipe dies with exit 126 before
+    #     running a single line. BSD/macOS env splits it either way, which is why
+    #     this only ever failed on Linux.
+    set -o errexit -o errtrace -o pipefail
+
+    # SDKMAN needs these and will not install them for you; Ubuntu ships neither
+    # zip nor unzip. Without this check the failure surfaces as an opaque abort
+    # part-way through the SDKMAN installer.
+    for tool in curl zip unzip; do
+      command -v "$tool" >/dev/null 2>&1 || {
+        echo "❌ $tool is required by SDKMAN - install it first, e.g. sudo apt-get install -y zip unzip"
+        exit 1
+      }
+    done
+
+    echo "Checking java is installed..."
+    if ! java -version &> /dev/null
+    then
+        echo '❌ java not installed'
+    fi
+    if ! mvn -v &> /dev/null
+    then
+        echo '❌ maven not installed'
+    fi
+    [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+    if type sdk &> /dev/null; then
+        echo "SDKMAN! is available"
+        sdk version
+    else
+        echo "❌ SDKMAN! is not installed"
+        curl -s "https://get.sdkman.io" | bash
+        source "$HOME/.sdkman/bin/sdkman-init.sh"
+    fi
+
+    echo 'Installing proper java and maven daemon version...'
+    # Full identifier, not a bare major: SDKMAN matches exactly and has no
+    # "25-zulu". Check `sdk list java` when this needs bumping.
+    sdk install java 25.0.4-zulu
+    sdk use java 25.0.4-zulu
+    sdk default java 25.0.4-zulu
+    sdk install maven 3.9.16
+    sdk use maven 3.9.16
+    sdk default maven 3.9.16
+    sdk install mvnd 1.0.6
+    sdk use mvnd 1.0.6
+    sdk default mvnd 1.0.6
+
+# run unit tests only
+test:
+    @ echo "📊 Running unit tests..."
+    mvnd test
+
+# run OpenRewrite and Spotless formatting of the code
+fmt:
+    @ echo "📄 Formatting code & refactoring..."
+    mvnd --define 'maven.build.cache.enabled=false' rewrite:run && mvnd --define 'maven.build.cache.enabled=false' spotless:apply
+
+# update all java dependencies via the properties in each pom.xml
+update:
+    @ echo "🌍 Updating dependencies..."
+    java ./scripts/updateJavaDependencies.java
+
+# aggregate a descriptor directory into the data the API reads (see README.md)
+generate-network-data data-dir:
+    @ echo "📊 Generating network data from '{{ data-dir }}'..."
+    java ./scripts/generateNetworkData.java {{ data-dir }}
+
+# start the API in Quarkus dev mode
+start-api-dev:
+    @ echo "🚀 Starting API in dev mode..."
+    bash ./scripts/start_api_quarkus_dev.sh
+
+# start the connectivity engine in Quarkus dev mode
+start-engine-dev profile="inmemory" force-version="":
+    @ echo "📊 Starting service-connectivity-engine in dev mode with profile '{{ profile }}'..."
+    bash ./scripts/start_engine_quarkus_dev.sh {{ profile }} {{ force-version }}
+
+# build and run the API locally in a container against a data directory
+# usage: just start-api-local ./path/to/network-data
+start-api-local data-dir:
+    @ echo "🚀 Building and starting the API from local.dockerfile with data from '{{ data-dir }}'..."
+    docker build . -f local.dockerfile -t aud-local
+    docker run --rm -p 8088:8080 -v {{ data-dir }}:/tmp/yggy-data/1.0.1/ aud-local:latest

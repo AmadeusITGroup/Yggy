@@ -1,0 +1,37 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.amadeus.aud
+displayName: AUD Code Rewrites
+causesAnotherCycle: true
+recipeList:
+  - org.openrewrite.staticanalysis.AnnotateNullableParameters:
+      nullableAnnotationClass: "jakarta.annotation.Nullable"
+  - org.openrewrite.staticanalysis.AnnotateNullableMethods:
+      nullableAnnotationClass: "jakarta.annotation.Nullable"
+  - org.openrewrite.java.migrate.lang.UseTextBlocks
+#  - org.openrewrite.java.testing.assertj.Assertj
+  - org.openrewrite.staticanalysis.AvoidBoxedBooleanExpressions
+  - org.openrewrite.staticanalysis.AbstractClassPublicConstructor
+  - org.openrewrite.staticanalysis.CatchClauseOnlyRethrows
+#  - org.openrewrite.staticanalysis.ChainStringBuilderAppendCalls // re-enable if stable
+  - org.openrewrite.staticanalysis.EqualsAvoidsNull
+  - org.openrewrite.staticanalysis.ExplicitCharsetOnStringGetBytes
+  - org.openrewrite.staticanalysis.ExplicitLambdaArgumentTypes
+  - org.openrewrite.staticanalysis.FinalClass
+  - org.openrewrite.staticanalysis.FinalizePrivateFields
+  #  - org.openrewrite.staticanalysis.FinalizeMethodArguments
+  - org.openrewrite.staticanalysis.HideUtilityClassConstructor
+  - org.openrewrite.staticanalysis.InstanceOfPatternMatch
+  - org.openrewrite.staticanalysis.IsEmptyCallOnCollections
+  - org.openrewrite.staticanalysis.LambdaBlockToExpression
+  - org.openrewrite.staticanalysis.LowercasePackage
+  - org.openrewrite.staticanalysis.MethodNameCasing
+  - org.openrewrite.staticanalysis.NeedBraces
+  - org.openrewrite.staticanalysis.NullableOnMethodReturnType
+  - org.openrewrite.staticanalysis.RemoveUnusedLocalVariables
+  - org.openrewrite.staticanalysis.RemoveUnusedPrivateFields
+#  - org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods
+  - org.openrewrite.staticanalysis.RenameLocalVariablesToCamelCase
+  - org.openrewrite.staticanalysis.RenamePrivateFieldsToCamelCase
+  - org.openrewrite.staticanalysis.ReplaceLambdaWithMethodReference
+  - org.openrewrite.staticanalysis.UseStandardCharset

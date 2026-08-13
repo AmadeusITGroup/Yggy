@@ -1,0 +1,429 @@
+/* ===================================================
+   Yggy — landing page
+   Styles for the hero rendered by overrides/home.html
+   and for the sections of content/index.md below it.
+
+   The hero lives outside .md-typeset, so nothing here
+   inherits the prose styles: every value is explicit.
+   Outside .md-typeset, 1rem = 20px (Material sets the
+   root font size to 125%).
+   =================================================== */
+
+/* ---------- No tab bar on the landing page ---------- */
+
+/* The hero and its calls to action are the navigation here, so the strip of tabs
+   under the header is suppressed — but it has to be *hidden*, not removed.
+   Material's instant navigation swaps a fixed list of components between the
+   current and the incoming document, and each swap is guarded on the component
+   existing in BOTH. If the landing page omitted [data-md-component=tabs], there
+   would be nothing to swap into, and the tab bar would stay missing after an
+   in-place navigation away from the home page until a full reload. Keeping the
+   element present and hiding it also keeps the header markup identical on every
+   page, so nothing else about the swap can drift.
+
+   `display: none` takes the links out of the focus order and the accessibility
+   tree as well, so nothing is lost versus omitting them.
+
+   The hero only exists on the landing page, which makes it the page marker. On a
+   browser without :has() the tabs simply stay visible — degraded, not broken. */
+body:has(.yggy-hero) .md-tabs {
+  display: none;
+}
+
+/* ---------- Hero shell ---------- */
+
+.yggy-hero {
+  /* Subtract the sticky top chrome so chrome + hero fill the viewport exactly.
+     That is just the 2.4rem header at every width, since the rule above hides the
+     tab bar on this page. svh keeps mobile browser chrome from causing a jump;
+     the vh line is the fallback for engines without svh. */
+  --yggy-chrome-height: 2.4rem;
+  min-height: calc(100vh - var(--yggy-chrome-height));
+  min-height: calc(100svh - var(--yggy-chrome-height));
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 3rem 1.2rem 4.4rem;
+  text-align: center;
+
+  /* Starts on the light-mode header colour so the two read as one surface. */
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% -10%,
+      rgba(6, 184, 254, 0.38) 0%,
+      rgba(6, 184, 254, 0) 60%
+    ),
+    linear-gradient(
+      180deg,
+      #0260b8 0%,
+      #01498e 32%,
+      #012a50 72%,
+      #011628 100%
+    );
+  color: #eaf4ff;
+}
+
+[data-md-color-scheme="slate"] .yggy-hero {
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% -10%,
+      rgba(6, 184, 254, 0.3) 0%,
+      rgba(6, 184, 254, 0) 60%
+    ),
+    linear-gradient(
+      180deg,
+      #012a50 0%,
+      #01203d 40%,
+      #01162a 75%,
+      #010e1c 100%
+    );
+}
+
+/* ---------- Hero backdrop ---------- */
+
+.yggy-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.yggy-hero__grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 42%,
+    #000 15%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 42%,
+    #000 15%,
+    transparent 75%
+  );
+  animation: yggy-drift 60s linear infinite;
+}
+
+.yggy-hero__mesh {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    transparent 26%,
+    #000 62%
+  );
+  mask-image: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    transparent 26%,
+    #000 62%
+  );
+}
+
+.yggy-hero__edges line {
+  fill: none;
+  stroke: rgba(120, 200, 255, 0.42);
+  stroke-width: 1;
+  stroke-dasharray: 5 11;
+  animation: yggy-flow 2.6s linear infinite;
+}
+
+/* Staggered so the mesh reads as traffic rather than a marching band. */
+.yggy-hero__edges line:nth-child(3n + 1) { animation-duration: 3.4s; animation-delay: -0.4s; }
+.yggy-hero__edges line:nth-child(3n + 2) { animation-duration: 4.6s; animation-delay: -1.2s; }
+.yggy-hero__edges line:nth-child(4n)     { animation-duration: 5.8s; animation-delay: -2.1s; }
+
+.yggy-hero__nodes circle {
+  fill: #7fd4ff;
+  animation: yggy-pulse 4.5s ease-in-out infinite;
+}
+
+.yggy-hero__nodes circle:nth-child(2n)     { animation-delay: -1.1s; }
+.yggy-hero__nodes circle:nth-child(3n)     { animation-delay: -2.3s; }
+.yggy-hero__nodes circle:nth-child(5n + 1) { animation-delay: -3.4s; }
+
+@keyframes yggy-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-3rem, -3rem, 0); }
+}
+
+@keyframes yggy-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -32; }
+}
+
+@keyframes yggy-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+/* ---------- Hero content ---------- */
+
+.yggy-hero__inner {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.yggy-hero__logo {
+  display: block;
+  width: clamp(3.2rem, 11vw, 4.6rem);
+  height: auto;
+  margin: 0 auto 0.9rem;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 1.4rem rgba(6, 184, 254, 0.45));
+}
+
+.yggy-hero__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 10vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.yggy-hero__tagline {
+  margin: 0.7rem 0 0;
+  font-size: clamp(0.95rem, 3.4vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  background: linear-gradient(90deg, #ffffff 0%, #8ed8ff 55%, #06b8fe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #8ed8ff;
+}
+
+.yggy-hero__lede {
+  margin: 1.1rem auto 0;
+  max-width: 30rem;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: rgba(226, 241, 255, 0.82);
+}
+
+/* ---------- Hero buttons ---------- */
+
+.yggy-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.9rem;
+}
+
+.yggy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid rgba(160, 215, 255, 0.4);
+  border-radius: 2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  color: #eaf4ff;
+  background: rgba(255, 255, 255, 0.06);
+  transition:
+    background-color 200ms,
+    border-color 200ms,
+    color 200ms,
+    transform 200ms,
+    box-shadow 200ms;
+}
+
+.yggy-btn svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: currentcolor;
+  flex-shrink: 0;
+}
+
+.yggy-btn:hover,
+.yggy-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(200, 235, 255, 0.75);
+  transform: translateY(-1px);
+}
+
+.yggy-btn--primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, #06b8fe 0%, #0284fc 100%);
+  color: #00243f;
+  box-shadow: 0 0.3rem 1.1rem rgba(6, 184, 254, 0.35);
+}
+
+.yggy-btn--primary:hover,
+.yggy-btn--primary:focus-visible {
+  background: linear-gradient(135deg, #3fcaff 0%, #069cfd 100%);
+  border-color: transparent;
+  color: #00243f;
+  box-shadow: 0 0.45rem 1.4rem rgba(6, 184, 254, 0.5);
+}
+
+.yggy-btn--ghost {
+  border-color: rgba(160, 215, 255, 0.28);
+  background: transparent;
+}
+
+.yggy-hero__meta {
+  margin: 1.8rem 0 0;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(180, 220, 250, 0.6);
+}
+
+/* ---------- Scroll cue ---------- */
+
+.yggy-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  text-decoration: none;
+  color: rgba(200, 230, 250, 0.65);
+  transition: color 200ms;
+}
+
+.yggy-hero__scroll:hover,
+.yggy-hero__scroll:focus-visible {
+  color: #fff;
+}
+
+.yggy-hero__scroll-label {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.yggy-hero__scroll svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentcolor;
+  animation: yggy-nudge 2.2s ease-in-out infinite;
+}
+
+@keyframes yggy-nudge {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(0.22rem); }
+}
+
+/* ---------- Page body below the hero ---------- */
+
+/* Both sidebars are hidden here, so the content grid is the only thing setting
+   the column width. Everything — prose, admonitions, card grids — shares that
+   one measure so the left and right edges line up down the whole page. The
+   container is narrowed from Material's 61rem to keep line length readable at
+   full width; the card grid still lays out three columns at this size.
+   :has() is a progressive enhancement — without it the 61rem default applies. */
+.md-main__inner:has(.yggy-landing) {
+  max-width: 52rem;
+}
+
+.yggy-landing > h2 {
+  /* Offset the sticky header when jumping to an anchor from the scroll cue. */
+  scroll-margin-top: 3.4rem;
+}
+
+/* Closing call to action */
+.yggy-cta {
+  margin: 3rem 0 1rem;
+  padding: 2.2rem 1.6rem;
+  border-radius: 0.6rem;
+  text-align: center;
+  background: linear-gradient(135deg, #01468a 0%, #012a50 100%);
+  color: #eaf4ff;
+}
+
+.md-typeset .yggy-cta h2 {
+  margin: 0 0 0.4rem;
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.md-typeset .yggy-cta p {
+  margin: 0 auto;
+  max-width: 26rem;
+  color: rgba(226, 241, 255, 0.82);
+}
+
+.yggy-cta .yggy-hero__actions {
+  margin-top: 1.4rem;
+}
+
+/* Inside .md-typeset the prose link colour wins on specificity, which leaves the
+   buttons blue-on-blue. Restate the button colours at matching specificity. */
+.md-typeset a.yggy-btn,
+.md-typeset a.yggy-btn:hover,
+.md-typeset a.yggy-btn:focus-visible {
+  color: #eaf4ff;
+}
+
+.md-typeset a.yggy-btn--primary,
+.md-typeset a.yggy-btn--primary:hover,
+.md-typeset a.yggy-btn--primary:focus-visible {
+  color: #00243f;
+}
+
+/* Heading permalink inside the dark call-to-action panel */
+.md-typeset .yggy-cta .headerlink {
+  color: rgba(226, 241, 255, 0.4);
+}
+
+.md-typeset .yggy-cta h2:hover .headerlink {
+  color: rgba(226, 241, 255, 0.8);
+}
+
+/* ---------- Motion and print ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .yggy-hero__grid,
+  .yggy-hero__edges line,
+  .yggy-hero__nodes circle,
+  .yggy-hero__scroll svg {
+    animation: none;
+  }
+
+  .yggy-btn {
+    transition: none;
+  }
+
+  .yggy-btn:hover,
+  .yggy-btn:focus-visible {
+    transform: none;
+  }
+}
+
+@media print {
+  .yggy-hero {
+    min-height: auto;
+    padding: 1.5rem 0;
+  }
+
+  .yggy-hero__backdrop,
+  .yggy-hero__scroll {
+    display: none;
+  }
+}

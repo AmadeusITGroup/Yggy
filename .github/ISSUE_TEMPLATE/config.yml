@@ -1,0 +1,24 @@
+# Blank issues are disabled so that every report arrives with the context the team
+# needs to triage it. "Question or discussion" below is the catch-all, so nobody is
+# left without a route.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/AmadeusITGroup/Yggy/blob/main/SECURITY.md
+    about:
+      Do not open a public issue. Report privately by email to
+      opensource@amadeus.com; you can expect an acknowledgement within 5 business
+      days.
+
+  - name: Read the documentation
+    url: https://AmadeusITGroup.github.io/Yggy/
+    about:
+      Concepts, the model objects, the architecture and the change flow. Worth a
+      look before filing — it may already answer the question.
+
+  - name: How this repository accepts contributions
+    url: https://github.com/AmadeusITGroup/Yggy/blob/main/CONTRIBUTING.md
+    about:
+      Yggy is a read-only mirror of a private repository. Pull requests cannot be
+      merged, but bug reports are welcome and are triaged by the team.

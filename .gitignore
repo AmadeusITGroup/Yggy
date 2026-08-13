@@ -1,0 +1,15 @@
+.idea
+.kiro
+site/
+**/secrets/
+**/.quarkus/
+**/target
+aud/settings.xml
+.DS_Store
+aud/.mvn/.develocity/
+.vscode
+**/.env.local
+**/benchmark/.dataset.json
+**/.env
+**/.venv
+pom.xml.versionsBackup
