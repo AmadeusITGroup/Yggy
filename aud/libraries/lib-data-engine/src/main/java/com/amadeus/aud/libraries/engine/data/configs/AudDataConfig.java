@@ -32,5 +32,8 @@ public interface AudDataConfig {
 
     @WithDefault("false")
     boolean useLocalData();
+
+    @WithDefault("1200")
+    Integer scopesMaxLoadDurationSeconds();
   }
 }

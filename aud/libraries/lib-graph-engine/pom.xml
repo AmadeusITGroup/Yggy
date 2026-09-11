@@ -16,8 +16,6 @@
     <unittests.instruction.coverage>0.88</unittests.instruction.coverage>
     <unittests.branch.coverage>0.80</unittests.branch.coverage>
 
-    <annotations.version>4.10.3</annotations.version>
-    <commons-csv.version>1.14.1</commons-csv.version>
     <postgresql.version>42.7.13</postgresql.version>
   </properties>
 
@@ -28,13 +26,6 @@
       <artifactId>quarkus-jackson</artifactId>
     </dependency>
 
-    <!--        Apache Commons-->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>${commons-csv.version}</version>
-    </dependency>
-
     <!--        Annotations-->
     <dependency>
       <groupId>org.jboss.slf4j</groupId>
@@ -43,7 +34,6 @@
     <dependency>
       <groupId>com.github.spotbugs</groupId>
       <artifactId>spotbugs-annotations</artifactId>
-      <version>${annotations.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -56,6 +46,13 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

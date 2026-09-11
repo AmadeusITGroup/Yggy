@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.amadeus.aud.libraries.graphql.utils.StringFilter;
 import com.amadeus.aud.libraries.models.core.db.BlackListedCIDR;
 import com.amadeus.aud.libraries.models.core.db.BlackListedURL;
+import com.amadeus.aud.libraries.models.core.db.Blacklist;
 import com.amadeus.aud.libraries.models.core.db.ConnectionPhase;
 import com.amadeus.aud.libraries.models.core.db.IPAddressInstance;
 import com.amadeus.aud.libraries.yaml.models.V1BlackListedCIDRSpec;
@@ -514,5 +515,146 @@ class SimpleEntityFiltersTest {
     assertThat(f.getCidr()).isEqualTo(cidrFilter);
     assertThat(f.getTransportLayer()).isEqualTo(transportLayerFilter);
     assertThat(f.getPorts()).isEqualTo(portsFilter);
+  }
+
+  // ---------- BlacklistFilter ----------
+
+  private Blacklist blacklist(
+      String id, String name, String sourceComponent, String destinationHostFqdn) {
+    Blacklist b = mock(Blacklist.class);
+    when(b.id()).thenReturn(id);
+    when(b.getName()).thenReturn(name);
+    when(b.getScope()).thenReturn(null);
+    when(b.getSourceComponent()).thenReturn(sourceComponent);
+    when(b.getDestinationHostFqdns()).thenReturn(List.of(destinationHostFqdn));
+    when(b.getDestinationHostCidrs()).thenReturn(null);
+    when(b.getSourceZones()).thenReturn(List.of("CSZ", "TNZ"));
+    when(b.getSourceMacrophases()).thenReturn(List.of("TST", "PRD"));
+    when(b.getSourceTargets()).thenReturn(List.of("prd-we"));
+    when(b.getDestinationTransportProtocols()).thenReturn(List.of("Tcp"));
+    when(b.getDestinationPortRanges()).thenReturn(List.of("443"));
+    return b;
+  }
+
+  @Test
+  void blacklist_matchesNull_returnsFalse() {
+    assertThat(new BlacklistFilter().matches(null)).isFalse();
+  }
+
+  @Test
+  void blacklist_emptyFilter_matchesAll() {
+    assertThat(
+            new BlacklistFilter().matches(blacklist("id-1", "block-ex", "my-app", "example.com")))
+        .isTrue();
+  }
+
+  @Test
+  void blacklist_filterById_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setEq("id-1");
+    f.setId(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterById_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setEq("id-99");
+    f.setId(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterByName_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setLike("block");
+    f.setName(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterByName_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setLike("allow");
+    f.setName(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterBySourceComponent_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setEq("my-app");
+    f.setSourceComponent(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterBySourceComponent_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    StringFilter sf = new StringFilter();
+    sf.setEq("other-app");
+    f.setSourceComponent(sf);
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterByDestinationHostFqdns_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationHostFqdns(List.of("example.com"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterByDestinationHostFqdns_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationHostFqdns(List.of("malware.example"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterBySourceZones_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setSourceZones(List.of("CSZ"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterBySourceZones_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setSourceZones(List.of("CDE"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterByDestinationTransportProtocols_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationTransportProtocols(List.of("Tcp"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterByDestinationTransportProtocols_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationTransportProtocols(List.of("Udp"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
+  }
+
+  @Test
+  void blacklist_filterByDestinationPortRanges_match() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationPortRanges(List.of("443"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isTrue();
+  }
+
+  @Test
+  void blacklist_filterByDestinationPortRanges_noMatch() {
+    BlacklistFilter f = new BlacklistFilter();
+    f.setDestinationPortRanges(List.of("80"));
+    assertThat(f.matches(blacklist("id-1", "block-ex", "my-app", "example.com"))).isFalse();
   }
 }

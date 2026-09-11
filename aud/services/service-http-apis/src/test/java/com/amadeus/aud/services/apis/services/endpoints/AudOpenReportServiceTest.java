@@ -117,17 +117,13 @@ class AudOpenReportServiceTest {
     return endpoint;
   }
 
-  private ObjectGroup createMockObjectGroup(String name, String uid, String typeValue) {
-    ObjectGroup objectGroup = mock(ObjectGroup.class);
-    ObjectGroup.TypeEnum typeEnum = mock(ObjectGroup.TypeEnum.class);
-
-    when(objectGroup.getName()).thenReturn(name);
-    when(objectGroup.getUid()).thenReturn(uid);
-    when(objectGroup.getZoneType()).thenReturn("internal");
-    when(objectGroup.getType()).thenReturn(typeEnum);
-    when(typeEnum.getValue()).thenReturn(typeValue);
-    when(objectGroup.getEndpoints())
-        .thenReturn(List.of(createMockEndpoint("", "10.10.10.10/32", "some description")));
+  private ObjectGroup createObjectGroup(String name, String uid, String typeValue) {
+    ObjectGroup objectGroup = new ObjectGroup();
+    objectGroup.setName(name);
+    objectGroup.setUid(uid);
+    objectGroup.setZoneType("internal");
+    objectGroup.setType(ObjectGroup.TypeEnum.fromValue(typeValue));
+    objectGroup.setEndpoints(List.of(createMockEndpoint("", "10.10.10.10/32", "some description")));
     return objectGroup;
   }
 
@@ -266,21 +262,15 @@ class AudOpenReportServiceTest {
       when(componentInstancesRepository.get(SOURCE_COMPONENT)).thenReturn(srcInstance);
       when(componentInstancesRepository.get(DESTINATION_COMPONENT)).thenReturn(destInstance);
 
-      ObjectGroup srcObjectGroup =
-          createMockObjectGroup("src-object-group", "src-uid", "AddressGroup");
-      ObjectGroup dstObjectGroup =
-          createMockObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
+      ObjectGroup srcObjectGroup = createObjectGroup("src-object-group", "src-uid", "AddressGroup");
+      ObjectGroup dstObjectGroup = createObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
 
       when(srcInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.OUT, srcObjectGroup));
       when(destInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.IN, dstObjectGroup));
 
-      Edge edge = mock(Edge.class);
-      when(edge.getSourceNodeId()).thenReturn(SOURCE_ID);
-      when(edge.getTargetNodeId()).thenReturn(DESTINATION_ID);
-      when(edge.getDependencyInstanceId()).thenReturn("dep-id");
-      when(edge.getServiceId()).thenReturn("service-id");
+      Edge edge = new Edge(null, "dep-id", "service-id", true, SOURCE_ID, DESTINATION_ID);
 
       when(graphEngineService.getGraphEdgesByNodeIds(
               anyString(), anyInt(), anyInt(), anyList(), anyList()))
@@ -394,21 +384,15 @@ class AudOpenReportServiceTest {
 
       when(componentInstancesRepository.getData()).thenReturn(componentsMap);
 
-      ObjectGroup srcObjectGroup =
-          createMockObjectGroup("src-object-group", "src-uid", "AddressGroup");
-      ObjectGroup dstObjectGroup =
-          createMockObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
+      ObjectGroup srcObjectGroup = createObjectGroup("src-object-group", "src-uid", "AddressGroup");
+      ObjectGroup dstObjectGroup = createObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
 
       when(srcInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.OUT, srcObjectGroup));
       when(destInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.IN, dstObjectGroup));
 
-      Edge edge = mock(Edge.class);
-      when(edge.getSourceNodeId()).thenReturn(SOURCE_ID);
-      when(edge.getTargetNodeId()).thenReturn(DESTINATION_ID);
-      when(edge.getDependencyInstanceId()).thenReturn("dep-id");
-      when(edge.getServiceId()).thenReturn("service-id");
+      Edge edge = new Edge(null, "dep-id", "service-id", true, SOURCE_ID, DESTINATION_ID);
 
       when(graphEngineService.getGraphEdgesByNodeIds(
               anyString(), anyInt(), anyInt(), anyList(), anyList()))
@@ -513,21 +497,15 @@ class AudOpenReportServiceTest {
 
       when(componentInstancesRepository.getData()).thenReturn(componentsMap);
 
-      ObjectGroup srcObjectGroup =
-          createMockObjectGroup("src-object-group", "src-uid", "AddressGroup");
-      ObjectGroup dstObjectGroup =
-          createMockObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
+      ObjectGroup srcObjectGroup = createObjectGroup("src-object-group", "src-uid", "AddressGroup");
+      ObjectGroup dstObjectGroup = createObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
 
       when(srcInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.OUT, srcObjectGroup));
       when(destInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.IN, dstObjectGroup));
 
-      Edge edge = mock(Edge.class);
-      when(edge.getSourceNodeId()).thenReturn(SOURCE_ID);
-      when(edge.getTargetNodeId()).thenReturn(DESTINATION_ID);
-      when(edge.getDependencyInstanceId()).thenReturn("dep-id");
-      when(edge.getServiceId()).thenReturn("service-id");
+      Edge edge = new Edge(null, "dep-id", "service-id", true, SOURCE_ID, DESTINATION_ID);
 
       when(graphEngineService.getGraphEdgesByNodeIds(
               anyString(), anyInt(), anyInt(), anyList(), anyList()))
@@ -628,21 +606,15 @@ class AudOpenReportServiceTest {
 
       when(componentInstancesRepository.getData()).thenReturn(componentsMap);
 
-      ObjectGroup srcObjectGroup =
-          createMockObjectGroup("src-object-group", "src-uid", "AddressGroup");
-      ObjectGroup dstObjectGroup =
-          createMockObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
+      ObjectGroup srcObjectGroup = createObjectGroup("src-object-group", "src-uid", "AddressGroup");
+      ObjectGroup dstObjectGroup = createObjectGroup("dst-object-group", "dst-uid", "AddressGroup");
 
       when(srcInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.OUT, srcObjectGroup));
       when(destInstance.getObjectGroups(false))
           .thenReturn(createObjectGroupMap(Direction.IN, dstObjectGroup));
 
-      Edge edge = mock(Edge.class);
-      when(edge.getSourceNodeId()).thenReturn(SOURCE_ID);
-      when(edge.getTargetNodeId()).thenReturn(DESTINATION_ID);
-      when(edge.getDependencyInstanceId()).thenReturn("dep-id");
-      when(edge.getServiceId()).thenReturn("service-id");
+      Edge edge = new Edge(null, "dep-id", "service-id", true, SOURCE_ID, DESTINATION_ID);
 
       when(graphEngineService.getGraphEdgesByNodeIds(
               anyString(), anyInt(), anyInt(), anyList(), anyList()))

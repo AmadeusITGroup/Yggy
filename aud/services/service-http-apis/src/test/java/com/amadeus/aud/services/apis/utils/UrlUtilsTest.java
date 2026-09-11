@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import jakarta.ws.rs.core.UriInfo;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +16,18 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 
 class UrlUtilsTest {
+
+  @Test
+  void constructor_isPrivate() throws NoSuchMethodException {
+    Constructor<UrlUtils> constructor = UrlUtils.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    try {
+      UrlUtils instance = constructor.newInstance();
+      assertThat(instance).isNotNull();
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+      // Intentionally private constructor
+    }
+  }
 
   @Test
   void getUrl_returnsAbsolutePath() {
@@ -69,7 +85,9 @@ class UrlUtilsTest {
       "http://example.com,80",
       "https://example.com,443",
       "http://*.example.com:1234,1234",
-      "example.com:8080,8080"
+      "example.com:8080,8080",
+      "tcp://10.0.0.1:9090,9090",
+      "udp://10.0.0.1:53,53"
     })
     void parsesPortCorrectly(String url, int expectedPort) {
       int port = UrlUtils.getPortFromURL(url);
@@ -77,10 +95,55 @@ class UrlUtilsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"http://:invalid,-1", "\"\",-1"})
+    @CsvSource({
+      "http://:invalid,-1",
+      "\"\",-1",
+      "tcp://host:notanumber,-1",
+      "www.example.com,-1",
+      "unknown-scheme://example.com,-1"
+    })
     void returnsMinusOneForMalformedOrNoSchemeOrEmpty(String url, int expectedPort) {
       int port = UrlUtils.getPortFromURL(url);
       assertThat(port).isEqualTo(expectedPort);
+    }
+  }
+
+  @Nested
+  class TestGetPortFromURLAsList {
+    @Test
+    void returnsPortInListWhenValid() {
+      List<String> result = UrlUtils.getPortFromURLAsList("https://example.com:8080");
+      assertThat(result).containsExactly("8080");
+    }
+
+    @Test
+    void returnsEmptyListWhenInvalid() {
+      List<String> result = UrlUtils.getPortFromURLAsList("http://:invalid");
+      assertThat(result).isEmpty();
+    }
+  }
+
+  @Nested
+  class TestGetPortsFromUrlListAsSet {
+    @Test
+    void extractsUniquePortsFromIterable() {
+      List<Object> urls =
+          List.of(
+              "http://example.com",
+              "https://example.com:8443",
+              "tcp://10.0.0.1:5000",
+              "http://:invalid",
+              "http://example.com:80");
+
+      Set<String> result = UrlUtils.getPortsFromUrlListAsSet(urls);
+
+      assertThat(result).containsExactlyInAnyOrder("80", "8443", "5000");
+    }
+
+    @Test
+    void returnsEmptySetForEmptyIterable() {
+      Set<String> result = UrlUtils.getPortsFromUrlListAsSet(List.of());
+      assertThat(result).isEmpty();
     }
   }
 }

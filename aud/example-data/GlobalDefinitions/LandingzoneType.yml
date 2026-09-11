@@ -1,0 +1,49 @@
+
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: DNS HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Default Azure HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Default Azure Spoke
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Regional HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Google HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Google Spoke
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Amazon HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Amazon Spoke
+  scope: GlobalDefinitions

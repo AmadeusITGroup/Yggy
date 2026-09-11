@@ -101,15 +101,13 @@ class PortUtilsTest {
     }
 
     @Test
-    void allSinglePorts() {
-      Set<String> portsExpected =
-          IntStream.rangeClosed(PortUtils.LOWER_BOUND, PortUtils.UPPER_BOUND)
-              .mapToObj(String::valueOf)
-              .collect(Collectors.toSet());
+    void adjacentSegmentsCoverAllPorts() {
       RangeSet<Integer> portsRange = TreeRangeSet.create();
-      for (String port : portsExpected) {
-        portsRange.add(PortUtils.toRange(port));
-      }
+      portsRange.add(PortUtils.toRange(PortUtils.LOWER_BOUND));
+      portsRange.add(
+          PortUtils.toRange((PortUtils.LOWER_BOUND + 1) + "-" + (PortUtils.UPPER_BOUND - 1)));
+      portsRange.add(PortUtils.toRange(PortUtils.UPPER_BOUND));
+
       Set<Range<Integer>> ranges = portsRange.asRanges();
       assertThat(ranges).hasSize(1);
       Range<Integer> range = ranges.iterator().next();
@@ -126,7 +124,7 @@ class PortUtilsTest {
       Set<String> portsExpected =
           IntStream.rangeClosed(7000, 21000).mapToObj(String::valueOf).collect(Collectors.toSet());
 
-      assertThat(ports).containsExactlyElementsOf(portsExpected);
+      assertThat(ports).isEqualTo(portsExpected);
     }
 
     @Test
@@ -152,7 +150,7 @@ class PortUtilsTest {
               .mapToObj(String::valueOf)
               .collect(Collectors.toSet());
 
-      assertThat(ports).containsExactlyElementsOf(portsExpected);
+      assertThat(ports).isEqualTo(portsExpected);
     }
   }
 

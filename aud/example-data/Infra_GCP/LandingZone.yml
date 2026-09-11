@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: GCP HUB for us-central1
+  labels:
+    infrastructure-environment: dev
+  name: gcp-us-central1-hub-net
+  providerSpecific: "{\r\n  \"project\": \"gcp-us-central1-hub\",\r\n  \"network\": \"net\"\r\n}"
+  scope: Infra_GCP
+spec:
+  cidrs:
+  - 172.16.0.0/16
+  landingzonetype: Google HUB
+  region: us-central1
+  target: gcp-us-central1-hub
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: GCP SPOKE - Landing Zone 3 (App-1 + App-2) for us-central1
+  labels:
+    infrastructure-environment: dev
+  name: gcp-us-central1-lz3-net
+  providerSpecific: "{\r\n  \"project\": \"gcp-us-central1-lz3\",\r\n  \"network\": \"net\"\r\n}"
+  scope: Infra_GCP
+spec:
+  cidrs:
+  - 172.23.0.0/16
+  landingzonetype: Google Spoke
+  region: us-central1
+  target: gcp-us-central1-lz3

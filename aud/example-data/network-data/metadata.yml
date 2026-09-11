@@ -1,0 +1,66 @@
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: Application-1_1.0.1
+  scope: Application-1
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: Application-2_1.0.1
+  scope: Application-2
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: GlobalDefinitions_1.0.1
+  scope: GlobalDefinitions
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: Infra_Azure_1.0.1
+  scope: Infra_Azure
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: Infra_GCP_1.0.1
+  scope: Infra_GCP
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: Openshift_1.0.1
+  scope: Openshift
+spec:
+  scope_version: 1.0.1
+  network_version: 1.0.1
+  version_datetime: 2026-09-09T15:46:25Z
+

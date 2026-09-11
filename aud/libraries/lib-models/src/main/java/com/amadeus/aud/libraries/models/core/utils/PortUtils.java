@@ -7,7 +7,6 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import jakarta.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ public final class PortUtils {
   public static final String ALL = "1-65535";
   public static final String ALL_WILDCARD = "*";
   public static final List<String> AZURE_PASSTHRU_PORTS =
-      Arrays.asList("1-1023", "1024-49151", "49152-65535");
+      List.of("1-1023", "1024-49151", "49152-65535");
 
   public static final List<String> ALL_LIST;
   public static final Range<Integer> ALL_RANGE;

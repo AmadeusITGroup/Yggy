@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: Repository of Global and common top level Network objects
+  name: Governance
+  scope: Governance
+spec:
+  roles:
+  - Application
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: Repository of Global and common top level Network objects
+  name: GlobalDefinitions
+  scope: Governance
+spec:
+  roles:
+  - Application
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: ''
+  name: Infra_Azure
+  scope: Governance
+spec:
+  roles:
+  - Network
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: ''
+  name: Infra_GCP
+  scope: Governance
+spec:
+  roles:
+  - Network
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: ''
+  name: Network_Internet
+  scope: Governance
+spec:
+  roles:
+  - Network
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: scope for the shared Openshift hosting platform
+  name: Openshift
+  scope: Governance
+spec:
+  roles:
+  - Application
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: scope for the Application-1
+  name: Application-1
+  scope: Governance
+spec:
+  roles:
+  - Application
+---
+apiVersion: v1
+kind: Scope
+metadata:
+  comment: scope for the Application-2
+  name: Application-2
+  scope: Governance
+spec:
+  roles:
+  - Application

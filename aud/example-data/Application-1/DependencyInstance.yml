@@ -1,0 +1,120 @@
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz1-net
+  name: Backend API TST LZ1 to Storage Account TST LZ1
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST LZ1
+  componentInstanceLandingZone: azure-west-europe-lz1-net
+  dependency: Backend API to Storage Account
+  targetComponentInstance: Storage Account TST LZ1
+  targetComponentInstanceLandingZone: azure-west-europe-lz1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz1-net
+  name: Frontend UI TST LZ1 to Backend API TST LZ1
+  scope: Application-1
+spec:
+  componentInstance: Frontend UI TST LZ1
+  componentInstanceLandingZone: azure-west-europe-lz1-net
+  dependency: Frontend UI to Backend API
+  targetComponentInstance: Backend API TST LZ1
+  targetComponentInstanceLandingZone: azure-west-europe-lz1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz1-net
+  name: Backend API Application-1 TST LZ1 to Backend Service API Application-2 TST LZ1
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST LZ1
+  componentInstanceLandingZone: azure-west-europe-lz1-net
+  dependency: Backend API Application-1 to Backend Service API Application-2
+  targetComponentInstance: Backend Service API TST LZ1
+  targetComponentInstanceLandingZone: azure-west-europe-lz1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz2-net
+  name: Backend API TST LZ2 to Storage Account TST LZ2
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST LZ2
+  componentInstanceLandingZone: azure-west-europe-lz2-net
+  dependency: Backend API to Storage Account
+  targetComponentInstance: Storage Account TST LZ2
+  targetComponentInstanceLandingZone: azure-west-europe-lz2-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz2-net
+  name: Frontend UI TST LZ2 to Backend API TST LZ2
+  scope: Application-1
+spec:
+  componentInstance: Frontend UI TST LZ2
+  componentInstanceLandingZone: azure-west-europe-lz2-net
+  dependency: Frontend UI to Backend API
+  targetComponentInstance: Backend API TST LZ2
+  targetComponentInstanceLandingZone: azure-west-europe-lz2-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: gcp-us-central1-lz3-net
+  name: Backend API TST LZ3 to Storage Account TST LZ3
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST LZ3
+  componentInstanceLandingZone: gcp-us-central1-lz3-net
+  dependency: Backend API to Storage Account
+  targetComponentInstance: Storage Account TST LZ3
+  targetComponentInstanceLandingZone: gcp-us-central1-lz3-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: gcp-us-central1-lz3-net
+  name: Frontend UI TST LZ3 to Backend API TST LZ3
+  scope: Application-1
+spec:
+  componentInstance: Frontend UI TST LZ3
+  componentInstanceLandingZone: gcp-us-central1-lz3-net
+  dependency: Frontend UI to Backend API
+  targetComponentInstance: Backend API TST LZ3
+  targetComponentInstanceLandingZone: gcp-us-central1-lz3-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: gcp-us-central1-lz3-net
+  name: Backend API Application-1 TST LZ3 to Backend Service API Application-2 TST LZ3
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST LZ3
+  componentInstanceLandingZone: gcp-us-central1-lz3-net
+  dependency: Backend API Application-1 to Backend Service API Application-2
+  targetComponentInstance: Backend Service API TST LZ3
+  targetComponentInstanceLandingZone: gcp-us-central1-lz3-net
+  targetService: https

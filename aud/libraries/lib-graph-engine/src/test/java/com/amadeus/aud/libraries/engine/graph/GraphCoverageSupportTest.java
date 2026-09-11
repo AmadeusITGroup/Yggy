@@ -116,8 +116,8 @@ class GraphCoverageSupportTest {
       assertThat(stats.scopeNbNode()).containsEntry("scope-a", 2L);
 
       entity.preUpdate();
-      assertThat(entity.getStatisticsScopeNbLink()).isEqualTo(scopeLinks);
-      assertThat(entity.getStatisticsScopeNbNode()).isEqualTo(scopeNodes);
+      assertThat(entity.getStatisticsScopeNbLink()).containsExactlyInAnyOrderEntriesOf(scopeLinks);
+      assertThat(entity.getStatisticsScopeNbNode()).containsExactlyInAnyOrderEntriesOf(scopeNodes);
     }
 
     @Test
@@ -138,7 +138,7 @@ class GraphCoverageSupportTest {
       GraphEntity entity = new GraphEntity();
       entity.computeAndApplyStatistics(builder.build(), version);
 
-      assertThat(entity.getStatisticsGlobalLinksCount()).isEqualTo(1);
+      assertThat(entity.getStatisticsGlobalLinksCount()).isOne();
       assertThat(entity.getStatisticsGlobalNodesCount()).isEqualTo(2);
       assertThat(entity.getStatisticsScopeNbNode())
           .containsEntry("scope-a", 1L)

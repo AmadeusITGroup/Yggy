@@ -12,6 +12,7 @@
   <inceptionYear>2024</inceptionYear>
 
   <modules>
+    <module>service-azure-nsg-http</module>
     <module>service-http-apis</module>
     <module>service-http-connectivity-engine</module>
   </modules>

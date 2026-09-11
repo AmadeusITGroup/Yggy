@@ -32,7 +32,6 @@ public class AutomaticTemplateInstance extends BaseInstance<V1ComponentInstance>
   @Column(length = 8192)
   private List<Set<String>> excludedFunctionalTypes;
 
-  @SuppressWarnings("this-escape")
   public AutomaticTemplateInstance(V1ComponentInstance componentInstance) {
     super(
         componentInstance,

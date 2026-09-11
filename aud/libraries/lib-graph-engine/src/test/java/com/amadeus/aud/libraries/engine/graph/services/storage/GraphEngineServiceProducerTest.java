@@ -1,7 +1,6 @@
 package com.amadeus.aud.libraries.engine.graph.services.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +24,7 @@ class GraphEngineServiceProducerTest {
   @Test
   void produceGraphEngineServiceReturnsInMemoryWhenTypeIsInMemory() {
     GraphEngineServiceProducer sut = newProducer("inmemory");
+    stubAvailable(inMemoryGraphEngineService, inMemoryGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -35,9 +35,7 @@ class GraphEngineServiceProducerTest {
   @Test
   void produceGraphEngineServiceReturnsRemoteWhenTypeIsRemote() {
     GraphEngineServiceProducer sut = newProducer("  REMOTE  ");
-    when(remoteGraphEngineService.isUnsatisfied()).thenReturn(false);
-    when(remoteGraphEngineService.isAmbiguous()).thenReturn(false);
-    when(remoteGraphEngineService.get()).thenReturn(remoteGraphEngine);
+    stubAvailable(remoteGraphEngineService, remoteGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -49,6 +47,7 @@ class GraphEngineServiceProducerTest {
   void produceGraphEngineServiceFallsBackToInMemoryWhenRemoteIsUnsatisfied() {
     GraphEngineServiceProducer sut = newProducer("remote");
     when(remoteGraphEngineService.isUnsatisfied()).thenReturn(true);
+    stubAvailable(inMemoryGraphEngineService, inMemoryGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -61,6 +60,7 @@ class GraphEngineServiceProducerTest {
     GraphEngineServiceProducer sut = newProducer("remote");
     when(remoteGraphEngineService.isUnsatisfied()).thenReturn(false);
     when(remoteGraphEngineService.isAmbiguous()).thenReturn(true);
+    stubAvailable(inMemoryGraphEngineService, inMemoryGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -71,6 +71,7 @@ class GraphEngineServiceProducerTest {
   @Test
   void produceGraphEngineServiceReturnsPostgresWhenTypeIsPostgres() {
     GraphEngineServiceProducer sut = newProducer(" postgres ");
+    stubAvailable(postgresGraphEngineService, postgresGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -81,6 +82,7 @@ class GraphEngineServiceProducerTest {
   @Test
   void produceGraphEngineServiceFallsBackToInMemoryWhenTypeIsUnknown() {
     GraphEngineServiceProducer sut = newProducer("unknown");
+    stubAvailable(inMemoryGraphEngineService, inMemoryGraphEngine);
 
     GraphEngineService actual = sut.produceGraphEngineService();
 
@@ -90,16 +92,17 @@ class GraphEngineServiceProducerTest {
 
   private GraphEngineServiceProducer newProducer(String graphDatabaseType) {
     GraphEngineServiceProducer producer = new GraphEngineServiceProducer();
-    lenient().when(inMemoryGraphEngineService.isUnsatisfied()).thenReturn(false);
-    lenient().when(inMemoryGraphEngineService.isAmbiguous()).thenReturn(false);
-    lenient().when(inMemoryGraphEngineService.get()).thenReturn(inMemoryGraphEngine);
-    lenient().when(postgresGraphEngineService.isUnsatisfied()).thenReturn(false);
-    lenient().when(postgresGraphEngineService.isAmbiguous()).thenReturn(false);
-    lenient().when(postgresGraphEngineService.get()).thenReturn(postgresGraphEngine);
     producer.inMemoryGraphEngineService = inMemoryGraphEngineService;
     producer.postgresGraphEngineService = postgresGraphEngineService;
     producer.remoteGraphEngineService = remoteGraphEngineService;
     producer.graphDatabaseType = graphDatabaseType;
     return producer;
+  }
+
+  private void stubAvailable(
+      Instance<GraphEngineService> serviceInstance, GraphEngineService graphEngineService) {
+    when(serviceInstance.isUnsatisfied()).thenReturn(false);
+    when(serviceInstance.isAmbiguous()).thenReturn(false);
+    when(serviceInstance.get()).thenReturn(graphEngineService);
   }
 }

@@ -12,20 +12,30 @@
 /* ---------- No tab bar on the landing page ---------- */
 
 /* The hero and its calls to action are the navigation here, so the strip of tabs
-   under the header is suppressed — but it has to be *hidden*, not removed.
-   Material's instant navigation swaps a fixed list of components between the
-   current and the incoming document, and each swap is guarded on the component
-   existing in BOTH. If the landing page omitted [data-md-component=tabs], there
-   would be nothing to swap into, and the tab bar would stay missing after an
-   in-place navigation away from the home page until a full reload. Keeping the
-   element present and hiding it also keeps the header markup identical on every
-   page, so nothing else about the swap can drift.
+   under the header is suppressed on this page only.
 
-   `display: none` takes the links out of the focus order and the accessibility
-   tree as well, so nothing is lost versus omitting them.
+   Done in CSS rather than by overriding Material's `tabs` block in home.html so
+   that there is one code path for every page: the markup stays identical
+   everywhere and only the presentation differs. `display: none` also takes the
+   links out of the focus order and the accessibility tree, so nothing is lost
+   against omitting them from the template.
 
-   The hero only exists on the landing page, which makes it the page marker. On a
-   browser without :has() the tabs simply stay visible — degraded, not broken. */
+   The hero only exists on the landing page, which makes it the page marker, and
+   it sits inside [data-md-component=container] — which Material's instant
+   navigation always replaces — so this re-evaluates on every in-place
+   navigation.
+
+   Note for anyone re-enabling navigation.tabs.sticky: that moves the tab bar out
+   of the container and into the header element, which instant navigation only
+   swaps when the component is present in BOTH the outgoing and the incoming
+   document. A template override that dropped the element would then leave the
+   tab bar missing after navigating away from the home page until a full reload.
+   Hiding it, as here, is safe either way.
+
+   Without :has() support the tab bar stays visible on this page. Since it now
+   renders below the hero rather than up in the header, that fallback puts a
+   stray strip between the hero and the content — untidy, but every current
+   browser engine supports :has(). */
 body:has(.yggy-hero) .md-tabs {
   display: none;
 }

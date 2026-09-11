@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ApplicationPhase
+metadata:
+  scope: GlobalDefinitions
+  name: PRD
+  comment: Production
+spec:
+  macroPhase: PRD
+  isCustomerFacing: true

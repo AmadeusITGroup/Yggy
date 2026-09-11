@@ -1,0 +1,100 @@
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall transit zone
+  landingzone: gcp-us-central1-hub-net
+  name: fw_transit
+  scope: Infra_GCP
+spec:
+  zoneType: cri
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall management zone
+  landingzone: gcp-us-central1-hub-net
+  name: fw_mgmt
+  scope: Infra_GCP
+spec:
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: DNS Server management zone
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_dns
+  scope: Infra_GCP
+spec:
+  zoneType: mgmt
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Jump Server management zone
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_jump
+  scope: Infra_GCP
+spec:
+  zoneType: mgmt
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Active Directory management zone
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_ad
+  scope: Infra_GCP
+spec:
+  zoneType: mgmt
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: DMZ security zone
+  landingzone: gcp-us-central1-lz3-net
+  name: dmz_lz3
+  scope: Infra_GCP
+spec:
+  zoneType: dmz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Application zone
+  landingzone: gcp-us-central1-lz3-net
+  name: app_lz3
+  scope: Infra_GCP
+spec:
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: App storage zone
+  landingzone: gcp-us-central1-lz3-net
+  name: app_storage_lz3
+  scope: Infra_GCP
+spec:
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Data Stores zone
+  landingzone: gcp-us-central1-lz3-net
+  name: data_lz3
+  scope: Infra_GCP
+spec:
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Cardholder Data zone
+  landingzone: gcp-us-central1-lz3-net
+  name: cde_lz3
+  scope: Infra_GCP
+spec:
+  zoneType: cde

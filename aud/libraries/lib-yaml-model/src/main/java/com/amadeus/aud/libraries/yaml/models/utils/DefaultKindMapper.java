@@ -5,6 +5,7 @@ import com.amadeus.aud.libraries.yaml.models.V1ApplicationPhase;
 import com.amadeus.aud.libraries.yaml.models.V1Base;
 import com.amadeus.aud.libraries.yaml.models.V1BlackListedCIDR;
 import com.amadeus.aud.libraries.yaml.models.V1BlackListedURL;
+import com.amadeus.aud.libraries.yaml.models.V1Blacklist;
 import com.amadeus.aud.libraries.yaml.models.V1BlockedPort;
 import com.amadeus.aud.libraries.yaml.models.V1Component;
 import com.amadeus.aud.libraries.yaml.models.V1ComponentInstance;
@@ -50,6 +51,7 @@ public final class DefaultKindMapper implements KindMapper {
   static {
     kindToClassMap.put("ApplicationID", V1ApplicationID.class);
     kindToClassMap.put("ApplicationPhase", V1ApplicationPhase.class);
+    kindToClassMap.put("Blacklist", V1Blacklist.class);
     kindToClassMap.put("BlackListedCIDR", V1BlackListedCIDR.class);
     kindToClassMap.put("BlackListedURL", V1BlackListedURL.class);
     kindToClassMap.put("BlockedPort", V1BlockedPort.class);

@@ -14,13 +14,23 @@
 
   <modules>
     <module>lib-aud-service</module>
-    <module>lib-azure-nsg</module>
+    <module>lib-azure-nsg-ports</module>
+    <module>lib-azure-nsg-service</module>
     <module>lib-backend-apis</module>
     <module>lib-common</module>
     <module>lib-data-engine</module>
     <module>lib-graph-engine</module>
     <module>lib-graphql</module>
+    <module>lib-graphql-common</module>
     <module>lib-models</module>
     <module>lib-yaml-model</module>
   </modules>
+
+  <properties>
+    <!--
+      Every module below is a support library: none configures the
+      quarkus-maven-plugin `build` goal, and none is meant to be run.
+    -->
+    <quarkus.warnIfBuildGoalMissing>false</quarkus.warnIfBuildGoalMissing>
+  </properties>
 </project>

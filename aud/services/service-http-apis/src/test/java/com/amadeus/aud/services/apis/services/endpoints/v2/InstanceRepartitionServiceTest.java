@@ -20,13 +20,14 @@ import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 @ExtendWith(MockitoExtension.class)
 class InstanceRepartitionServiceTest {
 
@@ -41,10 +42,11 @@ class InstanceRepartitionServiceTest {
   @Test
   void throwsNotFoundExceptionWhenEntityNotFound() {
     Version version = mock(Version.class);
+    @SuppressWarnings("unchecked")
     ConcurrentRepository<Component> componentRepo = mock(ConcurrentRepository.class);
     when(componentRepo.getData()).thenReturn(new java.util.concurrent.ConcurrentHashMap<>());
-    when(version.getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
-        .thenReturn((ConcurrentRepository) componentRepo);
+    when(version.<Component>getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
+        .thenReturn(componentRepo);
 
     Throwable thrown =
         catchThrowable(
@@ -59,6 +61,7 @@ class InstanceRepartitionServiceTest {
   @Test
   void throwsBadRequestExceptionWhenUnsupportedObjectType() {
     Version version = mock(Version.class);
+    @SuppressWarnings("unchecked")
     ConcurrentRepository<Target> targetRepo = mock(ConcurrentRepository.class);
     Target target = mock(Target.class);
     java.util.concurrent.ConcurrentMap<String, Target> data =
@@ -66,8 +69,8 @@ class InstanceRepartitionServiceTest {
     data.put("target-1", target);
     when(targetRepo.getData()).thenReturn(data);
     when(targetRepo.get("target-1")).thenReturn(target);
-    when(version.getRepository(ObjectTypeListNamesEnum.TARGETS.getRepositoryKey()))
-        .thenReturn((ConcurrentRepository) targetRepo);
+    when(version.<Target>getRepository(ObjectTypeListNamesEnum.TARGETS.getRepositoryKey()))
+        .thenReturn(targetRepo);
 
     Throwable thrown =
         catchThrowable(
@@ -86,14 +89,15 @@ class InstanceRepartitionServiceTest {
     // Mock Component
     Component component = mock(Component.class);
 
+    @SuppressWarnings("unchecked")
     ConcurrentRepository<Component> componentRepo = mock(ConcurrentRepository.class);
     java.util.concurrent.ConcurrentMap<String, Component> data =
         new java.util.concurrent.ConcurrentHashMap<>();
     data.put("comp-1", component);
     when(componentRepo.getData()).thenReturn(data);
     when(componentRepo.get("comp-1")).thenReturn(component);
-    when(version.getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
-        .thenReturn((ConcurrentRepository) componentRepo);
+    when(version.<Component>getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
+        .thenReturn(componentRepo);
 
     // Mock ComponentInstances
     ComponentInstance ci1 = mock(ComponentInstance.class);
@@ -144,7 +148,7 @@ class InstanceRepartitionServiceTest {
     InstanceRepartition responseDirect =
         service.computeInstanceRepartition(
             version, ObjectTypeListNamesEnum.COMPONENTS, "comp-1", "direct");
-    assertThat(responseDirect.total()).isEqualTo(1);
+    assertThat(responseDirect.total()).isOne();
     assertThat(responseDirect.breakdowns().namespace())
         .containsExactly(new BreakdownCount("ns-1", 1));
 
@@ -152,7 +156,7 @@ class InstanceRepartitionServiceTest {
     InstanceRepartition responseIndirect =
         service.computeInstanceRepartition(
             version, ObjectTypeListNamesEnum.COMPONENTS, "comp-1", "indirect");
-    assertThat(responseIndirect.total()).isEqualTo(1);
+    assertThat(responseIndirect.total()).isOne();
     assertThat(responseIndirect.breakdowns().namespace())
         .containsExactly(new BreakdownCount("ns-2", 1));
   }
@@ -181,10 +185,11 @@ class InstanceRepartitionServiceTest {
     Version version = mock(Version.class);
     when(audService.getVersion("latest")).thenReturn(Uni.createFrom().item(version));
 
+    @SuppressWarnings("unchecked")
     ConcurrentRepository<Component> componentRepo = mock(ConcurrentRepository.class);
     when(componentRepo.getData()).thenReturn(new java.util.concurrent.ConcurrentHashMap<>());
-    when(version.getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
-        .thenReturn((ConcurrentRepository) componentRepo);
+    when(version.<Component>getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
+        .thenReturn(componentRepo);
 
     Uni<InstanceRepartition> uni =
         service.getInstanceRepartition(
@@ -192,5 +197,97 @@ class InstanceRepartitionServiceTest {
 
     Throwable thrown = catchThrowable(() -> uni.await().indefinitely());
     assertThat(thrown).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void returnsEmptyBreakdownsWhenComponentHasNullInstanceSets() {
+    Version version = mock(Version.class);
+    Component component = mock(Component.class);
+    stubComponent(version, "component", component);
+    when(component.getComponentInstances()).thenReturn(null);
+    when(component.getAllComponentInstances()).thenReturn(null);
+
+    InstanceRepartition response =
+        service.computeInstanceRepartition(
+            version, ObjectTypeListNamesEnum.COMPONENTS, "component", null);
+
+    assertThat(response.total()).isZero();
+    assertThat(response.breakdowns().continent()).isEmpty();
+    assertThat(response.breakdowns().landingZone()).isEmpty();
+    assertThat(response.breakdowns().macrophase()).isEmpty();
+    assertThat(response.breakdowns().namespace()).isEmpty();
+    assertThat(response.breakdowns().paas()).isEmpty();
+    assertThat(response.breakdowns().securityZone()).isEmpty();
+    assertThat(response.breakdowns().target()).isEmpty();
+  }
+
+  @Test
+  void returnsFallbackBreakdownsForMissingAndEmptyValues() {
+    Version version = mock(Version.class);
+    Component component = mock(Component.class);
+    stubComponent(version, "component", component);
+    ComponentInstance withoutLandingZone = mock(ComponentInstance.class);
+    ComponentInstance withEmptyLandingZone = mock(ComponentInstance.class);
+    ComponentInstance withTargetWithoutContinent = mock(ComponentInstance.class);
+    LandingZone emptyLandingZone = mock(LandingZone.class);
+    LandingZone landingZoneWithTarget = mock(LandingZone.class);
+    Target targetWithoutContinent = mock(Target.class);
+    when(withoutLandingZone.getLandingZone()).thenReturn(null);
+    when(withEmptyLandingZone.getLandingZone()).thenReturn(emptyLandingZone);
+    when(withTargetWithoutContinent.getLandingZone()).thenReturn(landingZoneWithTarget);
+    when(landingZoneWithTarget.getTarget()).thenReturn(targetWithoutContinent);
+    when(withEmptyLandingZone.getInternalZoneTypeNames(Direction.OUT)).thenReturn("");
+    when(withEmptyLandingZone.getNamespaceName()).thenReturn("");
+    Set<ComponentInstance> instances =
+        Set.of(withoutLandingZone, withEmptyLandingZone, withTargetWithoutContinent);
+    when(component.getComponentInstances()).thenReturn(instances);
+    when(component.getAllComponentInstances()).thenReturn(instances);
+
+    InstanceRepartition response =
+        service.computeInstanceRepartition(
+            version, ObjectTypeListNamesEnum.COMPONENTS, "component", " DIRECT ");
+
+    BreakdownCount fallback = new BreakdownCount("N/A", 3);
+    assertThat(response.total()).isEqualTo(3);
+    assertThat(response.breakdowns().continent()).containsExactly(fallback);
+    assertThat(response.breakdowns().landingZone()).containsExactly(fallback);
+    assertThat(response.breakdowns().macrophase()).containsExactly(fallback);
+    assertThat(response.breakdowns().namespace()).containsExactly(fallback);
+    assertThat(response.breakdowns().paas()).containsExactly(fallback);
+    assertThat(response.breakdowns().securityZone()).containsExactly(fallback);
+    assertThat(response.breakdowns().target()).containsExactly(fallback);
+  }
+
+  @Test
+  void throwsNotFoundWhenRepositoryOrItsDataIsMissing() {
+    Version versionWithoutRepository = mock(Version.class);
+    Version versionWithoutData = mock(Version.class);
+    @SuppressWarnings("unchecked")
+    ConcurrentRepository<Component> repository = mock(ConcurrentRepository.class);
+    when(versionWithoutData.<Component>getRepository("component")).thenReturn(repository);
+
+    Throwable missingRepository =
+        catchThrowable(
+            () ->
+                service.computeInstanceRepartition(
+                    versionWithoutRepository, ObjectTypeListNamesEnum.COMPONENTS, "component", ""));
+    Throwable missingData =
+        catchThrowable(
+            () ->
+                service.computeInstanceRepartition(
+                    versionWithoutData, ObjectTypeListNamesEnum.COMPONENTS, "component", "both"));
+
+    assertThat(missingRepository).isInstanceOf(NotFoundException.class);
+    assertThat(missingData).isInstanceOf(NotFoundException.class);
+  }
+
+  private static void stubComponent(Version version, String id, Component component) {
+    @SuppressWarnings("unchecked")
+    ConcurrentRepository<Component> repository = mock(ConcurrentRepository.class);
+    ConcurrentMap<String, Component> data = new ConcurrentHashMap<>();
+    data.put(id, component);
+    when(repository.getData()).thenReturn(data);
+    when(repository.get(id)).thenReturn(component);
+    when(version.<Component>getRepository("component")).thenReturn(repository);
   }
 }

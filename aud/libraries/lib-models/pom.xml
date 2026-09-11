@@ -18,8 +18,6 @@
     <unittests.instruction.coverage>0.12</unittests.instruction.coverage>
     <unittests.branch.coverage>0.11</unittests.branch.coverage>
 
-    <jackson-annotations.version>2.22</jackson-annotations.version>
-    <jackson-datatype.version>2.22.1</jackson-datatype.version>
     <java-uuid-generator.version>5.2.0</java-uuid-generator.version>
   </properties>
 
@@ -40,13 +38,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson-annotations.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>${jackson-datatype.version}</version>
     </dependency>
 
     <dependency>

@@ -14,15 +14,16 @@ import com.amadeus.aud.libraries.common.AudCommonConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheKeyGenerator;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
-import com.amadeus.aud.libraries.engine.graph.models.Edge;
-import com.amadeus.aud.libraries.engine.graph.models.Graph;
 import com.amadeus.aud.libraries.engine.graph.models.Link;
+import com.amadeus.aud.libraries.engine.graph.models.dto.Edge;
+import com.amadeus.aud.libraries.engine.graph.models.filters.EdgeDirection;
+import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
 import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
+import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.internals.Direction;
 import com.amadeus.aud.libraries.models.core.internals.Endpoint;
-import com.amadeus.aud.services.apis.services.endpoints.VersionGraphCacheService;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -32,8 +33,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -44,6 +47,7 @@ public class ConnectivityDetailService extends BaseService {
 
   private static final List<String> INITIAL_COLUMNS =
       List.of("name", "source", "target", "dependency_instance", "service", "pci");
+  private static final Duration DEFAULT_GRAPH_TIMEOUT = Duration.ofSeconds(30);
 
   private static final Comparator<Link> LINK_COMPARATOR =
       Comparator.comparing((Link link) -> link.dependencyInstance().getName())
@@ -52,16 +56,16 @@ public class ConnectivityDetailService extends BaseService {
           .thenComparing(link -> link.service().getName());
 
   private final AudService audService;
-  private final VersionGraphCacheService versionGraphCacheService;
+  private final GraphEngineService graphEngineService;
   private final AudCommonConfig audCommonConfig;
 
   @Inject
   public ConnectivityDetailService(
       AudService audService,
-      VersionGraphCacheService versionGraphCacheService,
+      GraphEngineService graphEngineService,
       AudCommonConfig audCommonConfig) {
     this.audService = audService;
-    this.versionGraphCacheService = versionGraphCacheService;
+    this.graphEngineService = graphEngineService;
     this.audCommonConfig = audCommonConfig;
   }
 
@@ -185,11 +189,7 @@ public class ConnectivityDetailService extends BaseService {
   }
 
   private static ConnectivityDetailFilter resolveFilter(String objectType) {
-    ConnectivityDetailFilter filter = ConnectivityDetailFilter.fromObjectTypeUri(objectType);
-    if (filter == null) {
-      throw new BadRequestException("Unsupported connectivity object type: " + objectType);
-    }
-    return filter;
+    return ConnectivityDetailFilter.fromObjectTypeUri(objectType);
   }
 
   private ConnectivityFilterRequest resolveFilterRequest(
@@ -200,7 +200,7 @@ public class ConnectivityDetailService extends BaseService {
     validateDirection(filter, direction);
     String normalizedObjectId = normalizeObjectId(objectId);
     String filterValue = resolveFilterValue(version, filter, normalizedObjectId);
-    return new ConnectivityFilterRequest(filter, filterValue, direction);
+    return new ConnectivityFilterRequest(filter, normalizedObjectId, filterValue, direction);
   }
 
   private String resolveFilterValue(
@@ -279,16 +279,154 @@ public class ConnectivityDetailService extends BaseService {
 
   private List<Link> getFilteredLinks(
       Version version, ConnectivityFilterRequest filterRequest, boolean pciOnly) {
-    Graph graph = versionGraphCacheService.buildVersionGraph(version);
+    List<Edge> edges = getEdges(version, filterRequest);
 
     List<Link> filteredLinks = new ArrayList<>();
-    for (Edge edge : graph.getEdges().values()) {
-      Link link = edge.getLink();
-      if (link != null && filterRequest.matches(link) && (!pciOnly || isPci(link))) {
-        filteredLinks.add(link);
+    for (Edge dtoEdge : edges) {
+      ComponentInstance source =
+          version.getComponentInstancesRepository().get(dtoEdge.getSourceNodeId());
+      ComponentInstance destination =
+          version.getComponentInstancesRepository().get(dtoEdge.getTargetNodeId());
+      DependencyInstance depInstance =
+          version.getDependencyInstancesRepository().get(dtoEdge.getDependencyInstanceId());
+      Service service = version.getServicesRepository().get(dtoEdge.getServiceId());
+
+      if (source != null && destination != null && depInstance != null && service != null) {
+        if (filterRequest.matches(source, destination, depInstance, service)
+            && (!pciOnly || isPci(source, destination))) {
+          Link link = new Link(source, destination, depInstance, service);
+          filteredLinks.add(link);
+        }
       }
     }
     return filteredLinks;
+  }
+
+  private List<Edge> getEdges(Version version, ConnectivityFilterRequest filterRequest) {
+    String versionNumber = version.getVersionNumber();
+    EdgeDirection edgeDirection = mapToEdgeDirection(filterRequest.direction());
+    return switch (filterRequest.filterType()) {
+      case TARGET ->
+          graphEngineService.getAllEdgesByTargets(
+              versionNumber, List.of(filterRequest.filterValue()), edgeDirection);
+      case LANDING_ZONE ->
+          graphEngineService.getAllEdgesByLandingZones(
+              versionNumber, List.of(filterRequest.filterValue()), edgeDirection);
+      // Scope doesn't take into account the dependency instance's scope
+      // case SCOPE ->
+      //     graphEngineService.getAllEdgesByScope(versionNumber, filterRequest.filterValue());
+      case COMPONENT_INSTANCE -> getComponentInstanceEdges(versionNumber, filterRequest);
+      case MACRO_PHASE ->
+          getComponentAttributeEdges(
+              version,
+              filterRequest,
+              ConnectivityDetailService::macroPhaseName,
+              ConnectivityDetailService::macroPhaseName);
+      case COMPONENT ->
+          getComponentAttributeEdges(
+              version,
+              filterRequest,
+              ConnectivityDetailService::componentName,
+              ConnectivityDetailService::componentName);
+      case NAMESPACE ->
+          getComponentAttributeEdges(
+              version,
+              filterRequest,
+              ConnectivityDetailService::namespaceName,
+              ConnectivityDetailService::namespaceName);
+      case REGION ->
+          getComponentAttributeEdges(
+              version,
+              filterRequest,
+              ConnectivityDetailService::regionName,
+              ConnectivityDetailService::regionName);
+      case ZONE_TYPE ->
+          getComponentAttributeEdges(
+              version,
+              filterRequest,
+              ci -> zoneTypeName(ci, Direction.OUT),
+              ci -> zoneTypeName(ci, Direction.IN));
+      default ->
+          graphEngineService
+              .getGraphEdges(versionNumber, 0, Integer.MAX_VALUE, edgeDirection)
+              .await()
+              .atMost(DEFAULT_GRAPH_TIMEOUT);
+    };
+  }
+
+  private List<Edge> getComponentInstanceEdges(
+      String versionNumber, ConnectivityFilterRequest filterRequest) {
+    return switch (filterRequest.direction()) {
+      case OUT ->
+          graphEngineService.getAllEdgesByNodeIds(
+              versionNumber, List.of(filterRequest.objectId()), List.of());
+      case IN ->
+          graphEngineService.getAllEdgesByNodeIds(
+              versionNumber, List.of(), List.of(filterRequest.objectId()));
+      case BOTH -> {
+        List<Edge> outgoing =
+            graphEngineService.getAllEdgesByNodeIds(
+                versionNumber, List.of(filterRequest.objectId()), List.of());
+        List<Edge> incoming =
+            graphEngineService.getAllEdgesByNodeIds(
+                versionNumber, List.of(), List.of(filterRequest.objectId()));
+        Set<Edge> edges = new LinkedHashSet<>(outgoing);
+        edges.addAll(incoming);
+        yield new ArrayList<>(edges);
+      }
+    };
+  }
+
+  private List<Edge> getComponentAttributeEdges(
+      Version version,
+      ConnectivityFilterRequest filterRequest,
+      Function<ComponentInstance, String> sourceAttribute,
+      Function<ComponentInstance, String> destinationAttribute) {
+    String versionNumber = version.getVersionNumber();
+    String filterValue = filterRequest.filterValue();
+    return switch (filterRequest.direction()) {
+      case OUT ->
+          graphEngineService.getAllEdgesByNodeIds(
+              versionNumber, matchingNodeIds(version, sourceAttribute, filterValue), List.of());
+      case IN ->
+          graphEngineService.getAllEdgesByNodeIds(
+              versionNumber,
+              List.of(),
+              matchingNodeIds(version, destinationAttribute, filterValue));
+      case BOTH -> {
+        List<Edge> outgoing =
+            graphEngineService.getAllEdgesByNodeIds(
+                versionNumber, matchingNodeIds(version, sourceAttribute, filterValue), List.of());
+        List<Edge> incoming =
+            graphEngineService.getAllEdgesByNodeIds(
+                versionNumber,
+                List.of(),
+                matchingNodeIds(version, destinationAttribute, filterValue));
+        Set<Edge> edges = new LinkedHashSet<>(outgoing);
+        edges.addAll(incoming);
+        yield new ArrayList<>(edges);
+      }
+    };
+  }
+
+  private static List<String> matchingNodeIds(
+      Version version, Function<ComponentInstance, String> attribute, String filterValue) {
+    List<String> nodeIds = new ArrayList<>();
+    for (ComponentInstance componentInstance :
+        version.getComponentInstancesRepository().getData().values()) {
+      if (Objects.equals(attribute.apply(componentInstance), filterValue)) {
+        nodeIds.add(componentInstance.id());
+      }
+    }
+    return nodeIds;
+  }
+
+  private EdgeDirection mapToEdgeDirection(ConnectivityDetailDirection direction) {
+    return switch (direction) {
+      case OUT -> EdgeDirection.OUTBOUND;
+      case IN -> EdgeDirection.INBOUND;
+      case BOTH -> EdgeDirection.ANY;
+    };
   }
 
   private ConnectivityDetailItem toItem(Link link) {
@@ -300,7 +438,7 @@ public class ConnectivityDetailService extends BaseService {
             link.target(), subnetValues(link.target(), Direction.IN)),
         link.dependencyInstance(),
         link.service(),
-        isPci(link));
+        isPci(link.source(), link.target()));
   }
 
   private static List<String> subnetValues(
@@ -322,8 +460,8 @@ public class ConnectivityDetailService extends BaseService {
         .toList();
   }
 
-  private boolean isPci(Link link) {
-    return isPciSource(link.source()) || isPciTarget(link.target());
+  private boolean isPci(ComponentInstance source, ComponentInstance destination) {
+    return isPciSource(source) || isPciTarget(destination);
   }
 
   private boolean isPciSource(ComponentInstance componentInstance) {
@@ -418,7 +556,27 @@ public class ConnectivityDetailService extends BaseService {
     if (componentInstance == null) {
       return null;
     }
-    return componentInstance.getInternalZoneTypeNames(direction);
+    if (componentInstance.getZoneType() != null) {
+      return componentInstance.getZoneType().getName();
+    }
+    if (direction == Direction.OUT) {
+      if (componentInstance.getOutZoneInstance() != null) {
+        return componentInstance.getOutZoneInstance().getZoneTypeName();
+      }
+      if (componentInstance.getOutSubnetInstance() != null
+          && componentInstance.getOutSubnetInstance().getZoneInstance() != null) {
+        return componentInstance.getOutSubnetInstance().getZoneInstance().getZoneTypeName();
+      }
+    } else {
+      if (componentInstance.getInZoneInstance() != null) {
+        return componentInstance.getInZoneInstance().getZoneTypeName();
+      }
+      if (componentInstance.getInSubnetInstance() != null
+          && componentInstance.getInSubnetInstance().getZoneInstance() != null) {
+        return componentInstance.getInSubnetInstance().getZoneInstance().getZoneTypeName();
+      }
+    }
+    return null;
   }
 
   private static @Nullable String inZoneInstanceId(@Nullable ComponentInstance componentInstance) {
@@ -453,6 +611,7 @@ public class ConnectivityDetailService extends BaseService {
 
   private record ConnectivityFilterRequest(
       ConnectivityDetailFilter filterType,
+      String objectId,
       String filterValue,
       ConnectivityDetailDirection direction) {
 
@@ -465,38 +624,30 @@ public class ConnectivityDetailService extends BaseService {
       };
     }
 
-    private boolean matches(Link link) {
+    private boolean matches(
+        ComponentInstance source,
+        ComponentInstance destination,
+        DependencyInstance depInstance,
+        Service service) {
       return switch (filterType) {
-        case TARGET -> matchesByDirection(targetName(link.source()), targetName(link.target()));
+        case TARGET -> matchesByDirection(targetName(source), targetName(destination));
         case LANDING_ZONE ->
-            matchesByDirection(landingZoneName(link.source()), landingZoneName(link.target()));
+            matchesByDirection(landingZoneName(source), landingZoneName(destination));
         case SCOPE ->
-            Objects.equals(scopeName(link.source()), filterValue)
-                || Objects.equals(scopeName(link.target()), filterValue)
-                || Objects.equals(scopeName(link.dependencyInstance()), filterValue);
-        case SERVICE -> Objects.equals(link.service().id(), filterValue);
-        case DEPENDENCY ->
-            Objects.equals(link.dependencyInstance().getDependencyName(), filterValue);
-        case DEPENDENCY_INSTANCE ->
-            Objects.equals(link.dependencyInstance().getName(), filterValue);
-        case COMPONENT_INSTANCE ->
-            matchesByDirection(link.source().getName(), link.target().getName());
-        case MACRO_PHASE ->
-            matchesByDirection(macroPhaseName(link.source()), macroPhaseName(link.target()));
-        case COMPONENT ->
-            matchesByDirection(componentName(link.source()), componentName(link.target()));
-        case NAMESPACE ->
-            matchesByDirection(namespaceName(link.source()), namespaceName(link.target()));
-        case REGION -> matchesByDirection(regionName(link.source()), regionName(link.target()));
+            Objects.equals(scopeName(source), filterValue)
+                || Objects.equals(scopeName(destination), filterValue)
+                || Objects.equals(scopeName(depInstance), filterValue);
+        case SERVICE -> Objects.equals(service.id(), filterValue);
+        case DEPENDENCY -> Objects.equals(depInstance.getDependencyName(), filterValue);
+        case DEPENDENCY_INSTANCE -> Objects.equals(depInstance.getName(), filterValue);
+        case COMPONENT_INSTANCE -> matchesByDirection(source.getName(), destination.getName());
+        case MACRO_PHASE -> matchesByDirection(macroPhaseName(source), macroPhaseName(destination));
+        case COMPONENT -> matchesByDirection(componentName(source), componentName(destination));
+        case NAMESPACE -> matchesByDirection(namespaceName(source), namespaceName(destination));
+        case REGION -> matchesByDirection(regionName(source), regionName(destination));
         case ZONE_TYPE ->
             matchesByDirection(
-                zoneTypeName(link.source(), Direction.OUT),
-                zoneTypeName(link.target(), Direction.IN));
-        case ZONE_INSTANCE ->
-            matchesByDirection(outZoneInstanceId(link.source()), inZoneInstanceId(link.target()));
-        case SUBNET_INSTANCE ->
-            matchesByDirection(
-                outSubnetInstanceId(link.source()), inSubnetInstanceId(link.target()));
+                zoneTypeName(source, Direction.OUT), zoneTypeName(destination, Direction.IN));
       };
     }
   }

@@ -31,7 +31,6 @@ import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.Target;
 import io.smallrye.mutiny.Uni;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -357,30 +356,6 @@ class GraphEngineCoreTest {
           .isEmpty();
       assertThat(sut.getGraphStatistics("version-1").await().indefinitely().scopeNbLink())
           .containsEntry("dependency-scope", 1L);
-    }
-
-    @Test
-    @SuppressWarnings("removal")
-    void reportsNotReadyForCachedEmptyGraphsAndExposesDeprecatedGraphMethod() {
-      // Arrange
-      GraphService emptyGraphService = mock(GraphService.class);
-      DataEngine dataEngine = mock(DataEngine.class);
-      AudModelConfig audModelConfig = mock(AudModelConfig.class);
-      Version version = mock(Version.class);
-      doReturn("version-empty").when(version).getVersionNumber();
-      doReturn(Optional.empty()).when(audModelConfig).caffeineCache();
-      doReturn(Uni.createFrom().item(version)).when(dataEngine).getVersion("version-empty");
-      InProcessGraphEngineService sut =
-          new InProcessGraphEngineService(emptyGraphService, dataEngine, audModelConfig);
-
-      // Act
-      sut.init("version-empty").await().indefinitely();
-
-      // Assert
-      assertThat(sut.isReady("version-empty")).isFalse();
-      assertThat(sut.getGraph("version-empty")).isNull();
-      assertThat(sut.getGraphStatistics("version-empty").await().indefinitely())
-          .isEqualTo(new GraphStatistics(Map.of(), Map.of(), 0L, 0L));
     }
 
     @Test

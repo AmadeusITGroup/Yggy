@@ -22,10 +22,7 @@ import jakarta.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
-@Execution(ExecutionMode.SAME_THREAD)
 class ObjectByIdResourceTest {
 
   @Test
@@ -90,13 +87,7 @@ class ObjectByIdResourceTest {
         new InstanceRepartition(
             0,
             new InstanceBreakdowns(
-                java.util.List.of(),
-                java.util.List.of(),
-                java.util.List.of(),
-                java.util.List.of(),
-                java.util.List.of(),
-                java.util.List.of(),
-                java.util.List.of()));
+                List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of()));
     when(instanceRepartitionService.getInstanceRepartition(
             eq("v1"), eq(ObjectTypeListNamesEnum.COMPONENTS), eq("comp-1"), eq("both")))
         .thenReturn(Uni.createFrom().item(responseMock));

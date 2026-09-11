@@ -12,16 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-@Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("UrisService Tests")
 class UrisServiceTest {
 
@@ -36,7 +30,7 @@ class UrisServiceTest {
 
   @Test
   @DisplayName("should return URIs with correct structure and categories")
-  void testGetUrisReturnsFormattedUriList() throws Exception {
+  void getUrisReturnsFormattedUriList() throws Exception {
     UriItem uri1 =
         new UriItem(
             "Components",
@@ -86,7 +80,7 @@ class UrisServiceTest {
 
   @Test
   @DisplayName("should handle empty URI list gracefully")
-  void testGetUrisWithEmptyList() throws Exception {
+  void getUrisWithEmptyList() throws Exception {
     Response<List<UriItem>> mockResponse = new Response<>(List.of(), null);
 
     when(uriFromObjectType.getUris()).thenReturn(Uni.createFrom().item(mockResponse));

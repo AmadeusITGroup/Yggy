@@ -17,13 +17,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 /** Definition of ConnectionApprovalComponentSkip */
 @JsonPropertyOrder({V1ConnectionApprovalComponentSkip.JSON_PROPERTY_SPEC})
-@SuppressWarnings("this-escape")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @jakarta.annotation.Generated(
     value = "org.openapitools.codegen.languages.JavaClientCodegen",
@@ -31,12 +28,11 @@ import java.util.StringJoiner;
     comments = "Generator version: 7.16.0")
 public class V1ConnectionApprovalComponentSkip extends V1Base {
   public static final String JSON_PROPERTY_SPEC = "spec";
-  @jakarta.annotation.Nonnull private V1ConnectionApprovalComponentSkipSpec spec;
+  private V1ConnectionApprovalComponentSkipSpec spec;
 
   public V1ConnectionApprovalComponentSkip() {}
 
-  public V1ConnectionApprovalComponentSkip spec(
-      @jakarta.annotation.Nonnull V1ConnectionApprovalComponentSkipSpec spec) {
+  public V1ConnectionApprovalComponentSkip spec(V1ConnectionApprovalComponentSkipSpec spec) {
     this.spec = spec;
     return this;
   }
@@ -46,7 +42,6 @@ public class V1ConnectionApprovalComponentSkip extends V1Base {
    *
    * @return spec
    */
-  @jakarta.annotation.Nonnull
   @Valid
   @JsonProperty(value = JSON_PROPERTY_SPEC, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
@@ -56,26 +51,24 @@ public class V1ConnectionApprovalComponentSkip extends V1Base {
 
   @JsonProperty(value = JSON_PROPERTY_SPEC, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setSpec(@jakarta.annotation.Nonnull V1ConnectionApprovalComponentSkipSpec spec) {
+  public void setSpec(V1ConnectionApprovalComponentSkipSpec spec) {
     this.spec = spec;
   }
 
   @Override
-  public V1ConnectionApprovalComponentSkip apiVersion(
-      @jakarta.annotation.Nonnull String apiVersion) {
+  public V1ConnectionApprovalComponentSkip apiVersion(String apiVersion) {
     this.setApiVersion(apiVersion);
     return this;
   }
 
   @Override
-  public V1ConnectionApprovalComponentSkip kind(@jakarta.annotation.Nonnull String kind) {
+  public V1ConnectionApprovalComponentSkip kind(String kind) {
     this.setKind(kind);
     return this;
   }
 
   @Override
-  public V1ConnectionApprovalComponentSkip metadata(
-      @jakarta.annotation.Nonnull V1Metadata metadata) {
+  public V1ConnectionApprovalComponentSkip metadata(V1Metadata metadata) {
     this.setMetadata(metadata);
     return this;
   }
@@ -117,63 +110,5 @@ public class V1ConnectionApprovalComponentSkip extends V1Base {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
-  }
-
-  /**
-   * Convert the instance into URL query string.
-   *
-   * @return URL query string
-   */
-  public String toUrlQueryString() {
-    return toUrlQueryString(null);
-  }
-
-  /**
-   * Convert the instance into URL query string.
-   *
-   * @param prefix prefix of the query string
-   * @return URL query string
-   */
-  public String toUrlQueryString(@Nullable String prefix) {
-    String suffix = "";
-    if (prefix == null) {
-      // style=form, explode=true, e.g. /pet?name=cat&type=manx
-      prefix = "";
-    } else {
-      // deepObject style e.g. /pet?id[name]=cat&id[type]=manx
-      prefix = prefix + "[";
-      suffix = "]";
-    }
-
-    StringJoiner joiner = new StringJoiner("&");
-
-    // add `apiVersion` to the URL query string
-    if (getApiVersion() != null) {
-      joiner.add(
-          String.format(
-              Locale.ROOT,
-              "%sapiVersion%s=%s",
-              prefix,
-              suffix,
-              ApiClient.urlEncode(ApiClient.valueToString(getApiVersion()))));
-    }
-
-    // add `kind` to the URL query string
-    if (getKind() != null) {
-      joiner.add(
-          String.format(
-              Locale.ROOT,
-              "%skind%s=%s",
-              prefix,
-              suffix,
-              ApiClient.urlEncode(ApiClient.valueToString(getKind()))));
-    }
-
-    // add `metadata` to the URL query string
-    if (getMetadata() != null) {
-      joiner.add(getMetadata().toUrlQueryString(prefix + "metadata" + suffix));
-    }
-
-    return joiner.toString();
   }
 }

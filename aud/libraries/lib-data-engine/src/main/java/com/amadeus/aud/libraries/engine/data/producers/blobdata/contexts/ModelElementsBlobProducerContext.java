@@ -44,7 +44,7 @@ public record ModelElementsBlobProducerContext<T>(
         Set.of(),
         Boolean.FALSE,
         null,
-        maxWaitFromConfig(audScopesConfig));
+        audScopesConfig.maxLoadDuration());
   }
 
   public ModelElementsBlobProducerContext(
@@ -66,7 +66,7 @@ public record ModelElementsBlobProducerContext<T>(
         Set.of(),
         Boolean.FALSE,
         null,
-        maxWaitFromConfig(audScopesConfig));
+        audScopesConfig.maxLoadDuration());
   }
 
   public ModelElementsBlobProducerContext(
@@ -89,7 +89,7 @@ public record ModelElementsBlobProducerContext<T>(
         responses != null ? responses : Set.of(),
         dumpEnabled(audScopesConfig),
         dumpPath(audScopesConfig),
-        maxWaitFromConfig(audScopesConfig));
+        audScopesConfig.maxLoadDuration());
   }
 
   @Override
@@ -142,16 +142,12 @@ public record ModelElementsBlobProducerContext<T>(
     return maxWait;
   }
 
-  private static Boolean dumpEnabled(AudScopesConfig audScopesConfig) {
-    return Boolean.valueOf(audScopesConfig.blob().dump().enabled());
+  private static boolean dumpEnabled(AudScopesConfig audScopesConfig) {
+    return audScopesConfig.blob().dump().enabled();
   }
 
   private static Path dumpPath(AudScopesConfig audScopesConfig) {
     return Path.of(audScopesConfig.blob().dump().basePath().orElse("./"));
-  }
-
-  private static Duration maxWaitFromConfig(AudScopesConfig audScopesConfig) {
-    return Duration.ofSeconds(audScopesConfig.maxLoadDuration());
   }
 }
 

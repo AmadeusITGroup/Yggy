@@ -1,0 +1,120 @@
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall transit subnet
+  landingzone: gcp-us-central1-hub-net
+  name: fw_transit
+  scope: Infra_GCP
+spec:
+  cidr: 172.16.0.0/24
+  subnetType: Mixed
+  zoneInstance: fw_transit
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall management subnet
+  landingzone: gcp-us-central1-hub-net
+  name: fw_mgmt
+  scope: Infra_GCP
+spec:
+  cidr: 172.16.1.0/24
+  subnetType: Mixed
+  zoneInstance: fw_mgmt
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DNS Server subnet
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_dns
+  scope: Infra_GCP
+spec:
+  cidr: 172.16.10.0/24
+  subnetType: Management
+  zoneInstance: mgmt_dns
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Jump Server subnet
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_jump
+  scope: Infra_GCP
+spec:
+  cidr: 172.16.11.0/24
+  subnetType: Management
+  zoneInstance: mgmt_jump
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Active Directory subnet
+  landingzone: gcp-us-central1-hub-net
+  name: mgmt_ad
+  scope: Infra_GCP
+spec:
+  cidr: 172.16.12.0/24
+  subnetType: Management
+  zoneInstance: mgmt_ad
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet - App-1 Frontend UI
+  landingzone: gcp-us-central1-lz3-net
+  name: dmz_lz3
+  scope: Infra_GCP
+spec:
+  cidr: 172.23.0.0/24
+  subnetType: Mixed
+  zoneInstance: dmz_lz3
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application subnet - App-1 Backend API + App-2 Backend Service API
+  landingzone: gcp-us-central1-lz3-net
+  name: app_lz3
+  scope: Infra_GCP
+spec:
+  cidr: 172.23.10.0/24
+  subnetType: Application
+  zoneInstance: app_lz3
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: App storage subnet - App-1 Storage Account
+  landingzone: gcp-us-central1-lz3-net
+  name: app_storage_lz3
+  scope: Infra_GCP
+spec:
+  cidr: 172.23.11.0/24
+  subnetType: Storage
+  zoneInstance: app_storage_lz3
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Data Stores subnet - App-2 Database
+  landingzone: gcp-us-central1-lz3-net
+  name: data_lz3
+  scope: Infra_GCP
+spec:
+  cidr: 172.23.20.0/24
+  subnetType: Database
+  zoneInstance: data_lz3
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Cardholder Data subnet (reserved - PCI CDE)
+  landingzone: gcp-us-central1-lz3-net
+  name: cde_lz3
+  scope: Infra_GCP
+spec:
+  cidr: 172.23.30.0/24
+  subnetType: Cardholder Data
+  zoneInstance: cde_lz3

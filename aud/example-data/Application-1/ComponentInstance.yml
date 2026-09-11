@@ -1,0 +1,129 @@
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-lz1-net
+  name: Backend API TST LZ1
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Backend API
+  hostingComponent: Openshift LZ1
+  namespace: Backend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-lz1-net
+  name: Frontend UI TST LZ1
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Frontend UI
+  hostingComponent: Openshift LZ1
+  namespace: Frontend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz1-net
+  name: Storage Account TST LZ1
+  scope: Application-1
+  labels:
+    application: Application-1
+spec:
+  applicationPhase: TST
+  component: Storage Account
+  inSubnetInstance: app_storage_lz1
+  outSubnetInstance: app_storage_lz1
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-lz2-net
+  name: Backend API TST LZ2
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Backend API
+  hostingComponent: Openshift LZ2
+  namespace: Backend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-lz2-net
+  name: Frontend UI TST LZ2
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Frontend UI
+  hostingComponent: Openshift LZ2
+  namespace: Frontend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz2-net
+  name: Storage Account TST LZ2
+  scope: Application-1
+  labels:
+    application: Application-1
+spec:
+  applicationPhase: TST
+  component: Storage Account
+  inSubnetInstance: app_storage_lz2
+  outSubnetInstance: app_storage_lz2
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: gcp-us-central1-lz3-net
+  name: Backend API TST LZ3
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Backend API
+  hostingComponent: Openshift LZ3
+  namespace: Backend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: gcp-us-central1-lz3-net
+  name: Frontend UI TST LZ3
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Frontend UI
+  hostingComponent: Openshift LZ3
+  namespace: Frontend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: ''
+  landingzone: gcp-us-central1-lz3-net
+  name: Storage Account TST LZ3
+  scope: Application-1
+  labels:
+    application: Application-1
+spec:
+  applicationPhase: TST
+  component: Storage Account
+  inSubnetInstance: app_storage_lz3
+  outSubnetInstance: app_storage_lz3

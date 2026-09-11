@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-lz1-net
+  name: Backend Service API TST LZ1 to Database TST LZ1
+  scope: Application-2
+spec:
+  componentInstance: Backend Service API TST LZ1
+  componentInstanceLandingZone: azure-west-europe-lz1-net
+  dependency: Backend Service API to Database
+  targetComponentInstance: Database TST LZ1
+  targetComponentInstanceLandingZone: azure-west-europe-lz1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: gcp-us-central1-lz3-net
+  name: Backend Service API TST LZ3 to Database TST LZ3
+  scope: Application-2
+spec:
+  componentInstance: Backend Service API TST LZ3
+  componentInstanceLandingZone: gcp-us-central1-lz3-net
+  dependency: Backend Service API to Database
+  targetComponentInstance: Database TST LZ3
+  targetComponentInstanceLandingZone: gcp-us-central1-lz3-net
+  targetService: https

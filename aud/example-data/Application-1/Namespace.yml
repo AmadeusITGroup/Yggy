@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Backend API TST container instances
+  name: Backend-Application-1
+  scope: Application-1
+spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Frontend UI TST container instances
+  name: Frontend-Application-1
+  scope: Application-1
+spec: {}

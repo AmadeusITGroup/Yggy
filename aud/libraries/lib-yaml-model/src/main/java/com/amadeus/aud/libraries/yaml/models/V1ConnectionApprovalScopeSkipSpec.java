@@ -15,17 +15,14 @@ package com.amadeus.aud.libraries.yaml.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.annotation.Nullable;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.StringJoiner;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /** ConnectionApprovalScopeSkip specification. Filled by Security */
 @JsonPropertyOrder({
   V1ConnectionApprovalScopeSkipSpec.JSON_PROPERTY_SOURCE,
   V1ConnectionApprovalScopeSkipSpec.JSON_PROPERTY_DESTINATION
 })
-@SuppressWarnings("this-escape")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @jakarta.annotation.Generated(
     value = "org.openapitools.codegen.languages.JavaClientCodegen",
@@ -33,14 +30,14 @@ import java.util.StringJoiner;
     comments = "Generator version: 7.16.0")
 public class V1ConnectionApprovalScopeSkipSpec {
   public static final String JSON_PROPERTY_SOURCE = "source";
-  @jakarta.annotation.Nonnull private Boolean source = false;
+  private Boolean source = false;
 
   public static final String JSON_PROPERTY_DESTINATION = "destination";
-  @jakarta.annotation.Nonnull private Boolean destination = false;
+  private Boolean destination = false;
 
   public V1ConnectionApprovalScopeSkipSpec() {}
 
-  public V1ConnectionApprovalScopeSkipSpec source(@jakarta.annotation.Nonnull Boolean source) {
+  public V1ConnectionApprovalScopeSkipSpec source(Boolean source) {
     this.source = source;
     return this;
   }
@@ -50,8 +47,8 @@ public class V1ConnectionApprovalScopeSkipSpec {
    *
    * @return source
    */
-  @jakarta.annotation.Nonnull
   @JsonProperty(value = JSON_PROPERTY_SOURCE, required = true)
+  @Schema(required = true, description = "Skip if source.")
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
   public Boolean getSource() {
     return source;
@@ -59,12 +56,11 @@ public class V1ConnectionApprovalScopeSkipSpec {
 
   @JsonProperty(value = JSON_PROPERTY_SOURCE, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setSource(@jakarta.annotation.Nonnull Boolean source) {
+  public void setSource(Boolean source) {
     this.source = source;
   }
 
-  public V1ConnectionApprovalScopeSkipSpec destination(
-      @jakarta.annotation.Nonnull Boolean destination) {
+  public V1ConnectionApprovalScopeSkipSpec destination(Boolean destination) {
     this.destination = destination;
     return this;
   }
@@ -74,8 +70,8 @@ public class V1ConnectionApprovalScopeSkipSpec {
    *
    * @return destination
    */
-  @jakarta.annotation.Nonnull
   @JsonProperty(value = JSON_PROPERTY_DESTINATION, required = true)
+  @Schema(required = true, description = "Skip if destination.")
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
   public Boolean getDestination() {
     return destination;
@@ -83,7 +79,7 @@ public class V1ConnectionApprovalScopeSkipSpec {
 
   @JsonProperty(value = JSON_PROPERTY_DESTINATION, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setDestination(@jakarta.annotation.Nonnull Boolean destination) {
+  public void setDestination(Boolean destination) {
     this.destination = destination;
   }
 
@@ -125,58 +121,5 @@ public class V1ConnectionApprovalScopeSkipSpec {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
-  }
-
-  /**
-   * Convert the instance into URL query string.
-   *
-   * @return URL query string
-   */
-  public String toUrlQueryString() {
-    return toUrlQueryString(null);
-  }
-
-  /**
-   * Convert the instance into URL query string.
-   *
-   * @param prefix prefix of the query string
-   * @return URL query string
-   */
-  public String toUrlQueryString(@Nullable String prefix) {
-    String suffix = "";
-    if (prefix == null) {
-      // style=form, explode=true, e.g. /pet?name=cat&type=manx
-      prefix = "";
-    } else {
-      // deepObject style e.g. /pet?id[name]=cat&id[type]=manx
-      prefix = prefix + "[";
-      suffix = "]";
-    }
-
-    StringJoiner joiner = new StringJoiner("&");
-
-    // add `source` to the URL query string
-    if (getSource() != null) {
-      joiner.add(
-          String.format(
-              Locale.ROOT,
-              "%ssource%s=%s",
-              prefix,
-              suffix,
-              ApiClient.urlEncode(ApiClient.valueToString(getSource()))));
-    }
-
-    // add `destination` to the URL query string
-    if (getDestination() != null) {
-      joiner.add(
-          String.format(
-              Locale.ROOT,
-              "%sdestination%s=%s",
-              prefix,
-              suffix,
-              ApiClient.urlEncode(ApiClient.valueToString(getDestination()))));
-    }
-
-    return joiner.toString();
   }
 }

@@ -31,11 +31,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("VersionService Tests")
 class VersionServiceTest {
@@ -56,20 +53,22 @@ class VersionServiceTest {
         new VersionService(
             audService, audApiConfig, versionCacheProducer, graphEngineService, audVersionsService);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
+  }
 
+  private void stubVersionMetadata() {
     when(audApiConfig.version()).thenReturn("v1");
     when(audApiConfig.platform()).thenReturn("yggy");
-    when(uriInfo.getAbsolutePath()).thenReturn(new URI("http://localhost:8080/api/versions"));
   }
 
   @Test
   @DisplayName("should return latest version with all fields populated")
-  void testGetLatestVersionReturnsCompleteVersion() {
+  void getLatestVersionReturnsCompleteVersion() {
+    stubVersionMetadata();
+
     com.amadeus.aud.libraries.engine.data.models.core.internals.Version internalVersion =
         mock(com.amadeus.aud.libraries.engine.data.models.core.internals.Version.class);
     when(internalVersion.getVersionNumber()).thenReturn("1.0.0");
@@ -90,7 +89,7 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should return null when no latest version is available")
-  void testGetLatestVersionReturnsNullWhenNoVersion() {
+  void getLatestVersionReturnsNullWhenNoVersion() {
     when(audService.getCurrentVersion())
         .thenReturn(
             Uni.createFrom()
@@ -103,7 +102,9 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should return Optional with version when available")
-  void testMaybeGetLatestVersionReturnsPresent() {
+  void maybeGetLatestVersionReturnsPresent() {
+    stubVersionMetadata();
+
     com.amadeus.aud.libraries.engine.data.models.core.internals.Version internalVersion =
         mock(com.amadeus.aud.libraries.engine.data.models.core.internals.Version.class);
     when(internalVersion.getVersionNumber()).thenReturn("2.0.0");
@@ -119,7 +120,7 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should return empty Optional when no latest version is available")
-  void testMaybeGetLatestVersionReturnsEmpty() {
+  void maybeGetLatestVersionReturnsEmpty() {
     when(audService.getCurrentVersion())
         .thenReturn(
             Uni.createFrom()
@@ -132,14 +133,15 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should get version by number and return correct response")
-  void testGetVersionByNumberReturnsVersion() throws Exception {
+  void getVersionByNumberReturnsVersion() throws Exception {
+    stubVersionMetadata();
+
     com.amadeus.aud.libraries.engine.data.models.core.internals.Version internalVersion =
         mock(com.amadeus.aud.libraries.engine.data.models.core.internals.Version.class);
     when(internalVersion.getVersionNumber()).thenReturn("1.5.0");
     when(internalVersion.getAudRequirementsRepository()).thenReturn(null);
-
     when(audService.getVersion()).thenReturn(Uni.createFrom().item(internalVersion));
-    when(audService.getVersion("1.5.0")).thenReturn(Uni.createFrom().item(internalVersion));
+    when(audService.getVersion()).thenReturn(Uni.createFrom().item(internalVersion));
 
     Response response =
         service
@@ -159,7 +161,9 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should return latest version as Uni")
-  void testGetLatestVersionUniReturnsVersion() {
+  void getLatestVersionUniReturnsVersion() {
+    stubVersionMetadata();
+
     com.amadeus.aud.libraries.engine.data.models.core.internals.Version internalVersion =
         mock(com.amadeus.aud.libraries.engine.data.models.core.internals.Version.class);
     when(internalVersion.getVersionNumber()).thenReturn("3.0.0");
@@ -175,7 +179,10 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should return loaded versions with correct structure")
-  void testGetLoadedVersionsReturnsVersionsResponse() throws Exception {
+  void getLoadedVersionsReturnsVersionsResponse() throws Exception {
+    when(audApiConfig.version()).thenReturn("v1");
+    when(uriInfo.getAbsolutePath()).thenReturn(new URI("http://localhost:8080/api/versions"));
+
     com.amadeus.aud.libraries.engine.data.models.core.internals.Version version1 =
         mock(com.amadeus.aud.libraries.engine.data.models.core.internals.Version.class);
     when(version1.getVersionNumber()).thenReturn("1.0.0");
@@ -212,7 +219,6 @@ class VersionServiceTest {
     @SuppressWarnings("unchecked")
     java.util.Map<String, Object> body = objectMapper.readValue(bodyBytes, java.util.Map.class);
 
-    assertThat(body).isNotNull();
     assertThat(body).containsEntry("api_version", "v1");
     assertThat(body.get("count")).isNotNull();
     @SuppressWarnings("unchecked")
@@ -222,15 +228,10 @@ class VersionServiceTest {
 
   @Test
   @DisplayName("should get all available versions from external service")
-  void testGetAllAvailableVersionsResponse() throws Exception {
-    SingleVersion version1 = mock(SingleVersion.class);
-    when(version1.version()).thenReturn("1.0.0");
-
-    SingleVersion version2 = mock(SingleVersion.class);
-    when(version2.version()).thenReturn("1.5.0");
-
-    SingleVersion version3 = mock(SingleVersion.class);
-    when(version3.version()).thenReturn("2.0.0");
+  void getAllAvailableVersionsResponse() throws Exception {
+    SingleVersion version1 = new SingleVersion("1.0.0", null, 0);
+    SingleVersion version2 = new SingleVersion("1.5.0", null, 0);
+    SingleVersion version3 = new SingleVersion("2.0.0", null, 0);
 
     when(audVersionsService.listAllVersions())
         .thenReturn(Uni.createFrom().item(List.of(version1, version2, version3)));

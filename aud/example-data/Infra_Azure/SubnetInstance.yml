@@ -1,0 +1,180 @@
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall transit subnet
+  landingzone: azure-west-europe-hub-net
+  name: fw_transit
+  scope: Infra_Azure
+spec:
+  cidr: 10.21.0.0/24
+  subnetType: Mixed
+  zoneInstance: fw_transit
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall management subnet
+  landingzone: azure-west-europe-hub-net
+  name: fw_mgmt
+  scope: Infra_Azure
+spec:
+  cidr: 10.21.1.0/24
+  subnetType: Mixed
+  zoneInstance: fw_mgmt
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DNS Server subnet
+  landingzone: azure-west-europe-hub-net
+  name: mgmt_dns
+  scope: Infra_Azure
+spec:
+  cidr: 10.21.10.0/24
+  subnetType: Management
+  zoneInstance: mgmt_dns
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Jump Server subnet
+  landingzone: azure-west-europe-hub-net
+  name: mgmt_jump
+  scope: Infra_Azure
+spec:
+  cidr: 10.21.11.0/24
+  subnetType: Management
+  zoneInstance: mgmt_jump
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Active Directory subnet
+  landingzone: azure-west-europe-hub-net
+  name: mgmt_ad
+  scope: Infra_Azure
+spec:
+  cidr: 10.21.12.0/24
+  subnetType: Management
+  zoneInstance: mgmt_ad
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet - App-1 Frontend UI
+  landingzone: azure-west-europe-lz1-net
+  name: dmz_lz1
+  scope: Infra_Azure
+spec:
+  cidr: 10.4.0.0/24
+  subnetType: Mixed
+  zoneInstance: dmz_lz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application subnet - App-1 Backend API + App-2 Backend Service API
+  landingzone: azure-west-europe-lz1-net
+  name: app_lz1
+  scope: Infra_Azure
+spec:
+  cidr: 10.4.10.0/24
+  subnetType: Application
+  zoneInstance: app_lz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: App storage subnet - App-1 Storage Account
+  landingzone: azure-west-europe-lz1-net
+  name: app_storage_lz1
+  scope: Infra_Azure
+spec:
+  cidr: 10.4.11.0/24
+  subnetType: Storage
+  zoneInstance: app_storage_lz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Data Stores subnet - App-2 Database
+  landingzone: azure-west-europe-lz1-net
+  name: data_lz1
+  scope: Infra_Azure
+spec:
+  cidr: 10.4.20.0/24
+  subnetType: Database
+  zoneInstance: data_lz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Cardholder Data subnet (reserved - PCI CDE)
+  landingzone: azure-west-europe-lz1-net
+  name: cde_lz1
+  scope: Infra_Azure
+spec:
+  cidr: 10.4.30.0/24
+  subnetType: Cardholder Data
+  zoneInstance: cde_lz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet - App-1 Frontend UI
+  landingzone: azure-west-europe-lz2-net
+  name: dmz_lz2
+  scope: Infra_Azure
+spec:
+  cidr: 10.23.0.0/24
+  subnetType: Mixed
+  zoneInstance: dmz_lz2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application subnet - App-1 Backend API
+  landingzone: azure-west-europe-lz2-net
+  name: app_lz2
+  scope: Infra_Azure
+spec:
+  cidr: 10.23.10.0/24
+  subnetType: Application
+  zoneInstance: app_lz2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: App storage subnet - App-1 Storage Account
+  landingzone: azure-west-europe-lz2-net
+  name: app_storage_lz2
+  scope: Infra_Azure
+spec:
+  cidr: 10.23.11.0/24
+  subnetType: Storage
+  zoneInstance: app_storage_lz2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Data Stores subnet (reserved)
+  landingzone: azure-west-europe-lz2-net
+  name: data_lz2
+  scope: Infra_Azure
+spec:
+  cidr: 10.23.20.0/24
+  subnetType: Database
+  zoneInstance: data_lz2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Cardholder Data subnet (reserved - PCI CDE)
+  landingzone: azure-west-europe-lz2-net
+  name: cde_lz2
+  scope: Infra_Azure
+spec:
+  cidr: 10.23.30.0/24
+  subnetType: Cardholder Data
+  zoneInstance: cde_lz2

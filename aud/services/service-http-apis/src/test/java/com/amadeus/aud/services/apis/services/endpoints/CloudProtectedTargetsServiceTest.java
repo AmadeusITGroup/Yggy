@@ -40,13 +40,10 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-@DisplayName("CloudProtectedTargetsService Tests")
 @Execution(ExecutionMode.SAME_THREAD)
+@DisplayName("CloudProtectedTargetsService Tests")
 class CloudProtectedTargetsServiceTest {
 
   @Mock private AudService audService;
@@ -61,8 +58,7 @@ class CloudProtectedTargetsServiceTest {
   void setUp() throws Exception {
     service = spy(new CloudProtectedTargetsService(audService, audApiConfig));
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    ObjectMapper objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
@@ -77,8 +73,7 @@ class CloudProtectedTargetsServiceTest {
   }
 
   private CloudProtectedTargetsResponse extractBody(Response response) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    ObjectMapper objectMapper = EndpointTestObjectMapper.get();
     byte[] bodyBytes = (byte[]) response.getEntity();
     return objectMapper.readValue(bodyBytes, CloudProtectedTargetsResponse.class);
   }
@@ -155,7 +150,7 @@ class CloudProtectedTargetsServiceTest {
 
       @SuppressWarnings("unchecked")
       Map<String, Object> entry = (Map<String, Object>) body.getCloudProtectedTargets().get(0);
-      assertThat(entry.get("name")).isEqualTo("cloud-prod-dc");
+      assertThat(entry).containsEntry("name", "cloud-prod-dc");
       @SuppressWarnings("unchecked")
       List<String> cidr = (List<String>) entry.get("cidrs");
       assertThat(cidr).contains("10.0.0.0/8");
@@ -187,13 +182,11 @@ class CloudProtectedTargetsServiceTest {
     @Test
     @DisplayName("should exclude non-cloud targets")
     void shouldExcludeNonCloudTargets() throws Exception {
-      Provider gcpProvider = createProvider("GCP");
       Set<FirewallGroup> fwGroups = new HashSet<>();
       fwGroups.add(createFirewallGroup("fw-on-prem"));
 
       Target onPremTarget =
-          createTarget(
-              "datacenter-on-prem", false, gcpProvider, List.of("192.168.0.0/16"), fwGroups);
+          createTarget("datacenter-on-prem", false, null, List.of("192.168.0.0/16"), fwGroups);
 
       ConcurrentHashMap<String, Target> repositoryData = new ConcurrentHashMap<>();
       repositoryData.put("datacenter-on-prem", onPremTarget);
@@ -291,8 +284,8 @@ class CloudProtectedTargetsServiceTest {
                       })
                   .toList());
 
-      assertThat(returnedNames).contains("cloud-prod-aws", "cloud-gcp-asia");
       assertThat(returnedNames)
+          .contains("cloud-prod-aws", "cloud-gcp-asia")
           .doesNotContain("internal-data-center", "cloud-test-aws", "datacenter-physical");
     }
   }

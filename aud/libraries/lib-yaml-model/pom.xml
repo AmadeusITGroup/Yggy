@@ -14,12 +14,10 @@
   <properties>
     <!-- JVM 21: due to being a dependency in our checker -->
     <maven.compiler.release>21</maven.compiler.release>
-    <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
+    <unittests.instruction.coverage>0.00</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.00</unittests.branch.coverage>
 
     <jackson-annotations.version>2.22</jackson-annotations.version>
-    <jackson-datatype.version>2.22.1</jackson-datatype.version>
-    <openapi-generator-maven-plugin.version>7.24.0</openapi-generator-maven-plugin.version>
-    <swagger-annotations.version>2.2.53</swagger-annotations.version>
   </properties>
 
   <dependencies>
@@ -32,9 +30,8 @@
       <artifactId>jakarta.validation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.swagger.core.v3</groupId>
-      <artifactId>swagger-annotations-jakarta</artifactId>
-      <version>${swagger-annotations.version}</version>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
     </dependency>
 
     <dependency>
@@ -46,7 +43,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>${jackson-datatype.version}</version>
     </dependency>
 
     <dependency>
@@ -60,63 +56,5 @@
       <artifactId>guava</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>${openapi-generator-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>${basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
-              <generatorName>java</generatorName>
-              <modelPackage>${project.groupId}.yaml.models</modelPackage>
-              <invokerPackage>${project.groupId}.yaml.models</invokerPackage>
-              <apiPackage>${project.groupId}.yaml.models</apiPackage>
-              <!-- You can only generate classes to override the ones from openapi generator -->
-              <!-- It does not seem like you can generate any class named the way you want -->
-              <templateDirectory>${project.basedir}/src/main/resources/openapi/templates</templateDirectory>
-              <generateSupportingFiles>true</generateSupportingFiles>
-              <generateApis>false</generateApis>
-              <generateApiTests>false</generateApiTests>
-              <generateModelTests>false</generateModelTests>
-              <generateApiDocumentation>false</generateApiDocumentation>
-              <generateModelDocumentation>false</generateModelDocumentation>
-              <library>native</library>
-              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
-              <configOptions>
-                <openApiNullable>false</openApiNullable>
-                <useJakartaEe>true</useJakartaEe>
-                <dateLibrary>java8</dateLibrary>
-                <serializationLibrary>jackson</serializationLibrary>
-                <annotationLibrary>swagger2</annotationLibrary>
-                <interfaceOnly>true</interfaceOnly>
-                <containerDefaultToNull>true</containerDefaultToNull>
-                <additionalModelTypeAnnotations><![CDATA[
-                    @SuppressWarnings("this-escape")
-                    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-                ]]></additionalModelTypeAnnotations>
-                <useBeanValidation>true</useBeanValidation>
-              </configOptions>
-              <!--              To be removed once the Dates of the YAML file contains the Offset-->
-              <typeMappings>
-                <typeMapping>OffsetDateTime=java.time.LocalDateTime</typeMapping>
-              </typeMappings>
-              <importMappings>
-                <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
-              </importMappings>
-              <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

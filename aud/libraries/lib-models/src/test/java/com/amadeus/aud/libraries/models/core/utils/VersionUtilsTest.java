@@ -3,7 +3,6 @@ package com.amadeus.aud.libraries.models.core.utils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -88,19 +87,19 @@ class VersionUtilsTest {
   class FindLatestVersion {
     @Test
     void findsLatestAmongValid() {
-      List<String> versions = Arrays.asList("1.0.0", "2.0.0", "1.5.10", "1.10.0", "2.0.1");
+      List<String> versions = List.of("1.0.0", "2.0.0", "1.5.10", "1.10.0", "2.0.1");
       assertThat(VersionUtils.findLatestVersion(versions)).isEqualTo("2.0.1");
     }
 
     @Test
     void ignoresInvalidVersions() {
-      List<String> versions = Arrays.asList("invalid", "1.0.0", "1.0", "1.0.1", "1.0.0.0");
+      List<String> versions = List.of("invalid", "1.0.0", "1.0", "1.0.1", "1.0.0.0");
       assertThat(VersionUtils.findLatestVersion(versions)).isEqualTo("1.0.1");
     }
 
     @Test
     void allInvalidReturnsNull() {
-      List<String> versions = Arrays.asList("", "abc", "1", "1.0", "1.0.0.0");
+      List<String> versions = List.of("", "abc", "1", "1.0", "1.0.0.0");
       assertThat(VersionUtils.findLatestVersion(versions)).isNull();
     }
 

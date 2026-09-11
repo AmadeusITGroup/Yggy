@@ -5,6 +5,7 @@ import com.amadeus.aud.libraries.models.core.db.base.BaseInstance;
 import com.amadeus.aud.libraries.models.core.internals.Direction;
 import com.amadeus.aud.libraries.models.core.internals.Endpoint;
 import com.amadeus.aud.libraries.models.core.utils.EndpointUtils;
+import com.amadeus.aud.libraries.models.core.utils.IPv4Utils;
 import com.amadeus.aud.libraries.models.core.utils.StringUtils;
 import com.amadeus.aud.libraries.models.core.utils.UUIDUtils;
 import com.amadeus.aud.libraries.yaml.models.DeprecatedStatus;
@@ -1429,7 +1430,7 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
     addHostingPlatformSubnetCidrs(inBucket);
     addIpAddressCidrs(inBucket);
     if (!inBucket.isEmpty()) {
-      result.put("in", new ArrayList<>(inBucket.values()));
+      result.put("in", sortedCidrRanges(inBucket));
     }
 
     Map<String, CidrRange> outBucket = new LinkedHashMap<>();
@@ -1443,10 +1444,19 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
     addHostingPlatformSubnetCidrs(outBucket);
     addIpAddressCidrs(outBucket);
     if (!outBucket.isEmpty()) {
-      result.put("out", new ArrayList<>(outBucket.values()));
+      result.put("out", sortedCidrRanges(outBucket));
     }
 
     return result;
+  }
+
+  private static List<CidrRange> sortedCidrRanges(Map<String, CidrRange> bucket) {
+    List<String> sortedCidrs = IPv4Utils.sortedCidrs(bucket.keySet());
+    List<CidrRange> ranges = new ArrayList<>(sortedCidrs.size());
+    for (String cidr : sortedCidrs) {
+      ranges.add(bucket.get(cidr));
+    }
+    return ranges;
   }
 
   private static void addSubnetCidr(

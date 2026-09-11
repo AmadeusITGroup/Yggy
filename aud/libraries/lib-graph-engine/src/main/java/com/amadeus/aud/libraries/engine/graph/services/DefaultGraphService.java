@@ -186,7 +186,7 @@ public class DefaultGraphService implements GraphService {
       NetworkComplianceStrategy networkComplianceStrategy) {
     ComponentInstance sourceInstance = dependencyInstance.getComponentInstance();
     if (sourceInstance == null) {
-      Log.errorf("Component Instance is null for dependency instance %s", dependencyInstance);
+      Log.infof("Component Instance is null for dependency instance %s", dependencyInstance.id());
       return;
     }
     if (isTargetAsComponent) {
@@ -200,7 +200,7 @@ public class DefaultGraphService implements GraphService {
     } else {
       ComponentInstance targetInstance = dependencyInstance.getTargetComponentInstance();
       if (targetInstance == null) {
-        Log.errorf(
+        Log.infof(
             "Target Component Instance is null for dependency instance %s",
             dependencyInstance.id());
         return;
@@ -249,7 +249,7 @@ public class DefaultGraphService implements GraphService {
       int diProcessed = count.incrementAndGet();
       if (diProcessed % LOG_PROGRESS_INTERVAL == 0) {
         Log.debugf(
-            "Processed %d/%d (%.2f%%) Dependency Instances in %s.",
+            "Processed %d/%d (%.0f%%) Dependency Instances in %s",
             diProcessed,
             valuesSize,
             (double) diProcessed / valuesSize * PERCENTAGE_MULTIPLIER,

@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Azure hub network setup for West Europe
+  name: azure-west-europe-hub
+  scope: Infra_Azure
+spec:
+  cidrs:
+  - 10.21.0.0/16
+  continent: Europe
+  enableJumpserverConnectivity: true
+  isCloud: true
+  macroPhase: PRD
+  provider: Microsoft - Azure
+  targettype: Regional Hub
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Azure spoke network setup for West Europe (LZ1 + LZ2)
+  name: azure-west-europe-spokes
+  scope: Infra_Azure
+spec:
+  continent: Europe
+  cidrs:
+  - 10.4.0.0/16
+  - 10.23.0.0/16
+  enableJumpserverConnectivity: true
+  enableOfficeConnectivity: true
+  enableVnetToVnet: true
+  isCloud: true
+  macroPhase: RND
+  provider: Microsoft - Azure
+  targettype: Regional Hub

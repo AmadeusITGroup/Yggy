@@ -27,11 +27,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("ListOfObjectOfTypeService Tests")
 class ListOfObjectOfTypeServiceTest {
@@ -51,7 +48,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should throw NotFoundException when version not found")
-    void testGetObjectTypeResponseWithVersionNotFound() {
+    void getObjectTypeResponseWithVersionNotFound() {
       when(audService.getVersion("99.0.0")).thenReturn(Uni.createFrom().item((Version) null));
 
       Throwable thrown =
@@ -72,7 +69,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should throw NotFoundException when object type is invalid")
-    void testGetObjectTypeResponseWithInvalidObjectType() {
+    void getObjectTypeResponseWithInvalidObjectType() {
       Version version = mock(Version.class);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -88,7 +85,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should accept valid object types")
-    void testGetObjectTypeResponseWithValidObjectType() {
+    void getObjectTypeResponseWithValidObjectType() {
       Version version = mock(Version.class);
 
       @SuppressWarnings("unchecked")
@@ -111,8 +108,8 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should reject pageSize < 1")
-    void testGetObjectTypeResponseWithPageSizeZero() {
-      Version version = createVersionWithElements(10);
+    void getObjectTypeResponseWithPageSizeZero() {
+      Version version = createVersionWithUnidentifiedElements(10);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
       Throwable thrown =
@@ -129,8 +126,8 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should reject pageSize > MAX_PAGE_SIZE")
-    void testGetObjectTypeResponseWithPageSizeExceeded() {
-      Version version = createVersionWithElements(10);
+    void getObjectTypeResponseWithPageSizeExceeded() {
+      Version version = createVersionWithUnidentifiedElements(10);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
       Throwable thrown =
@@ -147,8 +144,8 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should reject pageNum < 1")
-    void testGetObjectTypeResponseWithPageNumZero() {
-      Version version = createVersionWithElements(10);
+    void getObjectTypeResponseWithPageNumZero() {
+      Version version = createVersionWithUnidentifiedElements(10);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
       Throwable thrown =
@@ -165,7 +162,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should reject pageNum exceeding lastPage")
-    void testGetObjectTypeResponseWithPageNumExceeded() {
+    void getObjectTypeResponseWithPageNumExceeded() {
       Version version = createVersionWithElements(5);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -189,7 +186,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should apply default pageSize when null")
-    void testGetObjectTypeResponseWithDefaultPageSize() {
+    void getObjectTypeResponseWithDefaultPageSize() {
       Version version = createVersionWithElements(5);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -200,12 +197,12 @@ class ListOfObjectOfTypeServiceTest {
       assertThat(response.metadata()).isNotNull();
       Pagination pagination = response.metadata().pagination();
       assertThat(pagination).isNotNull();
-      assertThat(pagination.pageSize()).isGreaterThan(0);
+      assertThat(pagination.pageSize()).isPositive();
     }
 
     @Test
     @DisplayName("should apply default pageNum when null")
-    void testGetObjectTypeResponseWithDefaultPageNum() {
+    void getObjectTypeResponseWithDefaultPageNum() {
       Version version = createVersionWithElements(50);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -213,12 +210,12 @@ class ListOfObjectOfTypeServiceTest {
           service.getObjectTypeResponse("1.0.0", "components", null, 10).await().indefinitely();
 
       assertThat(response).isNotNull();
-      assertThat(response.metadata().pagination().pageNum()).isEqualTo(1);
+      assertThat(response.metadata().pagination().pageNum()).isOne();
     }
 
     @Test
     @DisplayName("should return correct items for page 1")
-    void testGetObjectTypeResponsePage1() {
+    void getObjectTypeResponsePage1() {
       Version version = createVersionWithElements(25);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -227,13 +224,13 @@ class ListOfObjectOfTypeServiceTest {
 
       assertThat(response.data()).hasSize(10);
       assertThat(response.metadata().pagination().count()).isEqualTo(25);
-      assertThat(response.metadata().pagination().pageNum()).isEqualTo(1);
+      assertThat(response.metadata().pagination().pageNum()).isOne();
       assertThat(response.metadata().pagination().pageSize()).isEqualTo(10);
     }
 
     @Test
     @DisplayName("should return correct items for page 2")
-    void testGetObjectTypeResponsePage2() {
+    void getObjectTypeResponsePage2() {
       Version version = createVersionWithElements(25);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -246,7 +243,7 @@ class ListOfObjectOfTypeServiceTest {
 
     @Test
     @DisplayName("should return remaining items on last page")
-    void testGetObjectTypeResponseLastPage() {
+    void getObjectTypeResponseLastPage() {
       Version version = createVersionWithElements(25);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -263,8 +260,39 @@ class ListOfObjectOfTypeServiceTest {
   class EdgeCasesTests {
 
     @Test
+    void getObjectTypeResponseThrowsWhenRepositoryIsMissing() {
+      Version version = mock(Version.class);
+
+      Throwable thrown =
+          catchThrowable(
+              () ->
+                  service
+                      .getObjectTypeResponse(version, "components", 1, 10)
+                      .await()
+                      .indefinitely());
+
+      assertThat(thrown)
+          .isInstanceOf(NotFoundException.class)
+          .hasMessage("No data for object type: components");
+    }
+
+    @Test
+    void getObjectTypeResponseTreatsNullRepositoryDataAsEmpty() {
+      Version version = mock(Version.class);
+      @SuppressWarnings("unchecked")
+      ConcurrentRepository<BomElement> repository = mock(ConcurrentRepository.class);
+      when(version.<BomElement>getRepository("component")).thenReturn(repository);
+
+      Response<Collection<BomElement>> response =
+          service.getObjectTypeResponse(version, "components", 1, 10).await().indefinitely();
+
+      assertThat(response.data()).isEmpty();
+      assertThat(response.metadata().pagination()).isEqualTo(new Pagination(0, 1, 10));
+    }
+
+    @Test
     @DisplayName("should handle empty data")
-    void testGetObjectTypeResponseWithEmptyData() {
+    void getObjectTypeResponseWithEmptyData() {
       Version version = mock(Version.class);
 
       @SuppressWarnings("unchecked")
@@ -278,25 +306,25 @@ class ListOfObjectOfTypeServiceTest {
           service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
 
       assertThat(response.data()).isEmpty();
-      assertThat(response.metadata().pagination().count()).isEqualTo(0);
+      assertThat(response.metadata().pagination().count()).isZero();
     }
 
     @Test
     @DisplayName("should handle single item")
-    void testGetObjectTypeResponseWithSingleItem() {
-      Version version = createVersionWithElements(1);
+    void getObjectTypeResponseWithSingleItem() {
+      Version version = createVersionWithUnidentifiedElements(1);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
       Response<Collection<BomElement>> response =
           service.getObjectTypeResponse("1.0.0", "components", 1, 10).await().indefinitely();
 
       assertThat(response.data()).hasSize(1);
-      assertThat(response.metadata().pagination().count()).isEqualTo(1);
+      assertThat(response.metadata().pagination().count()).isOne();
     }
 
     @Test
     @DisplayName("should sort items by ID")
-    void testGetObjectTypeResponseSortsByID() {
+    void getObjectTypeResponseSortsByID() {
       Version version = createVersionWithElements(3);
       when(audService.getVersion("1.0.0")).thenReturn(Uni.createFrom().item(version));
 
@@ -313,6 +341,14 @@ class ListOfObjectOfTypeServiceTest {
   }
 
   private Version createVersionWithElements(int count) {
+    return createVersionWithElements(count, true);
+  }
+
+  private Version createVersionWithUnidentifiedElements(int count) {
+    return createVersionWithElements(count, false);
+  }
+
+  private Version createVersionWithElements(int count, boolean stubElementIds) {
     Version version = mock(Version.class);
 
     @SuppressWarnings("unchecked")
@@ -324,7 +360,9 @@ class ListOfObjectOfTypeServiceTest {
     for (int i = 0; i < count; i++) {
       String id = String.format("component-%03d", i);
       BomElement element = mock(BomElement.class);
-      when(element.id()).thenReturn(id);
+      if (stubElementIds) {
+        when(element.id()).thenReturn(id);
+      }
       data.put(id, element);
     }
 

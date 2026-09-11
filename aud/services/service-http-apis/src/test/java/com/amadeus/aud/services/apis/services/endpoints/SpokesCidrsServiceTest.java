@@ -30,11 +30,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("SpokesCidrsService Tests")
 class SpokesCidrsServiceTest {
@@ -51,33 +48,34 @@ class SpokesCidrsServiceTest {
   void setUp() throws Exception {
     service = new SpokesCidrsService(audService, audApiConfig);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
 
-    when(audApiConfig.version()).thenReturn("v1");
     when(version.getVersionNumber()).thenReturn("1.0.0");
+  }
+
+  private void stubResponseMetadata() throws Exception {
+    when(audApiConfig.version()).thenReturn("v1");
     when(uriInfo.getAbsolutePath()).thenReturn(new URI("http://localhost:8080/api/spokes-cidrs"));
     when(uriInfo.getRequestUri()).thenReturn(new URI("http://localhost:8080/api/spokes-cidrs"));
   }
 
   @Test
   @DisplayName("should return spokes CIDRs for Azure Spoke landing zones")
-  void testGetSpokesCidrsWithValidTarget() throws Exception {
+  void getSpokesCidrsWithValidTarget() throws Exception {
+    stubResponseMetadata();
+
     LandingZone azureSpoke = mock(LandingZone.class);
     when(azureSpoke.getName()).thenReturn("azure-spoke-1");
     when(azureSpoke.getLandingZoneTypeName()).thenReturn("Default Azure Spoke");
     when(azureSpoke.getCidrs()).thenReturn(List.of("10.0.0.0/16", "10.1.0.0/16"));
 
     LandingZone otherType = mock(LandingZone.class);
-    when(otherType.getName()).thenReturn("other-zone");
     when(otherType.getLandingZoneTypeName()).thenReturn("Other Type");
-    when(otherType.getCidrs()).thenReturn(List.of("172.16.0.0/12"));
 
     Target target = mock(Target.class);
-    when(target.getName()).thenReturn("target-1");
     when(target.getLandingZones()).thenReturn(Set.of(azureSpoke, otherType));
 
     TargetsRepository targetsRepository = mock(TargetsRepository.class);
@@ -105,7 +103,7 @@ class SpokesCidrsServiceTest {
 
   @Test
   @DisplayName("should throw NotFoundException when target does not exist")
-  void testGetSpokesCidrsWithNonexistentTarget() {
+  void getSpokesCidrsWithNonexistentTarget() {
     TargetsRepository targetsRepository = mock(TargetsRepository.class);
     when(targetsRepository.get("nonexistent")).thenReturn(null);
     when(targetsRepository.isReady()).thenReturn(true);
@@ -120,14 +118,14 @@ class SpokesCidrsServiceTest {
 
   @Test
   @DisplayName("should retrieve version from audService when using string version")
-  void testGetSpokesCidrsWithStringVersion() throws Exception {
+  void getSpokesCidrsWithStringVersion() throws Exception {
+    stubResponseMetadata();
+
     LandingZone azureSpoke = mock(LandingZone.class);
     when(azureSpoke.getName()).thenReturn("azure-spoke-1");
     when(azureSpoke.getLandingZoneTypeName()).thenReturn("Default Azure Spoke");
     when(azureSpoke.getCidrs()).thenReturn(List.of("10.0.0.0/16"));
-
     Target target = mock(Target.class);
-    when(target.getName()).thenReturn("target-1");
     when(target.getLandingZones()).thenReturn(Set.of(azureSpoke));
 
     TargetsRepository targetsRepository = mock(TargetsRepository.class);

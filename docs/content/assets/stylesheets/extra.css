@@ -13,19 +13,10 @@
   --md-primary-fg-color--dark: #0260b8;
   --md-accent-fg-color: #06b8fe;
   --md-typeset-a-color: #0284fc;
-}
 
-/* Header */
-[data-md-color-scheme="default"] .md-header {
-  background-color: #0260b8;
-}
-
-/* Navigation tabs bar. With navigation.tabs.sticky the tab list is rendered
-   inside the header element, so letting it stay transparent makes the two read
-   as one continuous bar in every scheme — and, on the landing page, as one
-   surface with the top of the hero gradient. */
-.md-tabs {
-  background-color: transparent;
+  /* Colour of the top chrome: the header and the navigation tab bar under it.
+     See the shared rule below for why the two share one value. */
+  --yggy-chrome-bg: #0260b8;
 }
 
 /* ---------- Dark mode ---------- */
@@ -35,10 +26,25 @@
   --md-primary-fg-color--dark: #014a8a;
   --md-accent-fg-color: #06b8fe;
   --md-typeset-a-color: #3da1fd;
+
+  --yggy-chrome-bg: #012a50;
 }
 
-[data-md-color-scheme="slate"] .md-header {
-  background-color: #012a50;
+/* ---------- Top chrome: header + navigation tab bar ---------- */
+
+/* Both strips take the same colour from one variable, because they are two
+   separate elements that have to read as one surface.
+
+   Material paints .md-tabs with --md-primary-fg-color, which here is a lighter
+   blue (#0284fc) than the header, so leaving it alone gives a visibly two-tone
+   bar. It cannot simply be left transparent either: without
+   navigation.tabs.sticky the tab bar is rendered inside .md-container as a
+   sibling *below* the header rather than as a child of it, so a transparent
+   background shows the page behind it — and the tab labels, which Material
+   colours with --md-primary-bg-color (white), end up white on white. */
+.md-header,
+.md-tabs {
+  background-color: var(--yggy-chrome-bg);
 }
 
 /* ---------- Admonitions ---------- */

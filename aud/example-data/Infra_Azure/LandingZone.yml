@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure HUB for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-hub-net
+  providerSpecific: "{\r\n  \"fw_subnet\": \"fw_transit\",\r\n  \"resource_group\": \"net\",\r\n  \"subscription\": \"azure-west-europe-hub\"\r\n}"
+  scope: Infra_Azure
+spec:
+  cidrs:
+  - 10.21.0.0/16
+  landingzonetype: Default Azure HUB
+  region: West Europe
+  target: azure-west-europe-hub
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure SPOKE - Landing Zone 1 (App-1 + App-2) for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-lz1-net
+  providerSpecific: "{\r\n  \"resource_group\": \"net\",\r\n  \"subscription\": \"azure-west-europe-lz1\"\r\n}"
+  scope: Infra_Azure
+spec:
+  cidrs:
+  - 10.4.0.0/16
+  landingzonetype: Default Azure Spoke
+  region: West Europe
+  target: azure-west-europe-spokes
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure SPOKE - Landing Zone 2 (App-1) for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-lz2-net
+  providerSpecific: "{\r\n  \"resource_group\": \"net\",\r\n  \"subscription\": \"azure-west-europe-lz2\"\r\n}"
+  scope: Infra_Azure
+spec:
+  cidrs:
+  - 10.23.0.0/16
+  landingzonetype: Default Azure Spoke
+  region: West Europe
+  target: azure-west-europe-spokes

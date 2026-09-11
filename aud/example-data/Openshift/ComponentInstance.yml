@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: Openshift shared hosting platform - Azure LZ1
+  landingzone: azure-west-europe-lz1-net
+  name: Openshift LZ1
+  scope: Openshift
+spec:
+  applicationPhase: PRD
+  component: Openshift
+  endpoint_type: ZonedPaaS
+  inSubnetInstance: app_lz1
+  outSubnetInstance: app_lz1
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: Openshift shared hosting platform - Azure LZ2
+  landingzone: azure-west-europe-lz2-net
+  name: Openshift LZ2
+  scope: Openshift
+spec:
+  applicationPhase: PRD
+  component: Openshift
+  endpoint_type: ZonedPaaS
+  inSubnetInstance: app_lz2
+  outSubnetInstance: app_lz2
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: Openshift shared hosting platform - GCP LZ3
+  landingzone: gcp-us-central1-lz3-net
+  name: Openshift LZ3
+  scope: Openshift
+spec:
+  applicationPhase: PRD
+  component: Openshift
+  endpoint_type: ZonedPaaS
+  inSubnetInstance: app_lz3
+  outSubnetInstance: app_lz3

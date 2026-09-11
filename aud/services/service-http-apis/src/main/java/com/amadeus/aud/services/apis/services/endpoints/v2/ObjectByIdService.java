@@ -16,6 +16,7 @@ import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,28 +35,38 @@ public class ObjectByIdService extends BaseService {
 
   public Uni<Response<Object>> getObjectByIdResponse(
       String version, String objectType, String id, boolean rawData) {
+    ObjectTypeListNamesEnum objectTypeEnum =
+        ObjectTypeListNamesEnum.byUri(objectType)
+            .orElseThrow(
+                () ->
+                    new BadRequestException(
+                        "Unknown object type: "
+                            + objectType
+                            + ". Known types: "
+                            + ObjectTypeListNamesEnum.knownRepositoryKeys()));
+
     return audService
         .getVersion(version)
         .onItem()
-        .transformToUni((Version ver) -> getObjectByIdResponse(ver, objectType, id, rawData));
+        .transformToUni((Version ver) -> getObjectByIdResponse(ver, objectTypeEnum, id, rawData));
   }
 
   @CacheResult(cacheName = "getObjectByIdResponse", keyGenerator = VersionCacheKeyGenerator.class)
   public Uni<Response<Object>> getObjectByIdResponse(
-      Version version, String objectType, String id, boolean rawData) {
+      Version version, ObjectTypeListNamesEnum objectTypeEnum, String id, boolean rawData) {
     return Uni.createFrom()
-        .item(Unchecked.supplier(() -> getResponse(version, objectType, id, rawData)))
+        .item(Unchecked.supplier(() -> getResponse(version, objectTypeEnum, id, rawData)))
         .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
         .emitOn(Infrastructure.getDefaultWorkerPool());
   }
 
   private Response<Object> getResponse(
-      Version version, String objectType, String id, boolean rawData) {
-    ObjectTypeListNamesEnum objectTypeEnum =
-        ObjectTypeListNamesEnum.byUri(objectType).orElseThrow(NotFoundException::new);
-
+      Version version, ObjectTypeListNamesEnum objectTypeEnum, String id, boolean rawData) {
     ConcurrentRepository<? extends BomElement> repository =
         version.getRepository(objectTypeEnum.getRepositoryKey());
+    if (repository == null) {
+      throw new NotFoundException("No data for object type: " + objectTypeEnum.getUri());
+    }
 
     ConcurrentMap<String, ? extends BomElement> data = repository.getData();
 
@@ -85,7 +96,7 @@ public class ObjectByIdService extends BaseService {
     if (count > 1) {
       // If this happens, id() method for this specific object type is not correct.
       throw new IllegalStateException(
-          "Multiple objects found with id: " + id + " in object type: " + objectType);
+          "Multiple objects found with id: " + id + " in object type: " + objectTypeEnum);
     }
     if (output == null) {
       throw new NotFoundException("No object found with id: " + id);

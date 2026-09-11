@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-2
+spec:
+  component: Backend Service API
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: entry point to access the Backend Service API Application-2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-2
+spec:
+  component: Database
+  isEncrypted: true
+  ports:
+  - '27017'
+  protocol: Tcp
+  securityJustification: The https port exposed to consume the Backend Service API
+    Database

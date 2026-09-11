@@ -13,12 +13,11 @@
 
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
-    <unittests.instruction.coverage>0.00</unittests.instruction.coverage>
-    <unittests.branch.coverage>0.01</unittests.branch.coverage>
+    <unittests.instruction.coverage>0.80</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.80</unittests.branch.coverage>
 
     <quarkus.azure.services.version>1.2.5</quarkus.azure.services.version>
     <mutiny-reactor.version>3.3.0</mutiny-reactor.version>
-    <azure-identity.version>1.18.4</azure-identity.version>
   </properties>
 
   <dependencyManagement>
@@ -101,7 +100,6 @@
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-identity</artifactId>
-      <version>${azure-identity.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.azureservices</groupId>
@@ -125,6 +123,13 @@
       <artifactId>lib-models</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

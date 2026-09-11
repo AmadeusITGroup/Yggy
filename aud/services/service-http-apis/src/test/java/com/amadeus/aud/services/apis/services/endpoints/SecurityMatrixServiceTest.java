@@ -27,11 +27,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("SecurityMatrixService Tests")
 class SecurityMatrixServiceTest {
@@ -48,8 +45,7 @@ class SecurityMatrixServiceTest {
   void setUp() throws Exception {
     service = new SecurityMatrixService(audService, audApiConfig);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
@@ -64,7 +60,7 @@ class SecurityMatrixServiceTest {
 
   @Test
   @DisplayName("should return security matrices response with zone types")
-  void testGetSecurityMatricesWithValidVersion() throws Exception {
+  void getSecurityMatricesWithValidVersion() throws Exception {
     ZoneType internal = mock(ZoneType.class);
     when(internal.getName()).thenReturn("Internal");
 
@@ -103,7 +99,7 @@ class SecurityMatrixServiceTest {
 
   @Test
   @DisplayName("should retrieve version from audService when using string version")
-  void testGetSecurityMatricesWithStringVersion() throws Exception {
+  void getSecurityMatricesWithStringVersion() throws Exception {
     ZoneType internal = mock(ZoneType.class);
     when(internal.getName()).thenReturn("Internal");
 

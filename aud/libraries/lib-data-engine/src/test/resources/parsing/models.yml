@@ -1,0 +1,49 @@
+# Supported documents are mixed with blank, map, list, scalar, and unsupported documents.
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: duplicate
+  scope: unit
+spec:
+  scope_version: 1.0.0
+unexpected_property: ignored
+---
+# Intentionally blank document.
+---
+api_version: v1
+kind: ScopeVersionMapping
+metadata:
+  name: duplicate
+  scope: unit
+spec:
+  scope_version: 1.0.0
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: release
+  scope: unit
+spec:
+  scope_version: 3.0.0
+  prs:
+    - '17'
+    - '18'
+---
+{}
+---
+- ignored
+- list
+---
+ignored scalar
+---
+kind: UnknownKind
+metadata:
+  name: unknown
+---
+kind: null
+metadata:
+  name: null-kind
+---
+metadata:
+  name: missing-kind

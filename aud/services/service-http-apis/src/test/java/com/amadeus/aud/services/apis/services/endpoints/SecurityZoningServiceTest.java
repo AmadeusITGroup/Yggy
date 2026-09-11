@@ -33,11 +33,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("SecurityZoningService Tests")
 class SecurityZoningServiceTest {
@@ -54,14 +51,16 @@ class SecurityZoningServiceTest {
   void setUp() throws Exception {
     service = new SecurityZoningService(audApiConfig, audService);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
 
-    when(audApiConfig.version()).thenReturn("v1");
     when(version.getVersionNumber()).thenReturn("1.0.0");
+  }
+
+  private void stubResponseMetadata() throws Exception {
+    when(audApiConfig.version()).thenReturn("v1");
     when(uriInfo.getAbsolutePath())
         .thenReturn(new URI("http://localhost:8080/api/security-zoning"));
     when(uriInfo.getRequestUri()).thenReturn(new URI("http://localhost:8080/api/security-zoning"));
@@ -69,7 +68,9 @@ class SecurityZoningServiceTest {
 
   @Test
   @DisplayName("should return security zoning response with subnet instances")
-  void testGetSecurityZoningWithValidSubnets() throws Exception {
+  void getSecurityZoningWithValidSubnets() throws Exception {
+    stubResponseMetadata();
+
     ZoneType zoneType1 = mock(ZoneType.class);
     when(zoneType1.getName()).thenReturn("zone-type-1");
 
@@ -142,7 +143,9 @@ class SecurityZoningServiceTest {
 
   @Test
   @DisplayName("should retrieve version from audService when using string version")
-  void testGetSecurityZoningWithStringVersion() throws Exception {
+  void getSecurityZoningWithStringVersion() throws Exception {
+    stubResponseMetadata();
+
     ZoneType zoneType = mock(ZoneType.class);
     when(zoneType.getName()).thenReturn("zone-type-1");
 
@@ -188,7 +191,7 @@ class SecurityZoningServiceTest {
 
   @Test
   @DisplayName("should throw ServiceUnavailableException when subnet data is null")
-  void testGetSecurityZoningWithNullData() {
+  void getSecurityZoningWithNullData() {
     SubnetInstancesRepository subnetRepository = mock(SubnetInstancesRepository.class);
     when(subnetRepository.getData()).thenReturn(null);
     when(subnetRepository.isReady()).thenReturn(true);

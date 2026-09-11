@@ -78,6 +78,12 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-graphql-common</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

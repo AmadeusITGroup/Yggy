@@ -17,6 +17,7 @@ public interface AudModelConfig {
 
   String defaultScopesBitbucketProjectKey();
 
+  @WithDefault("https://test.example.com/")
   String defaultScopesBitbucketUrlPrefix();
 
   Optional<CaffeineCacheConfig> caffeineCache();

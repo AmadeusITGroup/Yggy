@@ -24,6 +24,7 @@ import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -58,23 +59,30 @@ public class ReferencesService extends BaseService {
 
   public Uni<ReferencesResponse> getReferences(
       String versionStr, String objectType, String entityId) {
+    ObjectTypeListNamesEnum objectTypeEnum =
+        ObjectTypeListNamesEnum.byUri(objectType)
+            .orElseThrow(
+                () ->
+                    new BadRequestException(
+                        "Unknown object type: "
+                            + objectType
+                            + ". Known types: "
+                            + ObjectTypeListNamesEnum.knownRepositoryKeys()));
+
     return audService
         .getVersion(versionStr)
         .onItem()
         .transformToUni(
             version ->
                 Uni.createFrom()
-                    .item(() -> computeReferences(version, objectType, entityId))
+                    .item(() -> computeReferences(version, objectTypeEnum, entityId))
                     .runSubscriptionOn(Infrastructure.getDefaultWorkerPool()));
   }
 
   @CacheResult(cacheName = "getReferencesResponse", keyGenerator = VersionCacheKeyGenerator.class)
-  public ReferencesResponse computeReferences(Version version, String objectType, String entityId) {
-    ObjectTypeListNamesEnum targetObjectType =
-        ObjectTypeListNamesEnum.byUri(objectType)
-            .orElseThrow(() -> new NotFoundException("Unknown object type: " + objectType));
-
-    BomElement targetEntity = findTargetEntityById(version, targetObjectType, entityId);
+  public ReferencesResponse computeReferences(
+      Version version, ObjectTypeListNamesEnum objectTypeEnum, String entityId) {
+    BomElement targetEntity = findTargetEntityById(version, objectTypeEnum, entityId);
     if (targetEntity == null) {
       throw new NotFoundException("Entity not found: " + entityId);
     }
@@ -83,7 +91,7 @@ public class ReferencesService extends BaseService {
     }
 
     Map<String, List<ReferenceEntry>> directReferences =
-        findDirectReferences(version, targetEntity.getClass(), targetBase.id());
+        findDirectReferences(version, targetBase, targetEntity.getClass(), targetBase.id());
 
     Map<String, List<ReferenceEntry>> inheritedReferences =
         targetEntity instanceof Component component
@@ -98,7 +106,7 @@ public class ReferencesService extends BaseService {
   // ========================= Direct references =========================
 
   private static Map<String, List<ReferenceEntry>> findDirectReferences(
-      Version version, Class<?> targetClass, String id) {
+      Version version, AbstractBase<?> targetBase, Class<?> targetClass, String id) {
     Map<String, List<ReferenceEntry>> directReferencesByType = new TreeMap<>();
     for (ObjectTypeListNamesEnum objectType : ObjectTypeListNamesEnum.values()) {
       ConcurrentRepository<? extends BomElement> repository = getRepository(version, objectType);
@@ -106,7 +114,8 @@ public class ReferencesService extends BaseService {
         continue;
       }
       for (BomElement element : repository.getData().values()) {
-        appendDirectReferenceIfMatch(element, targetClass, id, objectType, directReferencesByType);
+        appendDirectReferenceIfMatch(
+            element, targetBase, targetClass, id, objectType, directReferencesByType);
       }
     }
     directReferencesByType.values().forEach(list -> list.sort(REFERENCE_NAME_ORDER));
@@ -115,11 +124,17 @@ public class ReferencesService extends BaseService {
 
   private static void appendDirectReferenceIfMatch(
       BomElement element,
+      AbstractBase<?> targetBase,
       Class<?> targetClass,
       String id,
       ObjectTypeListNamesEnum objectType,
       Map<String, List<ReferenceEntry>> directReferencesByType) {
-    if (element instanceof Scope || element instanceof ScopeReleaseNote) {
+    if (element instanceof ScopeReleaseNote) {
+      return;
+    }
+    if (element instanceof Scope scope
+        && targetBase.getScope() != null
+        && scope.id().equals(targetBase.getScope().id())) {
       return;
     }
     if (!(element instanceof AbstractBase<?> base)) {

@@ -26,7 +26,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +36,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("StatisticsService Tests")
 class StatisticsServiceTest {
@@ -59,8 +55,7 @@ class StatisticsServiceTest {
   void setUp() throws Exception {
     service = new StatisticsService(graphEngineService, audApiConfig, audService);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
@@ -73,7 +68,7 @@ class StatisticsServiceTest {
 
   @Test
   @DisplayName("should return statistics with components and dependencies")
-  void testGetStatisticsWithValidVersion() throws Exception {
+  void getStatisticsWithValidVersion() throws Exception {
     Scope networkScope = mock(Scope.class);
     when(networkScope.getName()).thenReturn("networking");
 
@@ -133,19 +128,12 @@ class StatisticsServiceTest {
     when(depInstanceRepo.isReady()).thenReturn(true);
     when(version.getDependencyInstancesRepository()).thenReturn(depInstanceRepo);
 
-    GraphStatistics graphStats = mock(GraphStatistics.class);
-    Map<String, Long> scopeNbLink = new HashMap<>();
-    scopeNbLink.put("networking", 5L);
-    scopeNbLink.put("security", 3L);
-    when(graphStats.scopeNbLink()).thenReturn(scopeNbLink);
-
-    Map<String, Long> scopeNbNode = new HashMap<>();
-    scopeNbNode.put("networking", 10L);
-    scopeNbNode.put("security", 8L);
-    when(graphStats.scopeNbNode()).thenReturn(scopeNbNode);
-
-    when(graphStats.globalLinksCount()).thenReturn(8L);
-    when(graphStats.globalNodesCount()).thenReturn(18L);
+    GraphStatistics graphStats =
+        new GraphStatistics(
+            Map.of("networking", 5L, "security", 3L),
+            Map.of("networking", 10L, "security", 8L),
+            18L,
+            8L);
 
     when(graphEngineService.getGraphStatistics("1.0.0"))
         .thenReturn(Uni.createFrom().item(graphStats));
@@ -164,7 +152,7 @@ class StatisticsServiceTest {
     assertThat(body.getGlobal()).isNotNull();
     assertThat(body.getGlobal().getComponents()).isEqualTo(2);
     assertThat(body.getGlobal().getDependencies()).isEqualTo(2);
-    assertThat(body.getGlobal().getServices()).isEqualTo(1);
+    assertThat(body.getGlobal().getServices()).isOne();
 
     assertThat(body.getScopes()).isNotNull();
     assertThat(body.getScopes()).hasSize(2);
@@ -172,7 +160,7 @@ class StatisticsServiceTest {
 
   @Test
   @DisplayName("should retrieve version from audService when using string version")
-  void testGetStatisticsWithStringVersion() throws Exception {
+  void getStatisticsWithStringVersion() throws Exception {
     Scope scope = mock(Scope.class);
     when(scope.getName()).thenReturn("default");
 
@@ -210,11 +198,8 @@ class StatisticsServiceTest {
     when(serviceRepo.isReady()).thenReturn(true);
     when(version.getServicesRepository()).thenReturn(serviceRepo);
 
-    GraphStatistics graphStats = mock(GraphStatistics.class);
-    when(graphStats.scopeNbLink()).thenReturn(Map.of("default", 2L));
-    when(graphStats.scopeNbNode()).thenReturn(Map.of("default", 4L));
-    when(graphStats.globalLinksCount()).thenReturn(2L);
-    when(graphStats.globalNodesCount()).thenReturn(4L);
+    GraphStatistics graphStats =
+        new GraphStatistics(Map.of("default", 2L), Map.of("default", 4L), 4L, 2L);
 
     when(graphEngineService.getGraphStatistics("1.0.0"))
         .thenReturn(Uni.createFrom().item(graphStats));
@@ -230,6 +215,6 @@ class StatisticsServiceTest {
 
     assertThat(body).isNotNull();
     assertThat(body.getVersion()).isEqualTo("1.0.0");
-    assertThat(body.getGlobal().getComponents()).isEqualTo(1);
+    assertThat(body.getGlobal().getComponents()).isOne();
   }
 }

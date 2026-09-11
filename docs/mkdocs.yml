@@ -48,11 +48,6 @@ theme:
     # every group open. Without them the sidebar sections are collapsible and
     # start collapsed, with only the section the reader is in expanded.
     - navigation.tabs
-    # Sticky is what keeps the tab bar out of the landing page's way. Without it
-    # base.html renders the tabs *after* the hero block, so the bar lands under
-    # the hero; sticky moves it inside the header element instead, above the
-    # hero, where a global navigation belongs.
-    - navigation.tabs.sticky
     - navigation.top
     - navigation.footer
     - toc.follow
@@ -83,7 +78,11 @@ nav:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:

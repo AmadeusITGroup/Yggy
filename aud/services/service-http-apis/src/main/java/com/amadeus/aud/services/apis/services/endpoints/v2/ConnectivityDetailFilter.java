@@ -3,7 +3,7 @@ package com.amadeus.aud.services.apis.services.endpoints.v2;
 import com.amadeus.aud.libraries.backend.ObjectTypeListNamesEnum;
 import com.amadeus.aud.libraries.models.core.db.base.AbstractBase;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
-import jakarta.annotation.Nullable;
+import jakarta.ws.rs.BadRequestException;
 import java.util.function.Function;
 
 public enum ConnectivityDetailFilter {
@@ -20,9 +20,7 @@ public enum ConnectivityDetailFilter {
   COMPONENT(ObjectTypeListNamesEnum.COMPONENTS, ConnectivityDetailFilter::objectName),
   NAMESPACE(ObjectTypeListNamesEnum.NAMESPACES, ConnectivityDetailFilter::objectName),
   REGION(ObjectTypeListNamesEnum.REGIONS, ConnectivityDetailFilter::objectName),
-  ZONE_TYPE(ObjectTypeListNamesEnum.ZONETYPES, ConnectivityDetailFilter::objectName),
-  ZONE_INSTANCE(ObjectTypeListNamesEnum.ZONEINSTANCES, BomElement::id),
-  SUBNET_INSTANCE(ObjectTypeListNamesEnum.SUBNETINSTANCES, BomElement::id);
+  ZONE_TYPE(ObjectTypeListNamesEnum.ZONETYPES, ConnectivityDetailFilter::objectName);
 
   private final ObjectTypeListNamesEnum objectType;
   private final Function<BomElement, String> valueExtractor;
@@ -45,13 +43,17 @@ public enum ConnectivityDetailFilter {
     return valueExtractor.apply(element);
   }
 
-  public static @Nullable ConnectivityDetailFilter fromObjectTypeUri(String objectTypeUri) {
+  public static ConnectivityDetailFilter fromObjectTypeUri(String objectTypeUri) {
     for (ConnectivityDetailFilter filter : values()) {
       if (filter.objectType.getUri().equals(objectTypeUri)) {
         return filter;
       }
     }
-    return null;
+    throw new BadRequestException(
+        "Unknown object type: "
+            + objectTypeUri
+            + ". Known types: "
+            + ObjectTypeListNamesEnum.knownRepositoryKeys());
   }
 
   private static String objectName(BomElement element) {

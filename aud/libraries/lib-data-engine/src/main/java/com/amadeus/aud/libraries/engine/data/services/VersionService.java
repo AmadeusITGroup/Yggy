@@ -9,6 +9,7 @@ import com.amadeus.aud.libraries.engine.data.services.core.db.ApplicationIdServi
 import com.amadeus.aud.libraries.engine.data.services.core.db.ApplicationPhaseService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.BlackListedCIDRService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.BlackListedURLService;
+import com.amadeus.aud.libraries.engine.data.services.core.db.BlacklistService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.BlockedPortService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.ComponentInstanceService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.ComponentService;
@@ -75,6 +76,7 @@ public class VersionService {
 
   private final ApplicationIdService applicationIdService;
   private final ApplicationPhaseService applicationPhaseService;
+  private final BlacklistService blacklistService;
   private final BlackListedURLService blackListedURLService;
   private final BlackListedCIDRService blackListedCIDRService;
   private final BlockedPortService blockedPortService;
@@ -123,6 +125,7 @@ public class VersionService {
       ApplicationIdService applicationIdService,
       ApplicationPhaseService applicationPhaseService,
       BlockedPortService blockedPortService,
+      BlacklistService blacklistService,
       BlackListedURLService blackListedURLService,
       BlackListedCIDRService blackListedCIDRService,
       ComponentInstanceService componentInstanceService,
@@ -167,6 +170,7 @@ public class VersionService {
     this.applicationIdService = applicationIdService;
     this.applicationPhaseService = applicationPhaseService;
     this.blockedPortService = blockedPortService;
+    this.blacklistService = blacklistService;
     this.blackListedURLService = blackListedURLService;
     this.blackListedCIDRService = blackListedCIDRService;
     this.componentInstanceService = componentInstanceService;
@@ -345,6 +349,8 @@ public class VersionService {
 
     CompletableFuture<Void> futureBlockedPorts =
         managedExecutor.runAsync(() -> blockedPortService.init(version));
+    CompletableFuture<Void> futureBlacklists =
+        managedExecutor.runAsync(() -> blacklistService.init(version));
     CompletableFuture<Void> futureBlackListedURLs =
         managedExecutor.runAsync(() -> blackListedURLService.init(version));
     CompletableFuture<Void> futureBlackListedCIDRs =
@@ -596,6 +602,7 @@ public class VersionService {
             futureScopeVersionMappings,
             futureRoles,
             futureBlockedPorts,
+            futureBlacklists,
             futureBlackListedURLs,
             futureBlackListedCIDRs,
             futureApplicationPhases,

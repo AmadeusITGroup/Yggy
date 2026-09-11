@@ -17,9 +17,9 @@ import java.time.temporal.Temporal;
 public class LogExecutionTimeInterceptor {
 
   public void logExecutionTime(Temporal startTime, InvocationContext context) {
-    Log.infof(
-        "%s %s executed in %s",
-        context.getMethod().getDeclaringClass().getName(),
+    Log.debugf(
+        "%s::%s executed in %s",
+        context.getMethod().getDeclaringClass().getSimpleName(),
         context.getMethod().getName(),
         Duration.between(startTime, Instant.now()).toString());
   }

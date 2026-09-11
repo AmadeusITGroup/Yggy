@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -18,12 +19,12 @@ import com.amadeus.aud.libraries.models.core.db.LandingZoneType;
 import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.yaml.models.SpokeCIDRs;
 import com.amadeus.aud.libraries.yaml.models.TargetCIDRsResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -59,25 +60,21 @@ class TargetCidrsServiceTest {
   void setUp() throws Exception {
     service = spy(new TargetCidrsService(audService, audApiConfig));
 
-    // Use lenient() for stubs that might not be used in all tests
-    lenient().when(version.getVersionNumber()).thenReturn(TEST_VERSION);
-    lenient().when(audApiConfig.version()).thenReturn(API_VERSION);
-    lenient().doNothing().when(service).checkRepository(any(), anyString(), anyString());
+    when(version.getVersionNumber()).thenReturn(TEST_VERSION);
+    doNothing().when(service).checkRepository(any(), anyString(), anyString());
+  }
 
-    // Mock getOkResponse to return a proper Response with the entity
-    // Use doAnswer().when() pattern to avoid calling the method during setup
-    lenient()
-        .doAnswer(
-            (InvocationOnMock invocation) -> {
-              Object entity = invocation.getArgument(0);
-              return Response.status(Response.Status.OK).entity(entity).build();
-            })
+  private void stubSuccessfulResponse() throws JsonProcessingException {
+    when(audApiConfig.version()).thenReturn(API_VERSION);
+    doAnswer(
+            (InvocationOnMock invocation) ->
+                Response.status(Response.Status.OK).entity(invocation.getArgument(0)).build())
         .when(service)
         .getOkResponse(any());
 
-    URI mockUri = new URI(TEST_URI);
-    lenient().when(uriInfo.getAbsolutePath()).thenReturn(mockUri);
-    lenient().when(uriInfo.getRequestUri()).thenReturn(mockUri);
+    URI mockUri = URI.create(TEST_URI);
+    when(uriInfo.getAbsolutePath()).thenReturn(mockUri);
+    when(uriInfo.getRequestUri()).thenReturn(mockUri);
   }
 
   @Nested
@@ -86,10 +83,11 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should return target CIDRs with landing zone CIDRs")
-    void shouldReturnTargetCidrsWithLandingZoneCidrs() {
+    void shouldReturnTargetCidrsWithLandingZoneCidrs() throws Exception {
       // Given
+      stubSuccessfulResponse();
       Target target =
-          createMockTarget(Arrays.asList("10.0.0.0/16", "10.1.0.0/16"), createMockLandingZones());
+          createMockTarget(List.of("10.0.0.0/16", "10.1.0.0/16"), createMockLandingZones());
 
       TargetsRepository mockRepo = mockTargetRepository(target);
       when(version.getTargetsRepository()).thenReturn(mockRepo);
@@ -113,8 +111,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should handle target with no CIDRs")
-    void shouldHandleTargetWithNoCidrs() {
+    void shouldHandleTargetWithNoCidrs() throws Exception {
       // Given
+      stubSuccessfulResponse();
       Target target = createMockTarget(null, Collections.emptySet());
       TargetsRepository mockRepo = mockTargetRepository(target);
       when(version.getTargetsRepository()).thenReturn(mockRepo);
@@ -132,8 +131,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should handle target with empty CIDRs list")
-    void shouldHandleTargetWithEmptyCidrsList() {
+    void shouldHandleTargetWithEmptyCidrsList() throws Exception {
       // Given
+      stubSuccessfulResponse();
       Target target = createMockTarget(Collections.emptyList(), Collections.emptySet());
       TargetsRepository mockRepo = mockTargetRepository(target);
       when(version.getTargetsRepository()).thenReturn(mockRepo);
@@ -177,8 +177,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should handle landing zones with null CIDRs")
-    void shouldHandleLandingZonesWithNullCidrs() {
+    void shouldHandleLandingZonesWithNullCidrs() throws Exception {
       // Given
+      stubSuccessfulResponse();
       LandingZone lzWithNullCidrs = createMockLandingZone("lz-null", "Legacy", null);
       Target target = createMockTarget(List.of("10.0.0.0/16"), Set.of(lzWithNullCidrs));
 
@@ -197,8 +198,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should handle landing zones with empty CIDRs list")
-    void shouldHandleLandingZonesWithEmptyCidrsList() {
+    void shouldHandleLandingZonesWithEmptyCidrsList() throws Exception {
       // Given
+      stubSuccessfulResponse();
       LandingZone lzWithEmptyCidrs =
           createMockLandingZone("lz-empty", "Legacy", Collections.emptyList());
       Target target = createMockTarget(List.of("10.0.0.0/16"), Set.of(lzWithEmptyCidrs));
@@ -218,8 +220,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should handle landing zones with null landing zone type")
-    void shouldHandleLandingZonesWithNullType() {
+    void shouldHandleLandingZonesWithNullType() throws Exception {
       // Given
+      stubSuccessfulResponse();
       LandingZone lz = createMockLandingZone("lz-no-type", null, List.of("192.168.0.0/24"));
       Target target = createMockTarget(List.of("10.0.0.0/16"), Set.of(lz));
 
@@ -244,13 +247,10 @@ class TargetCidrsServiceTest {
     @DisplayName("should return versioned URL correctly")
     void shouldReturnVersionedUrlCorrectly() throws Exception {
       // Given
+      stubSuccessfulResponse();
       Target target = createMockTarget(List.of("10.0.0.0/16"), Collections.emptySet());
       TargetsRepository mockRepo = mockTargetRepository(target);
       when(version.getTargetsRepository()).thenReturn(mockRepo);
-
-      URI baseUri = new URI("http://localhost:8080/api/target/test-target/cidrs");
-      when(uriInfo.getRequestUri()).thenReturn(baseUri);
-      when(uriInfo.getAbsolutePath()).thenReturn(baseUri);
 
       // When
       Response response =
@@ -270,8 +270,9 @@ class TargetCidrsServiceTest {
 
     @Test
     @DisplayName("should call audService.getVersion with correct version")
-    void shouldCallGetVersionWithCorrectVersion() {
+    void shouldCallGetVersionWithCorrectVersion() throws Exception {
       // Given
+      stubSuccessfulResponse();
       String versionString = "2.0.0";
       Target target = createMockTarget(List.of("10.0.0.0/16"), Collections.emptySet());
       TargetsRepository mockRepo = mockTargetRepository(target);
@@ -308,21 +309,25 @@ class TargetCidrsServiceTest {
     Set<LandingZone> landingZones = new HashSet<>();
     landingZones.add(createMockLandingZone("lz-1", "Legacy", List.of("192.168.1.0/24")));
     landingZones.add(
-        createMockLandingZone("lz-2", "Cloud", Arrays.asList("192.168.2.0/24", "192.168.3.0/24")));
+        createMockLandingZone("lz-2", "Cloud", List.of("192.168.2.0/24", "192.168.3.0/24")));
     return landingZones;
   }
 
   private LandingZone createMockLandingZone(String name, String typeName, List<String> cidrs) {
     LandingZone lz = mock(LandingZone.class);
-    lenient().when(lz.getName()).thenReturn(name);
-    lenient().when(lz.getCidrs()).thenReturn(cidrs);
+    when(lz.getCidrs()).thenReturn(cidrs);
 
+    if (cidrs == null || cidrs.isEmpty()) {
+      return lz;
+    }
+
+    when(lz.getName()).thenReturn(name);
     if (typeName != null) {
       LandingZoneType lzType = mock(LandingZoneType.class);
-      lenient().when(lzType.getName()).thenReturn(typeName);
-      lenient().when(lz.getLandingZoneType()).thenReturn(lzType);
+      when(lzType.getName()).thenReturn(typeName);
+      when(lz.getLandingZoneType()).thenReturn(lzType);
     } else {
-      lenient().when(lz.getLandingZoneType()).thenReturn(null);
+      when(lz.getLandingZoneType()).thenReturn(null);
     }
 
     return lz;

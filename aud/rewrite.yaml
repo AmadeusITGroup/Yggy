@@ -9,7 +9,15 @@ recipeList:
   - org.openrewrite.staticanalysis.AnnotateNullableMethods:
       nullableAnnotationClass: "jakarta.annotation.Nullable"
   - org.openrewrite.java.migrate.lang.UseTextBlocks
-#  - org.openrewrite.java.testing.assertj.Assertj
+  - org.openrewrite.java.testing.assertj.StaticImports
+  - org.openrewrite.java.testing.assertj.SimplifyAssertJAssertions
+  - org.openrewrite.java.testing.assertj.SimplifyAssertJInstanceOfAssertion
+  - org.openrewrite.java.testing.assertj.SimplifyAssertJEqualityAssertion
+  - org.openrewrite.java.testing.assertj.SimplifyHasSizeAssertion
+  - org.openrewrite.java.testing.assertj.SimplifyHasSizeFromIsEqualToAssertion
+  - org.openrewrite.java.testing.assertj.SimplifyArrayLengthAssertion
+  - org.openrewrite.java.testing.assertj.SimplifySequencedCollectionAssertions
+  - org.openrewrite.java.testing.assertj.SimplifyRedundantAssertJChains
   - org.openrewrite.staticanalysis.AvoidBoxedBooleanExpressions
   - org.openrewrite.staticanalysis.AbstractClassPublicConstructor
   - org.openrewrite.staticanalysis.CatchClauseOnlyRethrows

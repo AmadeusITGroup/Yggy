@@ -75,7 +75,11 @@ public final class IPv4Utils {
       prefixLength = 32;
     }
     InetAddress inetAddress = InetAddresses.forUriString(ipString.toString());
-    int maskLength = (inetAddress.getAddress().length * Byte.SIZE) - prefixLength;
+    int addressLength = inetAddress.getAddress().length * Byte.SIZE;
+    if (addressLength != 32 || prefixLength < 0 || prefixLength > addressLength) {
+      throw new IllegalArgumentException("Invalid IPv4 CIDR: " + cidr);
+    }
+    int maskLength = addressLength - prefixLength;
 
     BigInteger baseIP = IPv4Utils.ipToBigInteger(inetAddress);
     BigInteger startIP = baseIP.and(MASKS_NOT.get(maskLength));
@@ -83,6 +87,56 @@ public final class IPv4Utils {
 
     return Range.closed(startIP, endIP).canonical(DiscreteDomain.bigIntegers());
   }
+
+  public static List<String> sortedCidrs(Collection<String> cidrs) {
+    int size = cidrs.size();
+    if (size < 2) {
+      return new ArrayList<>(cidrs);
+    }
+
+    List<SortableCidr> sortableCidrs = new ArrayList<>(size);
+    for (String cidr : cidrs) {
+      sortableCidrs.add(new SortableCidr(cidr, parseRange(cidr)));
+    }
+    sortableCidrs.sort(IPv4Utils::compareCidrs);
+
+    List<String> sortedCidrs = new ArrayList<>(size);
+    for (SortableCidr sortableCidr : sortableCidrs) {
+      sortedCidrs.add(sortableCidr.cidr());
+    }
+    return sortedCidrs;
+  }
+
+  private static @Nullable Range<BigInteger> parseRange(String cidr) {
+    try {
+      return toRange(cidr);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+  }
+
+  private static int compareCidrs(SortableCidr left, SortableCidr right) {
+    Range<BigInteger> leftRange = left.range();
+    Range<BigInteger> rightRange = right.range();
+    if (leftRange == null || rightRange == null) {
+      if (leftRange == null && rightRange == null) {
+        return 0;
+      }
+      return leftRange == null ? -1 : 1;
+    }
+
+    int startComparison = leftRange.lowerEndpoint().compareTo(rightRange.lowerEndpoint());
+    if (startComparison != 0) {
+      return startComparison;
+    }
+    int endComparison = rightRange.upperEndpoint().compareTo(leftRange.upperEndpoint());
+    if (endComparison != 0) {
+      return endComparison;
+    }
+    return String.CASE_INSENSITIVE_ORDER.compare(left.cidr(), right.cidr());
+  }
+
+  private record SortableCidr(String cidr, @Nullable Range<BigInteger> range) {}
 
   public static @Nullable RangeSet<BigInteger> toRangeSet(@Nullable Collection<String> cidr) {
     if (cidr == null || cidr.isEmpty()) {

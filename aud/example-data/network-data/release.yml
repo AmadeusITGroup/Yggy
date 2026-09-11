@@ -1,0 +1,96 @@
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: Application-1
+  scope: Application-1
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: Application-2
+  scope: Application-2
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: GlobalDefinitions
+  scope: GlobalDefinitions
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: Infra_Azure
+  scope: Infra_Azure
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: Infra_GCP
+  scope: Infra_GCP
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+
+---
+api_version: v1
+kind: ScopeReleaseNote
+metadata:
+  name: Openshift
+  scope: Openshift
+spec:
+  version_datetime: 2026-09-09T15:46:25Z
+  scope_version: 1.0.1
+  commits:
+  - commitid: 42
+    message: initial commit
+  prs:
+  - '1'
+  impacted_devices: []
+

@@ -1,6 +1,5 @@
 package com.amadeus.aud.services.apis.endpoints;
 
-import com.amadeus.aud.libraries.yaml.models.Error;
 import com.amadeus.aud.services.apis.models.http.responses.scopeversions.ScopeVersionsResponse;
 import com.amadeus.aud.services.apis.services.endpoints.ScopeVersionsService;
 import io.smallrye.mutiny.Uni;
@@ -17,53 +16,16 @@ import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
-import org.eclipse.microprofile.openapi.annotations.headers.Header;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 @Path("")
-@APIResponse(
-    responseCode = "500",
-    description = "Internal server error",
-    content =
-        @Content(
-            mediaType = MediaType.APPLICATION_JSON,
-            schema = @Schema(implementation = Error.class),
-            example =
-                """
-        {
-            "code": 500,
-            "message": "Internal server error"
-        }
-        """))
-@APIResponse(
-    responseCode = "401",
-    description = "Unauthorized Error",
-    headers = {
-      @Header(
-          name = "WWW-Authenticate",
-          description = "The authentication method that should be used to gain access",
-          schema =
-              @Schema(
-                  implementation = String.class,
-                  defaultValue = "Bearer realm=\"Access to AUD API\""))
-    },
-    content =
-        @Content(
-            mediaType = MediaType.APPLICATION_JSON,
-            schema = @Schema(implementation = Error.class),
-            example =
-                """
-        {
-            "code": 401,
-            "message": "User is not authorized to access this resource"
-        }
-        """))
 public class ScopeVersionsResource {
   private final ScopeVersionsService scopeVersionsService;
 
@@ -80,13 +42,19 @@ public class ScopeVersionsResource {
       summary = "Get Scope Versions for specific version",
       description = "Retrieves the Scope Versions for specific version.")
   @Tags(value = @Tag(name = "api"))
-  @APIResponse(
-      responseCode = "200",
-      description = "Scope Versions retrieved successfully",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON,
-              schema = @Schema(implementation = ScopeVersionsResponse.class)))
+  @APIResponses(
+      value = {
+        @APIResponse(
+            responseCode = "200",
+            description = "Scope Versions retrieved successfully",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = ScopeVersionsResponse.class))),
+        @APIResponse(responseCode = "401", ref = "#/components/responses/UnauthorizedError"),
+        @APIResponse(responseCode = "404", ref = "#/components/responses/NotFoundError"),
+        @APIResponse(responseCode = "500", ref = "#/components/responses/InternalError")
+      })
   @Parameters(
       value = {
         @Parameter(

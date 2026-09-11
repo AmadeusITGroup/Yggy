@@ -12,10 +12,8 @@
   <inceptionYear>2024</inceptionYear>
 
   <properties>
-    <unittests.instruction.coverage>0.49</unittests.instruction.coverage>
-    <unittests.branch.coverage>0.40</unittests.branch.coverage>
-
-    <azure-identity.version>1.18.4</azure-identity.version>
+    <unittests.instruction.coverage>0.80</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.80</unittests.branch.coverage>
 
     <jvm.args>-XX:+UseG1GC
       -XX:+UseDynamicNumberOfGCThreads
@@ -116,6 +114,13 @@
       <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!--        Google-->
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -142,7 +147,6 @@
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-identity</artifactId>
-      <version>${azure-identity.version}</version>
     </dependency>
 
     <dependency>
@@ -161,8 +165,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-azure-nsg</artifactId>
+      <groupId>com.amadeus.aud.services</groupId>
+      <artifactId>service-azure-nsg-http</artifactId>
       <version>${project.version}</version>
     </dependency>
 

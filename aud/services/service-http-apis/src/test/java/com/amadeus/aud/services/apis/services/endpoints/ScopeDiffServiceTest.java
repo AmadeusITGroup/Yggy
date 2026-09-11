@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,11 +35,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("ScopeDiffService Tests")
 class ScopeDiffServiceTest {
@@ -55,8 +53,7 @@ class ScopeDiffServiceTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
 
     service = new ScopeDiffService(audService, audApiConfig, audModelConfig);
 
@@ -65,10 +62,7 @@ class ScopeDiffServiceTest {
     objectMapperField.set(service, objectMapper);
 
     when(audApiConfig.version()).thenReturn("v1");
-    when(audModelConfig.defaultScopesBitbucketUrlPrefix())
-        .thenReturn("https://bitbucket.example.com/projects/AUD/repos/");
     when(uriInfo.getAbsolutePath()).thenReturn(new URI("http://localhost:8080/api/scope-diff"));
-    when(uriInfo.getRequestUri()).thenReturn(new URI("http://localhost:8080/api/scope-diff"));
   }
 
   private ScopeDiffResponse extractResponseBody(Response response) throws Exception {
@@ -83,12 +77,14 @@ class ScopeDiffServiceTest {
     return req;
   }
 
-  private Scope createScope(String name, String nanoId) {
+  private Scope createScope(String nanoId) {
+    return createScope(nanoId, new HashSet<>());
+  }
+
+  private Scope createScope(String nanoId, Set<ScopeReleaseNote> releaseNotes) {
     Scope scope = mock(Scope.class);
     when(scope.getNanoId()).thenReturn(nanoId);
-    when(scope.id()).thenReturn(name);
-    when(scope.getName()).thenReturn(name);
-    when(scope.getScopeReleaseNotes()).thenReturn(new HashSet<>());
+    when(scope.getScopeReleaseNotes()).thenReturn(releaseNotes);
     return scope;
   }
 
@@ -97,7 +93,6 @@ class ScopeDiffServiceTest {
     when(note.getScopeVersion()).thenReturn(scopeVersion);
     when(note.getPrs()).thenReturn(prNumbers);
     when(note.getCommits()).thenReturn(List.of());
-    when(note.getVersionDateTime()).thenReturn("2024-01-01T10:00:00Z");
     return note;
   }
 
@@ -112,8 +107,7 @@ class ScopeDiffServiceTest {
       Requirement newReq1 = createRequirement("firewall", "1.0.0");
       Requirement newReq2 = createRequirement("network", "1.0.0");
 
-      setupVersionMocks(
-          List.of(oldReq), List.of(newReq1, newReq2), createScopesMap("firewall", "network"));
+      setupVersionMocks(List.of(oldReq), List.of(newReq1, newReq2), createScopesMap("network"));
 
       Response response =
           service.getScopeVersionsDiff(oldVersion, newVersion, uriInfo).await().indefinitely();
@@ -133,8 +127,7 @@ class ScopeDiffServiceTest {
       Requirement oldReq2 = createRequirement("network", "1.0.0");
       Requirement newReq = createRequirement("firewall", "1.0.0");
 
-      setupVersionMocks(
-          List.of(oldReq1, oldReq2), List.of(newReq), createScopesMap("firewall", "network"));
+      setupVersionMocks(List.of(oldReq1, oldReq2), List.of(newReq), createScopesMap("network"));
 
       Response response =
           service.getScopeVersionsDiff(oldVersion, newVersion, uriInfo).await().indefinitely();
@@ -172,11 +165,7 @@ class ScopeDiffServiceTest {
       Requirement oldReq = createRequirement("firewall", "1.0.0");
       Requirement newReq = createRequirement("firewall", "1.0.0");
 
-      Scope firewall = createScope("firewall", "fw-nano");
-      ConcurrentHashMap<String, Scope> scopesMap = new ConcurrentHashMap<>();
-      scopesMap.put("firewall", firewall);
-
-      setupVersionMocks(List.of(oldReq), List.of(newReq), scopesMap);
+      setupVersionMocks(List.of(oldReq), List.of(newReq));
 
       Response response =
           service.getScopeVersionsDiff(oldVersion, newVersion, uriInfo).await().indefinitely();
@@ -197,8 +186,9 @@ class ScopeDiffServiceTest {
       ScopeReleaseNote note15 = createReleaseNote("1.5.0", List.of("101"));
       ScopeReleaseNote note20 = createReleaseNote("2.0.0", List.of("102"));
 
-      Scope firewall = createScope("firewall", "fw-nano");
-      when(firewall.getScopeReleaseNotes()).thenReturn(new HashSet<>(List.of(note15, note20)));
+      Scope firewall = createScope("fw-nano", new HashSet<>(List.of(note15, note20)));
+      when(audModelConfig.defaultScopesBitbucketUrlPrefix())
+          .thenReturn("https://bitbucket.example.com/projects/AUD/repos/");
 
       Requirement oldReq = createRequirement("firewall", "1.0.0");
       Requirement newReq = createRequirement("firewall", "2.5.0");
@@ -221,6 +211,12 @@ class ScopeDiffServiceTest {
       List<Requirement> oldRequirements,
       List<Requirement> newRequirements,
       ConcurrentMap<String, Scope> scopes) {
+    ScopesRepository scopesRepo = setupVersionMocks(oldRequirements, newRequirements);
+    when(scopesRepo.getData()).thenReturn(scopes);
+  }
+
+  private ScopesRepository setupVersionMocks(
+      List<Requirement> oldRequirements, List<Requirement> newRequirements) {
     oldVersion = mock(Version.class);
     newVersion = mock(Version.class);
 
@@ -237,15 +233,15 @@ class ScopeDiffServiceTest {
     when(newVersion.getVersionNumber()).thenReturn("2.0.0");
 
     ScopesRepository scopesRepo = mock(ScopesRepository.class);
-    when(scopesRepo.getData()).thenReturn(scopes);
     when(scopesRepo.isReady()).thenReturn(true);
     when(newVersion.getScopesRepository()).thenReturn(scopesRepo);
+    return scopesRepo;
   }
 
   private ConcurrentHashMap<String, Scope> createScopesMap(String... scopeNames) {
     ConcurrentHashMap<String, Scope> map = new ConcurrentHashMap<>();
     for (String name : scopeNames) {
-      map.put(name, createScope(name, name + "-nano"));
+      map.put(name, createScope(name + "-nano"));
     }
     return map;
   }

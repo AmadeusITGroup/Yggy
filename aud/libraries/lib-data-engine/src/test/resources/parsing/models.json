@@ -1,0 +1,38 @@
+[
+  {
+    "apiVersion": "v1",
+    "kind": "ScopeVersionMapping",
+    "metadata": {
+      "name": "duplicate",
+      "scope": "unit",
+      "ignoredMetadataProperty": "ignored"
+    },
+    "spec": {
+      "scope_version": "1.0.0"
+    },
+    "ignoredRootProperty": "ignored"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ScopeVersionMapping",
+    "metadata": {
+      "name": "duplicate",
+      "scope": "unit"
+    },
+    "spec": {
+      "scope_version": "1.0.0"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ScopeReleaseNote",
+    "metadata": {
+      "name": "release",
+      "scope": "unit"
+    },
+    "spec": {
+      "scope_version": "3.0.0",
+      "prs": "17"
+    }
+  }
+]

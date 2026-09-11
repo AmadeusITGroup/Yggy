@@ -57,13 +57,16 @@ public class ListOfObjectOfTypeService extends BaseService {
         .emitOn(Infrastructure.getDefaultWorkerPool());
   }
 
-  private static Response<Collection<BomElement>> getResponse(
+  private Response<Collection<BomElement>> getResponse(
       Version version, String objectType, @Nullable Integer pageNum, @Nullable Integer pageSize) {
     ObjectTypeListNamesEnum objectTypeEnum =
         ObjectTypeListNamesEnum.byUri(objectType).orElseThrow(NotFoundException::new);
 
     ConcurrentRepository<? extends BomElement> repository =
         version.getRepository(objectTypeEnum.getRepositoryKey());
+    if (repository == null) {
+      throw new NotFoundException("No data for object type: " + objectType);
+    }
 
     ConcurrentMap<String, ? extends BomElement> data = repository.getData();
 

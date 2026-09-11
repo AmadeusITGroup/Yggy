@@ -10,6 +10,9 @@ aud/.mvn/.develocity/
 .vscode
 **/.env.local
 **/benchmark/.dataset.json
+**/benchmark/logs/
+**/reports/**
 **/.env
 **/.venv
 pom.xml.versionsBackup
+.github/skills

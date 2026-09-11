@@ -6,7 +6,7 @@ default:
 # setup java and maven versions using sdkman
 setup:
     #!/usr/bin/env -S bash --login
-    # Two things about the line above, both load-bearing:
+    # Two things about the line above:
     #   - it must stay the FIRST line of this recipe, or just stops treating the
     #     recipe as a shebang recipe and rejects the indented blocks below;
     #   - `env -S` splits the rest of it into separate arguments. Without -S the
@@ -46,17 +46,16 @@ setup:
     fi
 
     echo 'Installing proper java and maven daemon version...'
-    # Full identifier, not a bare major: SDKMAN matches exactly and has no
-    # "25-zulu". Check `sdk list java` when this needs bumping.
-    sdk install java 25.0.4-zulu
-    sdk use java 25.0.4-zulu
-    sdk default java 25.0.4-zulu
+    sdk install java 25-zulu
+    sdk use java 25-zulu
+    sdk default java 25-zulu
     sdk install maven 3.9.16
     sdk use maven 3.9.16
     sdk default maven 3.9.16
     sdk install mvnd 1.0.6
     sdk use mvnd 1.0.6
     sdk default mvnd 1.0.6
+    echo 'RESTART your shell for changes to take effect'
 
 # run unit tests only
 test:

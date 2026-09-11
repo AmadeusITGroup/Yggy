@@ -1,0 +1,171 @@
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP America
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Worldwide
+  scope: GlobalDefinitions
+spec:
+  continent: Worldwide
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: us-central1
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Asia Pacific
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Americas
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: EMEA
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: East US 2
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: West US 2
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Germany West Central
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: North Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: France Central
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Southeast Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: West Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS America
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Worldwide
+  scope: GlobalDefinitions
+spec:
+  continent: Worldwide
+  provider: Amazon - AWS

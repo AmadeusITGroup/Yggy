@@ -2,9 +2,6 @@ package com.amadeus.aud.services.apis.endpoints.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.backend.ObjectTypeListNamesEnum;
@@ -12,66 +9,106 @@ import com.amadeus.aud.libraries.backend.models.v2.ReferenceEntry;
 import com.amadeus.aud.libraries.backend.models.v2.ReferencesResponse;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ApplicationPhasesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentInstancesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentsRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.DependenciesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.DependencyInstancesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopeReleaseNotesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ServicesRepository;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
 import com.amadeus.aud.libraries.models.core.db.Dependency;
 import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
+import com.amadeus.aud.libraries.models.core.db.Scope;
+import com.amadeus.aud.libraries.models.core.db.ScopeReleaseNote;
 import com.amadeus.aud.libraries.models.core.db.Service;
+import com.amadeus.aud.libraries.models.core.db.base.AbstractBase;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
 import com.amadeus.aud.libraries.yaml.models.V1Component;
+import com.amadeus.aud.libraries.yaml.models.V1ComponentInstance;
+import com.amadeus.aud.libraries.yaml.models.V1ComponentInstanceSpec;
 import com.amadeus.aud.libraries.yaml.models.V1ComponentSpec;
+import com.amadeus.aud.libraries.yaml.models.V1Dependency;
 import com.amadeus.aud.libraries.yaml.models.V1DependencyInstance;
 import com.amadeus.aud.libraries.yaml.models.V1DependencyInstanceSpec;
+import com.amadeus.aud.libraries.yaml.models.V1Scope;
 import com.amadeus.aud.services.apis.services.endpoints.v2.ReferencesService;
 import io.smallrye.mutiny.Uni;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
-import java.lang.reflect.Field;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class ReferencesServiceTest {
 
-  @Mock private AudService audService;
-  @Mock private Version version;
-
-  @InjectMocks private ReferencesService referencesService;
-
-  private V1Component commonData;
-
-  @BeforeEach
-  void setUp() {
-    V1ComponentSpec spec = new V1ComponentSpec();
-    spec.setIsPublicInheritance(false);
-    spec.setIsTechnical(false);
-    commonData = new V1Component();
-    commonData.setSpec(spec);
-  }
+  private final Version version = new Version();
+  private final ReferencesService referencesService =
+      new ReferencesService(new TestAudService(version));
+  private final V1Component commonData = componentData(false, false);
 
   @Nested
   class GetReferences {
 
     @Test
-    void unknownObjectTypeThrowsNotFoundException() {
-      when(audService.getVersion(anyString())).thenReturn(Uni.createFrom().item(version));
+    void unknownObjectTypeThrowsBadRequestException() {
       assertThatThrownBy(
               () ->
                   referencesService
                       .getReferences("latest", "unknown-type", "id")
                       .await()
                       .indefinitely())
-          .isInstanceOf(NotFoundException.class);
+          .isInstanceOf(BadRequestException.class)
+          .hasMessage(
+              """
+              Unknown object type: unknown-type. Known types: applicationid
+              applicationphase
+              automatictemplateinstance
+              blacklist
+              blacklistedcidr
+              blacklistedurl
+              blockedport
+              certification
+              component
+              componentinstance
+              componentplacement
+              connection
+              connectionapproval
+              connectionapprovalcomponentskip
+              connectionapprovalscopeskip
+              connectionphase
+              continent
+              dependency
+              dependencyinstance
+              firewallgroup
+              firewallvendor
+              ipaddressinstance
+              landingzone
+              landingzonefunctionaltype
+              landingzonetype
+              macrophase
+              namespace
+              outboundsnat
+              provider
+              region
+              role
+              scope
+              scopereleasenote
+              securityarea
+              securityareamapping
+              service
+              serviceapproval
+              servicetag
+              subnetinstance
+              subnettype
+              target
+              targettype
+              zoneinstance
+              zonetype""");
     }
   }
 
@@ -79,50 +116,34 @@ class ReferencesServiceTest {
   class ComputeReferences {
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     void entityNotFoundThrowsNotFoundException() {
-      String objectType = ObjectTypeListNamesEnum.COMPONENTS.getUri();
-      ConcurrentRepository repo = mock(ConcurrentRepository.class);
-      when(version.getRepository(ObjectTypeListNamesEnum.COMPONENTS.getRepositoryKey()))
-          .thenReturn(repo);
-      when(repo.getData()).thenReturn(new ConcurrentHashMap<>());
+      version.addRepository(new ComponentsRepository());
 
       assertThatThrownBy(
-              () -> referencesService.computeReferences(version, objectType, "non-existent"))
+              () ->
+                  referencesService.computeReferences(
+                      version, ObjectTypeListNamesEnum.COMPONENTS, "non-existent"))
           .isInstanceOf(NotFoundException.class);
     }
 
     @Test
-    @SuppressWarnings({"rawtypes"})
-    void returnsDirectReferences() throws Exception {
-      String objectType = ObjectTypeListNamesEnum.COMPONENTS.getUri();
+    void returnsDirectReferences() {
       String targetId = "comp-target";
-
-      Component target = new Component();
-      setPrivateField(target, "uniqueId", targetId);
-      setPrivateField(target, "name", "Target Component");
-      setPrivateField(target, "data", commonData);
-
-      Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>> repoMap =
-          stubAllRepositories(version);
-
-      ConcurrentMap<String, Component> componentsData = new ConcurrentHashMap<>();
-      componentsData.put(targetId, target);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.COMPONENTS).getData())
-          .thenReturn(componentsData);
+      Component target = component(targetId, "Target Component", Set.of());
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(targetId, target);
+      version.addRepository(components);
 
       Service referringService = new Service();
       referringService.setName("Referring Service");
       referringService.setComponent(target);
-      setPrivateField(referringService, "data", commonData);
-
-      ConcurrentMap<String, Service> servicesData = new ConcurrentHashMap<>();
-      servicesData.put(referringService.id(), referringService);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.SERVICES).getData())
-          .thenReturn(servicesData);
+      ServicesRepository services = new ServicesRepository();
+      services.put(referringService.id(), referringService);
+      version.addRepository(services);
 
       ReferencesResponse response =
-          referencesService.computeReferences(version, objectType, targetId);
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, targetId);
 
       assertThat(response.direct()).containsKey(ObjectTypeListNamesEnum.SERVICES.getUri());
       List<ReferenceEntry> entries =
@@ -132,43 +153,24 @@ class ReferencesServiceTest {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes"})
-    void inheritedServicesForComponent() throws Exception {
-      String objectType = ObjectTypeListNamesEnum.COMPONENTS.getUri();
+    void inheritedServicesForComponent() {
       String childId = "comp-child";
-
-      Component parent = new Component();
-      setPrivateField(parent, "uniqueId", "comp-parent");
-      setPrivateField(parent, "name", "Parent Component");
-      setPrivateField(parent, "data", commonData);
-
-      Component child = new Component();
-      setPrivateField(child, "uniqueId", childId);
-      setPrivateField(child, "name", "Child Component");
-      setPrivateField(child, "parents", Set.of(parent));
-      setPrivateField(child, "data", commonData);
-
-      Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>> repoMap =
-          stubAllRepositories(version);
-
-      ConcurrentMap<String, Component> componentsData = new ConcurrentHashMap<>();
-      componentsData.put("comp-parent", parent);
-      componentsData.put(childId, child);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.COMPONENTS).getData())
-          .thenReturn(componentsData);
+      Component parent = component("comp-parent", "Parent Component", Set.of());
+      Component child = component(childId, "Child Component", Set.of(parent));
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(parent.id(), parent);
+      components.put(child.id(), child);
+      version.addRepository(components);
 
       Service inheritedService = new Service();
       inheritedService.setName("Inherited Service");
       inheritedService.setComponent(parent);
-      setPrivateField(inheritedService, "data", commonData);
-
-      ConcurrentMap<String, Service> servicesData = new ConcurrentHashMap<>();
-      servicesData.put(inheritedService.id(), inheritedService);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.SERVICES).getData())
-          .thenReturn(servicesData);
+      ServicesRepository services = new ServicesRepository();
+      services.put(inheritedService.id(), inheritedService);
+      version.addRepository(services);
 
       ReferencesResponse response =
-          referencesService.computeReferences(version, objectType, childId);
+          referencesService.computeReferences(version, ObjectTypeListNamesEnum.COMPONENTS, childId);
 
       assertThat(response.inherited()).containsKey(ObjectTypeListNamesEnum.SERVICES.getUri());
       List<ReferenceEntry> inheritedEntries =
@@ -179,55 +181,25 @@ class ReferencesServiceTest {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes"})
-    void inheritedDependencyInstancesForComponentInstance() throws Exception {
-      String objectType = ObjectTypeListNamesEnum.COMPONENTINSTANCES.getUri();
+    void inheritedDependencyInstancesForComponentInstance() {
       String ciId = "ci-target";
+      Component parentComponent = component("parent", "Ancestor Component", Set.of());
+      Component childComponent = component("child", "Child Component", Set.of(parentComponent));
+      ComponentInstance componentInstance = componentInstance(ciId, childComponent);
+      ComponentInstancesRepository componentInstances = new ComponentInstancesRepository();
+      componentInstances.put(componentInstance.id(), componentInstance);
+      version.addRepository(componentInstances);
 
-      Component parentComp = new Component();
-      setPrivateField(parentComp, "name", "Ancestor Component");
-      setPrivateField(parentComp, "data", commonData);
+      Dependency dependency = dependency("dependency", parentComponent, null);
+      DependencyInstance dependencyInstance =
+          dependencyInstance("di-inherited", dependency, true, false);
+      DependencyInstancesRepository dependencyInstances = new DependencyInstancesRepository();
+      dependencyInstances.put(dependencyInstance.id(), dependencyInstance);
+      version.addRepository(dependencyInstances);
 
-      Component childComp = new Component();
-      setPrivateField(childComp, "parents", Set.of(parentComp));
-      setPrivateField(childComp, "data", commonData);
-
-      ComponentInstance ci = new ComponentInstance();
-      setPrivateField(ci, "uniqueId", ciId);
-      setPrivateField(ci, "component", childComp);
-      setPrivateField(ci, "data", commonData);
-
-      Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>> repoMap =
-          stubAllRepositories(version);
-
-      ConcurrentMap<String, ComponentInstance> instanceData = new ConcurrentHashMap<>();
-      instanceData.put(ciId, ci);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.COMPONENTINSTANCES).getData())
-          .thenReturn(instanceData);
-
-      Dependency dep = new Dependency();
-      setPrivateField(dep, "name", "The Dependency");
-      setPrivateField(dep, "sourceComponent", parentComp);
-      setPrivateField(dep, "data", new com.amadeus.aud.libraries.yaml.models.V1Dependency());
-
-      V1DependencyInstanceSpec diSpec = new V1DependencyInstanceSpec();
-      diSpec.setIsSourceAsComponent(true);
-      diSpec.setIsTargetAsComponent(false);
-      V1DependencyInstance diYamlData = new V1DependencyInstance();
-      diYamlData.setSpec(diSpec);
-
-      DependencyInstance di = new DependencyInstance();
-      setPrivateField(di, "uniqueId", "di-inherited");
-      setPrivateField(di, "data", diYamlData);
-      setPrivateField(di, "dependency", dep);
-      setPrivateField(di, "isSourceAsComponent", true);
-
-      ConcurrentMap<String, DependencyInstance> diData = new ConcurrentHashMap<>();
-      diData.put("di-inherited", di);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.DEPENDENCYINSTANCES).getData())
-          .thenReturn(diData);
-
-      ReferencesResponse response = referencesService.computeReferences(version, objectType, ciId);
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTINSTANCES, ciId);
 
       assertThat(response.inherited())
           .containsKey(ObjectTypeListNamesEnum.DEPENDENCYINSTANCES.getUri());
@@ -236,50 +208,28 @@ class ReferencesServiceTest {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes"})
-    void returnsCombinedDirectAndInheritedReferences() throws Exception {
-      String objectType = ObjectTypeListNamesEnum.COMPONENTS.getUri();
+    void returnsCombinedDirectAndInheritedReferences() {
       String targetId = "target-comp";
-
-      Component parent = new Component();
-      setPrivateField(parent, "name", "Parent Component");
-
-      Component target = new Component();
-      setPrivateField(target, "uniqueId", targetId);
-      setPrivateField(target, "name", "Target Component");
-      setPrivateField(target, "parents", Set.of(parent));
-
-      Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>> repoMap =
-          stubAllRepositories(version);
-
-      ConcurrentMap<String, Component> compData = new ConcurrentHashMap<>();
-      compData.put(targetId, target);
-      compData.put("parent-id", parent);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.COMPONENTS).getData())
-          .thenReturn(compData);
-
-      setPrivateField(target, "data", commonData);
-      setPrivateField(parent, "data", commonData);
-
-      Component referringComp = new Component();
-      setPrivateField(referringComp, "uniqueId", "direct-ref-id");
-      setPrivateField(referringComp, "name", "Direct Referring Comp");
-      setPrivateField(referringComp, "parents", Set.of(target));
-      setPrivateField(referringComp, "data", commonData);
-
-      compData.put("direct-ref-id", referringComp);
+      Component parent = component("parent-id", "Parent Component", Set.of());
+      Component target = component(targetId, "Target Component", Set.of(parent));
+      Component referringComponent =
+          component("direct-ref-id", "Direct Referring Comp", Set.of(target));
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(target.id(), target);
+      components.put(parent.id(), parent);
+      components.put(referringComponent.id(), referringComponent);
+      version.addRepository(components);
 
       Service inheritedService = new Service();
       inheritedService.setName("Service From Parent");
       inheritedService.setComponent(parent);
-
-      ConcurrentMap<String, Service> svcData = new ConcurrentHashMap<>();
-      svcData.put(inheritedService.id(), inheritedService);
-      when((ConcurrentMap) repoMap.get(ObjectTypeListNamesEnum.SERVICES).getData())
-          .thenReturn(svcData);
+      ServicesRepository services = new ServicesRepository();
+      services.put(inheritedService.id(), inheritedService);
+      version.addRepository(services);
 
       ReferencesResponse response =
-          referencesService.computeReferences(version, objectType, targetId);
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, targetId);
 
       assertThat(response.direct()).containsKey(ObjectTypeListNamesEnum.COMPONENTS.getUri());
       assertThat(response.direct().get(ObjectTypeListNamesEnum.COMPONENTS.getUri()).get(0).id())
@@ -296,39 +246,418 @@ class ReferencesServiceTest {
                   .fromParent())
           .isEqualTo("Parent Component");
     }
-  }
 
-  // --- Helpers ---
+    @Test
+    void scopeIsIgnoredWhenItIsDeclaringScope() {
+      String targetId = "comp-target";
+      Scope declaringScope = scope("declaring-scope", "Declaring Scope");
+      Component target = component(targetId, "Target Component", Set.of());
+      target.setScope(declaringScope);
+      declaringScope.setComponents(Set.of(target));
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(target.id(), target);
+      version.addRepository(components);
+      ScopesRepository scopes = new ScopesRepository();
+      scopes.put(declaringScope.id(), declaringScope);
+      version.addRepository(scopes);
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  private Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>>
-      stubAllRepositories(Version version) {
-    Map<ObjectTypeListNamesEnum, ConcurrentRepository<? extends BomElement>> repoMap =
-        new TreeMap<>();
-    for (ObjectTypeListNamesEnum type : ObjectTypeListNamesEnum.values()) {
-      ConcurrentRepository repo = mock(ConcurrentRepository.class);
-      when(version.getRepository(type.getRepositoryKey())).thenReturn(repo);
-      when(repo.getData()).thenReturn(new ConcurrentHashMap<>());
-      repoMap.put(type, repo);
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, targetId);
+
+      assertThat(response.direct()).doesNotContainKey(ObjectTypeListNamesEnum.SCOPES.getUri());
     }
-    return repoMap;
-  }
 
-  private void setPrivateField(Object object, String fieldName, Object value) throws Exception {
-    Field field = findField(object.getClass(), fieldName);
-    field.setAccessible(true);
-    field.set(object, value);
-  }
+    @Test
+    void scopeIsIncludedWhenItIsExternalReference() {
+      String targetId = "target-entity";
+      Scope declaringScope = scope("declaring-scope", "Declaring Scope");
+      DummyEntity target = new DummyEntity();
+      target.setUniqueIdFrom(targetId);
+      target.setName("Target Entity");
+      target.setData(new V1Scope());
+      target.setScope(declaringScope);
+      SecurityAreasRepository<DummyEntity> securityAreas = new SecurityAreasRepository<>();
+      securityAreas.put(target.id(), target);
+      version.addRepository(securityAreas);
+      TestReferringScope referringScope = new TestReferringScope();
+      referringScope.setUniqueIdFrom("referring-scope");
+      referringScope.setName("Referring Scope");
+      referringScope.targetRef = target;
+      referringScope.setData(new V1Scope());
+      ScopesRepository scopes = new ScopesRepository();
+      scopes.put(declaringScope.id(), declaringScope);
+      scopes.put(referringScope.id(), referringScope);
+      version.addRepository(scopes);
 
-  private Field findField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
-    Class<?> current = clazz;
-    while (current != null) {
-      try {
-        return current.getDeclaredField(fieldName);
-      } catch (NoSuchFieldException e) {
-        current = current.getSuperclass();
-      }
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.SECURITYAREAS, targetId);
+
+      assertThat(response.direct()).containsKey(ObjectTypeListNamesEnum.SCOPES.getUri());
+      List<ReferenceEntry> entries = response.direct().get(ObjectTypeListNamesEnum.SCOPES.getUri());
+      assertThat(entries)
+          .singleElement()
+          .extracting(ReferenceEntry::id)
+          .isEqualTo("referring-scope");
     }
-    throw new NoSuchFieldException(fieldName);
+
+    @Test
+    void returnsEmptyResponseForNonAbstractTargetAndMissingReferenceRepositories() {
+      BomElement target = () -> "plain-id";
+      SecurityAreasRepository<BomElement> securityAreas = new SecurityAreasRepository<>();
+      securityAreas.put("plain-key", target);
+      version.addRepository(securityAreas);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.SECURITYAREAS, "plain-id");
+
+      assertThat(response.direct()).isEmpty();
+      assertThat(response.inherited()).isEmpty();
+    }
+
+    @Test
+    void missingTargetRepositoryAndDataThrowNotFoundException() {
+      Version versionWithoutRepository = new Version();
+      Version versionWithoutData = new Version();
+      ComponentsRepository repositoryWithoutData = new ComponentsRepository();
+      repositoryWithoutData.setData(null);
+      versionWithoutData.addRepository(repositoryWithoutData);
+
+      assertThatThrownBy(
+              () ->
+                  referencesService.computeReferences(
+                      versionWithoutRepository, ObjectTypeListNamesEnum.COMPONENTS, "missing"))
+          .isInstanceOf(NotFoundException.class);
+      assertThatThrownBy(
+              () ->
+                  referencesService.computeReferences(
+                      versionWithoutData, ObjectTypeListNamesEnum.COMPONENTS, "missing"))
+          .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void componentInheritanceCoversDependencyEndsAndSuppressesDirectDuplicates() {
+      Component sourceParent = component("source-parent", "Source Parent", Set.of());
+      Component destinationParent = component("destination-parent", "Destination Parent", Set.of());
+      Component target = component("target", "Target", Set.of(sourceParent, destinationParent));
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(target.id(), target);
+      version.addRepository(components);
+
+      Dependency sourceDependency = dependency("source-dependency", sourceParent, null);
+      Dependency destinationDependency =
+          dependency("destination-dependency", null, destinationParent);
+      Dependency bothDependency = dependency("both-dependency", sourceParent, destinationParent);
+      Dependency duplicate = dependency("duplicate", sourceParent, target);
+      DependenciesRepository dependencies = new DependenciesRepository();
+      dependencies.put(sourceDependency.id(), sourceDependency);
+      dependencies.put(destinationDependency.id(), destinationDependency);
+      dependencies.put(bothDependency.id(), bothDependency);
+      dependencies.put(duplicate.id(), duplicate);
+      version.addRepository(dependencies);
+
+      Service serviceWithoutComponent = new Service();
+      serviceWithoutComponent.setName("Service Without Component");
+      ServicesRepository services = new ServicesRepository();
+      services.put(serviceWithoutComponent.id(), serviceWithoutComponent);
+      version.addRepository(services);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, target.id());
+
+      assertThat(response.direct().get(ObjectTypeListNamesEnum.DEPENDENCIES.getUri()))
+          .extracting(ReferenceEntry::id)
+          .containsExactly("duplicate");
+      assertThat(response.inherited().get(ObjectTypeListNamesEnum.DEPENDENCIES.getUri()))
+          .extracting(ReferenceEntry::id)
+          .containsExactlyInAnyOrder(
+              "source-dependency", "destination-dependency", "both-dependency");
+      assertThat(response.inherited().get(ObjectTypeListNamesEnum.DEPENDENCIES.getUri()))
+          .filteredOn(entry -> "both-dependency".equals(entry.id()))
+          .singleElement()
+          .extracting(ReferenceEntry::fromParent)
+          .isEqualTo("Destination Parent,Source Parent");
+    }
+
+    @Test
+    void componentInstanceInheritanceHandlesDestinationNullDependencyAndDuplicate() {
+      Component parent = component("parent", "Parent", Set.of());
+      Component child = component("child", "Child", Set.of(parent));
+      ComponentInstance targetInstance = componentInstance("instance", child);
+      ComponentInstancesRepository instances = new ComponentInstancesRepository();
+      instances.put(targetInstance.id(), targetInstance);
+      version.addRepository(instances);
+
+      Dependency destinationDependency = dependency("destination", null, parent);
+      DependencyInstance destinationInstance =
+          dependencyInstance("destination-instance", destinationDependency, false, true);
+      DependencyInstance nullDependency = dependencyInstance("null-dependency", null, true, true);
+      DependencyInstance duplicate =
+          dependencyInstance("duplicate-instance", destinationDependency, false, true);
+      duplicate.setComponentInstance(targetInstance);
+      DependencyInstancesRepository dependencyInstances = new DependencyInstancesRepository();
+      dependencyInstances.put(destinationInstance.id(), destinationInstance);
+      dependencyInstances.put(nullDependency.id(), nullDependency);
+      dependencyInstances.put(duplicate.id(), duplicate);
+      version.addRepository(dependencyInstances);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTINSTANCES, targetInstance.id());
+
+      assertThat(response.inherited().get(ObjectTypeListNamesEnum.DEPENDENCYINSTANCES.getUri()))
+          .singleElement()
+          .satisfies(
+              (ReferenceEntry entry) -> {
+                assertThat(entry.id()).isEqualTo("destination-instance");
+                assertThat(entry.fromParent()).isEqualTo("Parent");
+              });
+      assertThat(response.direct().get(ObjectTypeListNamesEnum.DEPENDENCYINSTANCES.getUri()))
+          .extracting(ReferenceEntry::id)
+          .containsExactly("duplicate-instance");
+    }
+
+    @Test
+    void directReferenceScanSkipsReleaseNotesAndNonAbstractElements() {
+      Component target = component("target", "Target", Set.of());
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(target.id(), target);
+      version.addRepository(components);
+
+      ScopeReleaseNote releaseNote = new ScopeReleaseNote();
+      releaseNote.setUniqueIdFrom("note");
+      ScopeReleaseNotesRepository releaseNotes = new ScopeReleaseNotesRepository();
+      releaseNotes.put(releaseNote.id(), releaseNote);
+      version.addRepository(releaseNotes);
+      BomElement plainElement = () -> "plain";
+      SecurityAreasRepository<BomElement> securityAreas = new SecurityAreasRepository<>();
+      securityAreas.put(plainElement.id(), plainElement);
+      version.addRepository(securityAreas);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, target.id());
+
+      assertThat(response.direct()).isEmpty();
+      assertThat(response.inherited()).isEmpty();
+    }
+
+    @Test
+    void componentReferencesCoverInterfaceFlagsAndNonMatchingAncestors() {
+      Component sharedAncestor = component("shared", "Shared", Set.of());
+      Component sourceAncestor = component("source", null, Set.of(sharedAncestor));
+      Component destinationAncestor = component("destination", null, Set.of(sharedAncestor));
+      Component unrelated = component("unrelated", "Unrelated", Set.of());
+      Component target =
+          component(
+              "target",
+              "Target",
+              new LinkedHashSet<>(List.of(sourceAncestor, destinationAncestor)));
+      Component publicReference =
+          componentWithFlags(
+              "public-reference",
+              "Public Reference",
+              new LinkedHashSet<>(List.of(unrelated, target)),
+              true,
+              false);
+      Component interfaceReference =
+          componentWithFlags(
+              "interface-reference", "Interface Reference", Set.of(target), true, true);
+      ComponentsRepository components = new ComponentsRepository();
+      components.put(target.id(), target);
+      components.put(publicReference.id(), publicReference);
+      components.put(interfaceReference.id(), interfaceReference);
+      version.addRepository(components);
+
+      Scope unrelatedScope = scope("unrelated-scope", "Unrelated Scope");
+      ScopesRepository scopes = new ScopesRepository();
+      scopes.put(unrelatedScope.id(), unrelatedScope);
+      version.addRepository(scopes);
+
+      Dependency sourceDependency = dependency("source-dependency", sourceAncestor, null);
+      Dependency destinationDependency =
+          dependency("destination-dependency", null, destinationAncestor);
+      Dependency unrelatedDependency = dependency("unrelated-dependency", unrelated, unrelated);
+      DependenciesRepository dependencies = new DependenciesRepository();
+      dependencies.put(sourceDependency.id(), sourceDependency);
+      dependencies.put(destinationDependency.id(), destinationDependency);
+      dependencies.put(unrelatedDependency.id(), unrelatedDependency);
+      version.addRepository(dependencies);
+
+      Service unrelatedService = new Service();
+      unrelatedService.setName("Unrelated Service");
+      unrelatedService.setComponent(unrelated);
+      ServicesRepository services = new ServicesRepository();
+      services.put(unrelatedService.id(), unrelatedService);
+      version.addRepository(services);
+      ApplicationPhasesRepository applicationPhases = new ApplicationPhasesRepository();
+      applicationPhases.setData(null);
+      version.addRepository(applicationPhases);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTS, target.id());
+
+      assertThat(response.direct().get(ObjectTypeListNamesEnum.COMPONENTS.getUri()))
+          .extracting(ReferenceEntry::id, ReferenceEntry::isInterface)
+          .containsExactlyInAnyOrder(
+              org.assertj.core.groups.Tuple.tuple("public-reference", null),
+              org.assertj.core.groups.Tuple.tuple("interface-reference", true));
+      assertThat(response.inherited().get(ObjectTypeListNamesEnum.DEPENDENCIES.getUri()))
+          .extracting(ReferenceEntry::id, ReferenceEntry::fromParent)
+          .containsExactlyInAnyOrder(
+              org.assertj.core.groups.Tuple.tuple("source-dependency", null),
+              org.assertj.core.groups.Tuple.tuple("destination-dependency", null));
+      assertThat(response.inherited()).doesNotContainKey(ObjectTypeListNamesEnum.SERVICES.getUri());
+    }
+
+    @Test
+    void componentInstanceReferencesRejectUnrelatedEndsAndHandleUnnamedParent() {
+      Component parent = component("parent", null, Set.of());
+      Component child = component("child", "Child", Set.of(parent));
+      Component unrelated = component("unrelated", "Unrelated", Set.of());
+      ComponentInstance target = componentInstance("target-instance", child);
+      ComponentInstancesRepository componentInstances = new ComponentInstancesRepository();
+      componentInstances.put(target.id(), target);
+      version.addRepository(componentInstances);
+
+      Dependency matchingDependency = dependency("matching-dependency", parent, parent);
+      Dependency unrelatedDependency = dependency("unrelated-dependency", unrelated, unrelated);
+      DependencyInstance matchingInstance =
+          dependencyInstance("matching-instance", matchingDependency, true, true);
+      DependencyInstance unrelatedInstance =
+          dependencyInstance("unrelated-instance", unrelatedDependency, true, true);
+      DependencyInstancesRepository dependencyInstances = new DependencyInstancesRepository();
+      dependencyInstances.put(matchingInstance.id(), matchingInstance);
+      dependencyInstances.put(unrelatedInstance.id(), unrelatedInstance);
+      version.addRepository(dependencyInstances);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTINSTANCES, target.id());
+
+      assertThat(response.inherited().get(ObjectTypeListNamesEnum.DEPENDENCYINSTANCES.getUri()))
+          .singleElement()
+          .satisfies(
+              (ReferenceEntry entry) -> {
+                assertThat(entry.id()).isEqualTo("matching-instance");
+                assertThat(entry.fromParent()).isNull();
+              });
+    }
+
+    @Test
+    void componentInstanceWithoutComponentHasNoInheritedReferences() {
+      ComponentInstance target = componentInstance("target-instance", null);
+      ComponentInstancesRepository componentInstances = new ComponentInstancesRepository();
+      componentInstances.put(target.id(), target);
+      version.addRepository(componentInstances);
+
+      ReferencesResponse response =
+          referencesService.computeReferences(
+              version, ObjectTypeListNamesEnum.COMPONENTINSTANCES, target.id());
+
+      assertThat(response.direct()).isEmpty();
+      assertThat(response.inherited()).isEmpty();
+    }
+  }
+
+  private static final class DummyEntity extends AbstractBase<V1Scope> {}
+
+  private static final class TestReferringScope extends Scope {
+    private DummyEntity targetRef;
+  }
+
+  private Component component(String id, String name, Set<Component> parents) {
+    Component component = new Component();
+    component.setUniqueIdFrom(id);
+    component.setName(name);
+    component.setParents(parents);
+    component.setData(commonData);
+    return component;
+  }
+
+  private Component componentWithFlags(
+      String id,
+      String name,
+      Set<Component> parents,
+      boolean publicInheritance,
+      boolean technical) {
+    Component component = component(id, name, parents);
+    component.setData(componentData(publicInheritance, technical));
+    return component;
+  }
+
+  private ComponentInstance componentInstance(String id, Component component) {
+    V1ComponentInstanceSpec spec = new V1ComponentInstanceSpec();
+    V1ComponentInstance data = new V1ComponentInstance();
+    data.setSpec(spec);
+    ComponentInstance componentInstance = new ComponentInstance();
+    componentInstance.setUniqueIdFrom(id);
+    componentInstance.setName(id);
+    componentInstance.setData(data);
+    componentInstance.setComponent(component);
+    return componentInstance;
+  }
+
+  private static Scope scope(String id, String name) {
+    Scope scope = new Scope();
+    scope.setUniqueIdFrom(id);
+    scope.setName(name);
+    scope.setData(new V1Scope());
+    return scope;
+  }
+
+  private static V1Component componentData(boolean publicInheritance, boolean technical) {
+    V1ComponentSpec spec = new V1ComponentSpec();
+    spec.setIsPublicInheritance(publicInheritance);
+    spec.setIsTechnical(technical);
+    V1Component data = new V1Component();
+    data.setSpec(spec);
+    return data;
+  }
+
+  private Dependency dependency(String id, Component source, Component destination) {
+    Dependency dependency = new Dependency();
+    dependency.setUniqueIdFrom(id);
+    dependency.setName(id);
+    dependency.setSourceComponent(source);
+    dependency.setDestinationComponent(destination);
+    dependency.setData(new V1Dependency());
+    return dependency;
+  }
+
+  private DependencyInstance dependencyInstance(
+      String id, Dependency dependency, boolean sourceAsComponent, boolean targetAsComponent) {
+    DependencyInstance instance = new DependencyInstance();
+    instance.setUniqueIdFrom(id);
+    instance.setName(id);
+    instance.setDependency(dependency);
+    instance.setSourceAsComponent(sourceAsComponent);
+    V1DependencyInstanceSpec spec = new V1DependencyInstanceSpec();
+    spec.setIsSourceAsComponent(sourceAsComponent);
+    spec.setIsTargetAsComponent(targetAsComponent);
+    V1DependencyInstance data = new V1DependencyInstance();
+    data.setSpec(spec);
+    instance.setData(data);
+    return instance;
+  }
+
+  private static final class TestAudService extends AudService {
+    private final Version version;
+
+    private TestAudService(Version version) {
+      super(null, null, null);
+      this.version = version;
+    }
+
+    @Override
+    public Uni<Version> getVersion(String versionId) {
+      return Uni.createFrom().item(version);
+    }
   }
 }
+
+final class SecurityAreasRepository<T extends BomElement> extends ConcurrentRepository<T> {}

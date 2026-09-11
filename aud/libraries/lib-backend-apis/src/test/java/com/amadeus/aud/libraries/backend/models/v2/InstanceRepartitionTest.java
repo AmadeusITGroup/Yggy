@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class InstanceRepartitionTest {
 
   @Test
-  void testInstanceRepartition() {
+  void instanceRepartition() {
     InstanceRepartition response =
         new InstanceRepartition(
             1,
@@ -21,7 +21,7 @@ class InstanceRepartitionTest {
                 List.of(new BreakdownCount("sz-1", 1)),
                 List.of(new BreakdownCount("target-1", 1))));
 
-    assertThat(response.total()).isEqualTo(1);
+    assertThat(response.total()).isOne();
     assertThat(response.breakdowns().macrophase())
         .containsExactly(new BreakdownCount("phase-1", 1));
     assertThat(response.breakdowns().securityZone()).containsExactly(new BreakdownCount("sz-1", 1));

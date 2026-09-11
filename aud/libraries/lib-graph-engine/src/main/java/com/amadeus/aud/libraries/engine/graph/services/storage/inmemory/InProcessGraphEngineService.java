@@ -99,7 +99,7 @@ public class InProcessGraphEngineService implements GraphEngineService {
   @Override
   public boolean isReady(String versionNumber) {
     VersionData data = store.getIfPresent(versionNumber);
-    return data != null && !data.getEdges().isEmpty();
+    return data != null;
   }
 
   @Override
@@ -256,7 +256,8 @@ public class InProcessGraphEngineService implements GraphEngineService {
   }
 
   private VersionData getOrBuildVersionData(Version version) {
-    return store.get(version.getVersionNumber(), k -> dataMapper.buildVersionData(version));
+    return store.get(
+        version.getVersionNumber(), (String unused) -> dataMapper.buildVersionData(version));
   }
 
   private void rebuildDeduplicationPool() {

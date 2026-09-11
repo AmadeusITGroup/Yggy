@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Backend API
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: entry point to access the Backend API Application-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Frontend UI
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: Access to the UI in https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Storage Account
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: The https port exposed to consume the Backend API Storage
+    Account

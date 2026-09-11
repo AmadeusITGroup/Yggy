@@ -48,7 +48,6 @@ class ObjectTypeListNamesEnumTest {
   void allEnumValuesHaveInitialColumns() {
     for (ObjectTypeListNamesEnum enumValue : ObjectTypeListNamesEnum.values()) {
       assertThat(enumValue.getInitialColumns())
-          .isNotNull()
           .isNotEmpty()
           .as("Initial columns should not be empty for %s", enumValue);
     }
@@ -58,7 +57,7 @@ class ObjectTypeListNamesEnumTest {
   @EnumSource(ObjectTypeListNamesEnum.class)
   void byUriReturnsCorrectEnumValue(ObjectTypeListNamesEnum enumValue) {
     Optional<ObjectTypeListNamesEnum> result = ObjectTypeListNamesEnum.byUri(enumValue.getUri());
-    assertThat(result).isPresent().contains(enumValue);
+    assertThat(result).hasValue(enumValue);
   }
 
   @Test
@@ -70,19 +69,19 @@ class ObjectTypeListNamesEnumTest {
   @Test
   void byUriFindsApplicationIds() {
     Optional<ObjectTypeListNamesEnum> result = ObjectTypeListNamesEnum.byUri("applicationids");
-    assertThat(result).isPresent().contains(ObjectTypeListNamesEnum.APPLICATIONIDS);
+    assertThat(result).hasValue(ObjectTypeListNamesEnum.APPLICATIONIDS);
   }
 
   @Test
   void byUriFindsScopes() {
     Optional<ObjectTypeListNamesEnum> result = ObjectTypeListNamesEnum.byUri("scopes");
-    assertThat(result).isPresent().contains(ObjectTypeListNamesEnum.SCOPES);
+    assertThat(result).hasValue(ObjectTypeListNamesEnum.SCOPES);
   }
 
   @Test
   void byUriFindsComponents() {
     Optional<ObjectTypeListNamesEnum> result = ObjectTypeListNamesEnum.byUri("components");
-    assertThat(result).isPresent().contains(ObjectTypeListNamesEnum.COMPONENTS);
+    assertThat(result).hasValue(ObjectTypeListNamesEnum.COMPONENTS);
   }
 
   @Test

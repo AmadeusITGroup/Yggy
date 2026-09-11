@@ -12,11 +12,8 @@
   <inceptionYear>2026</inceptionYear>
 
   <properties>
-    <annotations.version>4.9.6</annotations.version>
-    <commons-csv.version>1.14.1</commons-csv.version>
-
-    <unittests.instruction.coverage>0.08</unittests.instruction.coverage>
-    <unittests.branch.coverage>0.04</unittests.branch.coverage>
+    <unittests.instruction.coverage>0.23</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.09</unittests.branch.coverage>
 
     <jvm.args>-XX:+UseG1GC
             -XX:+UseDynamicNumberOfGCThreads
@@ -63,6 +60,16 @@
       <artifactId>quarkus-rest-jackson</artifactId>
     </dependency>
 
+    <!--        Quarkus OIDC-->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-security</artifactId>
+    </dependency>
+
     <!--        Quarkus Database - PostgreSQL-->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -93,13 +100,6 @@
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-extension-trace-propagators</artifactId>
-    </dependency>
-
-    <!--        Apache Commons-->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>${commons-csv.version}</version>
     </dependency>
 
     <!--        Google-->
@@ -137,7 +137,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit-mockito</artifactId>
+      <artifactId>quarkus-test-oidc-server</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -185,14 +185,22 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-failsafe-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
-          </systemPropertyVariables>
-        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <maven.home>${maven.home}</maven.home>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <!-- Yandex index needed so that Quarkus discovers the http service as well -->

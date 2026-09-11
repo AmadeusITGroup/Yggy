@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ' '
+  name: Backend API
+  scope: Application-1
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Frontend UI
+  scope: Application-1
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Storage Account
+  scope: Application-1
+spec:
+  parents:
+  - Azure Managed Service

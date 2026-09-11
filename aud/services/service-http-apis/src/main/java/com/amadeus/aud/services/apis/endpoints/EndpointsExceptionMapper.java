@@ -1,5 +1,6 @@
 package com.amadeus.aud.services.apis.endpoints;
 
+import com.amadeus.aud.libraries.engine.data.exceptions.InvalidVersionException;
 import com.amadeus.aud.libraries.yaml.models.Error;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ServiceUnavailableException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -21,13 +23,15 @@ public class EndpointsExceptionMapper implements ExceptionMapper<Throwable> {
     return switch (unwrapException(exception)) {
       case JsonProcessingException e ->
           internalError("Error processing JSON: " + e.getMessage(), e);
-      case BadRequestException e -> error(Response.Status.BAD_REQUEST, e.getMessage());
+      case InvalidVersionException e -> badRequest(e.getMessage());
+      case BadRequestException e -> badRequest(e.getMessage());
       case InternalServerErrorException e ->
           internalError("Internal Server Error: " + e.getMessage(), e);
       case NotFoundException e -> notFound(e.getMessage());
       case ServiceUnavailableException _ ->
           error(Response.Status.SERVICE_UNAVAILABLE, "Service Unavailable. Try again later.");
       case BlobStorageException e -> handleBlobStorageException(e);
+      case WebApplicationException e -> e.getResponse();
       case null, default -> internalError("Internal Server Error", exception);
     };
   }
@@ -53,6 +57,11 @@ public class EndpointsExceptionMapper implements ExceptionMapper<Throwable> {
 
   private static Response notFound(String message) {
     return error(Response.Status.NOT_FOUND, message);
+  }
+
+  private static Response badRequest(String message) {
+    Log.infof("Bad request: %s", message);
+    return error(Response.Status.BAD_REQUEST, message);
   }
 
   private static Response error(Response.Status status, String message) {

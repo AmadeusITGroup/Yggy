@@ -58,7 +58,7 @@ public class ScopeVersionsService extends BaseService {
 
     if (scope != null) {
       Scope dataScope = data.get(scope);
-      if (dataScope != null) {
+      if (dataScope != null && dataScope.getRequirement() != null) {
         scopeVersions.put(scope, dataScope.getRequirement().getVersion());
       }
     } else {

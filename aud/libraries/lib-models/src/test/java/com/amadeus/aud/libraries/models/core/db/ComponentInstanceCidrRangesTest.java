@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,6 +89,54 @@ class ComponentInstanceCidrRangesTest {
     assertThat(inList.get(0).name()).isEqualTo("in-name");
     assertThat(inList.get(1).value()).isEqualTo("10.0.2.0/24");
     assertThat(inList.get(1).name()).isEqualTo("paas-name");
+  }
+
+  @Test
+  @DisplayName("orders CIDRs by numeric address")
+  void ordersCidrsByValue() {
+    ComponentInstance ci = new ComponentInstance();
+    ci.setPaasZoneInSubnetInstances(
+        Set.of(
+            mockSubnet("subnet-10-id", "subnet-10", "10.0.10.0/24"),
+            mockSubnet("subnet-3-id", "subnet-3", "10.0.3.0/24"),
+            mockSubnet("subnet-1-id", "subnet-1", "10.0.1.0/24"),
+            mockSubnet("subnet-2-id", "subnet-2", "10.0.2.0/24")));
+
+    assertThat(ci.getCidrRanges().get("in"))
+        .extracting(ComponentInstance.CidrRange::value)
+        .containsExactly("10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.10.0/24");
+  }
+
+  @Test
+  @DisplayName("preserves invalid values first and orders valid CIDRs by prefix")
+  void preservesInvalidValuesFirstAndOrdersCidrsByPrefix() {
+    ComponentInstance ci = new ComponentInstance();
+    ci.setPaasZoneInSubnetInstances(
+        new LinkedHashSet<>(
+            List.of(
+                mockSubnet("invalid-b-id", "invalid-b", "invalid-b"),
+                mockSubnet("subnet-24-id", "subnet-24", "10.0.2.0/24"),
+                mockSubnet("subnet-16-id", "subnet-16", "10.0.2.0/16"),
+                mockSubnet("invalid-a-id", "invalid-a", "invalid-a"))));
+
+    assertThat(ci.getCidrRanges().get("in"))
+        .extracting(ComponentInstance.CidrRange::value)
+        .containsExactly("invalid-b", "invalid-a", "10.0.2.0/16", "10.0.2.0/24");
+  }
+
+  @Test
+  @DisplayName("orders CIDRs by address regardless of name")
+  void ordersCidrsRegardlessOfName() {
+    ComponentInstance ci = new ComponentInstance();
+    ci.setPaasZoneInSubnetInstances(
+        Set.of(
+            mockSubnet("unnamed-1-id", null, "10.0.1.0/24"),
+            mockSubnet("named-id", "named-subnet", "10.0.10.0/24"),
+            mockSubnet("unnamed-2-id", " ", "10.0.2.0/24")));
+
+    assertThat(ci.getCidrRanges().get("in"))
+        .extracting(ComponentInstance.CidrRange::value)
+        .containsExactly("10.0.1.0/24", "10.0.2.0/24", "10.0.10.0/24");
   }
 
   @Test

@@ -211,6 +211,7 @@ public final class YamlService extends AbstractDocumentParsingService {
     StringBuilder specFields = new StringBuilder();
 
     while (iterator.hasNext()) {
+      int lineNumber = iterator.getCurrentLocation().getLineNr();
       final JsonNode node = iterator.next();
       final Object o = mapper.treeToValue(node, Object.class);
 
@@ -219,7 +220,6 @@ public final class YamlService extends AbstractDocumentParsingService {
       SBUtils.reset(specFields);
       SBUtils.reset(metadataFields);
       if (o instanceof V1Base v1Base) {
-        int lineNumber = iterator.getCurrentLocation().getLineNr();
         v1Base.getMetadata().putLabelsItem(LOCATION_LABEL, pathName + ":" + lineNumber);
 
         collectFieldKeys(node.get("metadata"), "metadata", nullFields, null, metadataFields);

@@ -14,14 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-@Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("VersionGraphCacheService Tests")
 class VersionGraphCacheServiceTest {
 
@@ -37,7 +34,7 @@ class VersionGraphCacheServiceTest {
 
   @Test
   @DisplayName("should build graph with correct version number")
-  void testBuildVersionGraph() {
+  void buildVersionGraph() {
     when(version.getVersionNumber()).thenReturn("1.0.0");
 
     Graph graph = service.buildVersionGraph(version);
@@ -50,7 +47,7 @@ class VersionGraphCacheServiceTest {
 
   @Test
   @DisplayName("should handle different version numbers")
-  void testBuildVersionGraphWithDifferentVersions() {
+  void buildVersionGraphWithDifferentVersions() {
     Version version1 = mock(Version.class);
     when(version1.getVersionNumber()).thenReturn("1.0.0");
 
@@ -71,7 +68,7 @@ class VersionGraphCacheServiceTest {
 
   @Test
   @DisplayName("should call GraphService.populateGraphFromDependencies with correct Version")
-  void testGraphServiceIsCalledWithCorrectVersion() {
+  void graphServiceIsCalledWithCorrectVersion() {
     when(version.getVersionNumber()).thenReturn("3.0.0");
     ArgumentCaptor<Version> versionCaptor = ArgumentCaptor.forClass(Version.class);
 

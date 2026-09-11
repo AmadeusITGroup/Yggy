@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Legacy
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Regional Hub
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Google HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Google Spoke
+  scope: GlobalDefinitions

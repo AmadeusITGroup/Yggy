@@ -162,9 +162,9 @@ public class DependencyInstanceService
             } else {
               dependencyInstance.setDependency(dependency);
 
-              Component dependecySourceComponent = dependency.getSourceComponent();
-              if (dependecySourceComponent != null
-                  && Objects.equals(dependecySourceComponent.getName(), "Office users")) {
+              Component dependencySourceComponent = dependency.getSourceComponent();
+              if (dependencySourceComponent != null
+                  && Objects.equals(dependencySourceComponent.getName(), "Office users")) {
                 dependencyInstance.setSourceAsComponent(true);
               }
               dependency.addDependencyInstance(dependencyInstance);

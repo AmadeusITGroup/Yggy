@@ -28,7 +28,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -157,7 +156,7 @@ class PostgresEntitiesAndCopyWritersTest {
     }
 
     @Test
-    void writeBinaryEdgeDataProducesValidHeaderAndSkipsMissingNodes() throws IOException {
+    void writeBinaryEdgeDataProducesValidHeaderAndSkipsMissingNodes() throws Exception {
       ComponentInstance src = component("src");
       ComponentInstance dst = component("dst");
       ComponentInstance missing = component("missing");
@@ -174,14 +173,14 @@ class PostgresEntitiesAndCopyWritersTest {
           PostgresEdgeCopyWriter.writeBinaryEdgeData(
               dos, List.of(validEdge, skippedEdge), nodeIdMap, 5);
 
-      assertThat(count).isEqualTo(1); // only the valid edge written
+      assertThat(count).isOne(); // only the valid edge written
       byte[] out = baos.toByteArray();
       // PostgreSQL binary COPY header starts with "PGCOPY"
       assertThat(out).startsWith(new byte[] {'P', 'G', 'C', 'O', 'P', 'Y'});
     }
 
     @Test
-    void writeBinaryEdgeDataWritesZeroRowsWhenAllNodesMissing() throws IOException {
+    void writeBinaryEdgeDataWritesZeroRowsWhenAllNodesMissing() throws Exception {
       ComponentInstance src = component("src");
       ComponentInstance dst = component("dst");
       Edge edge = buildEdge(src, dst);
@@ -194,7 +193,7 @@ class PostgresEntitiesAndCopyWritersTest {
     }
 
     @Test
-    void writeBinaryEdgeDataHandlesEmptyEdgeList() throws IOException {
+    void writeBinaryEdgeDataHandlesEmptyEdgeList() throws Exception {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       DataOutputStream dos = new DataOutputStream(baos);
 
@@ -203,7 +202,7 @@ class PostgresEntitiesAndCopyWritersTest {
     }
 
     @Test
-    void cancelCopyOperationSuppressesExceptionWhenCancelFails() throws SQLException {
+    void cancelCopyOperationSuppressesExceptionWhenCancelFails() throws Exception {
       CopyIn copyIn = mock(CopyIn.class);
       doReturn(true).when(copyIn).isActive();
       SQLException cancelEx = new SQLException("cancel failed");
@@ -341,8 +340,7 @@ class PostgresEntitiesAndCopyWritersTest {
 
       String copiedCsv = copiedCsvBytes.toString(StandardCharsets.UTF_8);
       assertThat(result).containsEntry(node, 10L);
-      assertThat(copiedCsv).contains("deploy-platform-name");
-      assertThat(copiedCsv).doesNotContain("service-node-name");
+      assertThat(copiedCsv).contains("deploy-platform-name").doesNotContain("service-node-name");
     }
 
     @Test
@@ -1056,7 +1054,7 @@ class PostgresEntitiesAndCopyWritersTest {
       repo.entityManagerInstance = emInstance;
 
       assertThat(repo.findAllVersions()).containsExactly("1.0.0", "1.0.1");
-      assertThat(repo.computeNextVersionRank()).isEqualTo(1);
+      assertThat(repo.computeNextVersionRank()).isOne();
       assertThat(repo.computeNextVersionRank()).isEqualTo(8);
     }
 
@@ -1078,7 +1076,7 @@ class PostgresEntitiesAndCopyWritersTest {
       repo.entityManagerInstance = emInstance;
 
       assertThat(repo.findByMaxVersionRank()).isEmpty();
-      assertThat(repo.findByMaxVersionRank()).contains(graphEntity);
+      assertThat(repo.findByMaxVersionRank()).hasValue(graphEntity);
     }
   }
 }

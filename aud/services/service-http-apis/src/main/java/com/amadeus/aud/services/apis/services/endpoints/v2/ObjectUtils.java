@@ -629,7 +629,6 @@ public final class ObjectUtils {
             "$.subnet_type",
             dataUri(ObjectTypeListNamesEnum.SUBNETTYPES, subnetInstance.getSubnetType().id()),
             Display.HREF));
-    links.add(connectivityLink(ObjectTypeListNamesEnum.SUBNETINSTANCES, subnetInstance.id()));
     return links;
   }
 
@@ -671,7 +670,6 @@ public final class ObjectUtils {
             "$.landing_zone",
             dataUri(ObjectTypeListNamesEnum.LANDINGZONES, zi.getLandingZone().id()),
             Display.HREF));
-    links.add(connectivityLink(ObjectTypeListNamesEnum.ZONEINSTANCES, zi.id()));
     return links;
   }
 

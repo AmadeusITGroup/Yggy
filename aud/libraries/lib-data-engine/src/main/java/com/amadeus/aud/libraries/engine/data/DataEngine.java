@@ -1,7 +1,9 @@
 package com.amadeus.aud.libraries.engine.data;
 
+import com.amadeus.aud.libraries.engine.data.exceptions.InvalidVersionException;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.services.VersionService;
+import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -15,7 +17,7 @@ public class DataEngine {
     this.versionService = versionService;
   }
 
-  public Uni<Version> init(String versionNumber) {
+  private Uni<Version> init(String versionNumber) {
     return versionService.getVersion(versionNumber);
   }
 
@@ -32,6 +34,9 @@ public class DataEngine {
     if (Constants.LATEST.equalsIgnoreCase(versionId)) {
       version = getCurrentVersion();
     } else {
+      if (!VersionUtils.isSemver(versionId)) {
+        throw new InvalidVersionException(versionId);
+      }
       version = init(versionId);
     }
     return version;

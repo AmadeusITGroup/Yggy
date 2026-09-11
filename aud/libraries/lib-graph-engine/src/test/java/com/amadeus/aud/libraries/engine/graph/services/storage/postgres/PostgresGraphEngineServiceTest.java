@@ -28,7 +28,6 @@ import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
 import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
 import com.amadeus.aud.libraries.models.core.db.Scope;
 import com.amadeus.aud.libraries.models.core.db.Service;
-import com.google.common.collect.ImmutableMap;
 import io.smallrye.mutiny.Uni;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -123,22 +122,22 @@ class PostgresGraphEngineServiceTest {
         .isEqualTo(nodes);
 
     assertThat(sut.getGraphEdges("1.0.0", 0, 10, EdgeDirection.ANY).await().indefinitely())
-        .isEqualTo(edges);
+        .containsExactlyElementsOf(edges);
     assertThat(
             sut.getGraphEdgesByTargets("1.0.0", 0, 10, List.of("target"), EdgeDirection.OUTBOUND)
                 .await()
                 .indefinitely())
-        .isEqualTo(edges);
+        .containsExactlyElementsOf(edges);
     assertThat(
             sut.getGraphEdgesByPlatforms("1.0.0", 0, 10, List.of("platform"), EdgeDirection.INBOUND)
                 .await()
                 .indefinitely())
-        .isEqualTo(edges);
+        .containsExactlyElementsOf(edges);
     assertThat(
             sut.getGraphEdgesByLandingZones("1.0.0", 0, 10, List.of("lz"), EdgeDirection.ANY)
                 .await()
                 .indefinitely())
-        .isEqualTo(edges);
+        .containsExactlyElementsOf(edges);
     assertThat(
             sut.getGraphEdgesByNodeIds("1.0.0", 0, 10, List.of("src"), List.of("dst"))
                 .await()
@@ -162,8 +161,8 @@ class PostgresGraphEngineServiceTest {
     doReturn(7L).when(edgeRepository).countByVersionRank(4);
     doReturn(2L).when(graphRepository).count();
 
-    assertThat(sut.getLatestGraph("latest")).contains(graph);
-    assertThat(sut.getLatestGraph("1.1.1")).contains(graph);
+    assertThat(sut.getLatestGraph("latest")).hasValue(graph);
+    assertThat(sut.getLatestGraph("1.1.1")).hasValue(graph);
     assertThat(sut.getAvailableVersionNumbers()).containsExactly("1.0.0", "1.1.1");
     assertThat(sut.countNodes(graph)).isEqualTo(12L);
     assertThat(sut.countEdges(graph)).isEqualTo(7L);
@@ -260,10 +259,7 @@ class PostgresGraphEngineServiceTest {
   void saveGraphValidatesInputAndSupportsFullAndIncrementalFlows() {
     assertThatThrownBy(() -> sut.saveGraph(null)).isInstanceOf(IllegalArgumentException.class);
 
-    Graph emptyGraph = mock(Graph.class);
-    doReturn("5.0.0").when(emptyGraph).getVersionNumber();
-    doReturn(ImmutableMap.of()).when(emptyGraph).getNodes();
-    doReturn(ImmutableMap.of()).when(emptyGraph).getEdges();
+    Graph emptyGraph = new GraphBuilder("5.0.0").build();
     sut.saveGraph(emptyGraph);
 
     Graph graph = buildGraph("5.0.1");

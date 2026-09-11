@@ -1,0 +1,44 @@
+---
+requirements:
+  - name: Application-1
+    scope: Application-1
+    comment: Application-1
+    repo: projects/YGGY/repos/auds-Application-1/raw/
+    files:
+      - Application-1.yml
+    version: 1.0.1
+  - name: Application-2
+    scope: Application-2
+    comment: Application-2
+    repo: projects/YGGY/repos/auds-Application-2/raw/
+    files:
+      - Application-2.yml
+    version: 1.0.1
+  - name: GlobalDefinitions
+    scope: GlobalDefinitions
+    comment: GlobalDefinitions
+    repo: projects/YGGY/repos/auds-GlobalDefinitions/raw/
+    files:
+      - GlobalDefinitions.yml
+    version: 1.0.1
+  - name: Infra_Azure
+    scope: Infra_Azure
+    comment: Infra_Azure
+    repo: projects/YGGY/repos/auds-Infra_Azure/raw/
+    files:
+      - Infra_Azure.yml
+    version: 1.0.1
+  - name: Infra_GCP
+    scope: Infra_GCP
+    comment: Infra_GCP
+    repo: projects/YGGY/repos/auds-Infra_GCP/raw/
+    files:
+      - Infra_GCP.yml
+    version: 1.0.1
+  - name: Openshift
+    scope: Openshift
+    comment: Openshift
+    repo: projects/YGGY/repos/auds-Openshift/raw/
+    files:
+      - Openshift.yml
+    version: 1.0.1

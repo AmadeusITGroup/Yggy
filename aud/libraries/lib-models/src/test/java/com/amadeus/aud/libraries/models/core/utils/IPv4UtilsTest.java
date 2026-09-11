@@ -55,6 +55,12 @@ class IPv4UtilsTest {
     }
 
     @Test
+    void withInvalidPrefix() {
+      assertThatThrownBy(() -> IPv4Utils.toRange("10.0.0.0/33"))
+          .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void equality() {
       // Both mask to the same /22 network (10.1.0.0/22), so the ranges are equal
       // even though the strings differ.
@@ -70,6 +76,28 @@ class IPv4UtilsTest {
       Range<BigInteger> singleIp2 = IPv4Utils.toRange("10.1.2.0");
 
       assertThat(singleIp2).isEqualTo(singleIp);
+    }
+  }
+
+  @Nested
+  class SortCidrs {
+    @Test
+    void sortsByNumericAddressAndRangeSize() {
+      List<String> cidrs = List.of("10.0.10.0/24", "10.0.2.0/24", "10.0.2.0/16", "10.0.1.0/24");
+
+      List<String> result = IPv4Utils.sortedCidrs(cidrs);
+
+      assertThat(result)
+          .containsExactly("10.0.2.0/16", "10.0.1.0/24", "10.0.2.0/24", "10.0.10.0/24");
+    }
+
+    @Test
+    void preservesInvalidValueOrder() {
+      List<String> cidrs = List.of("10.0.1.0/24", "10.0.0.0/33", "invalid");
+
+      List<String> result = IPv4Utils.sortedCidrs(cidrs);
+
+      assertThat(result).containsExactly("10.0.0.0/33", "invalid", "10.0.1.0/24");
     }
   }
 

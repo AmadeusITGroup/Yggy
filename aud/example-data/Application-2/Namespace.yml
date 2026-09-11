@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Backend Service API TST container instances
+  name: Backend-Application-2
+  scope: Application-2
+spec: {}

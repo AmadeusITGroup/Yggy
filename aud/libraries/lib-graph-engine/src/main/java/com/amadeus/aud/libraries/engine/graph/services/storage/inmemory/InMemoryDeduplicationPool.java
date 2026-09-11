@@ -98,7 +98,7 @@ public final class InMemoryDeduplicationPool {
   }
 
   void logStats() {
-    Log.infof(
+    Log.debugf(
         "Deduplication pool stats — edges: %d, nodes: %d, strings: %d",
         edgePool.size(), nodePool.size(), stringPool.size());
   }

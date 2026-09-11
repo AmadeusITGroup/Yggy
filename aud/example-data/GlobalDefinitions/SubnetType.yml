@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Application
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Mixed
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Database
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Management
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: GatewaySubnet
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  comment: To be used to specify virtual logical subnet to target all the subnet of
+    a given LZ
+  name: Global
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Load Balancer
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Logging
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Security
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Cardholder Data
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Storage
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: VIP
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Tooling
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: VMWare
+  scope: GlobalDefinitions

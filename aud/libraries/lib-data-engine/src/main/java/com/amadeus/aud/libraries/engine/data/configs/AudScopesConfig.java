@@ -3,6 +3,7 @@ package com.amadeus.aud.libraries.engine.data.configs;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import jakarta.inject.Singleton;
+import java.time.Duration;
 
 @ConfigMapping(prefix = "aud-scopes")
 @Singleton
@@ -19,8 +20,11 @@ public interface AudScopesConfig {
   @WithDefault("true")
   boolean associateScopeWithRequirements();
 
-  @WithDefault("60")
-  int maxLoadDuration();
+  @WithDefault("60s")
+  Duration maxLoadDuration();
+
+  @WithDefault(".")
+  String localScopesDirectory();
 
   interface ScopesBlobConfig {
     @WithDefault("false")

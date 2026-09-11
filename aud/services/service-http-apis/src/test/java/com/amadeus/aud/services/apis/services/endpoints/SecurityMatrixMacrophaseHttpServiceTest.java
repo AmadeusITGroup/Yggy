@@ -50,8 +50,7 @@ class SecurityMatrixMacrophaseHttpServiceTest {
   void setUp() throws Exception {
     service = new SecurityMatrixMacrophaseHttpService(audService, audApiConfig);
 
-    objectMapper = new ObjectMapper();
-    objectMapper.findAndRegisterModules();
+    objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
     objectMapperField.setAccessible(true);
     objectMapperField.set(service, objectMapper);
@@ -66,7 +65,7 @@ class SecurityMatrixMacrophaseHttpServiceTest {
 
   @Test
   @DisplayName("should return security matrix macrophases response")
-  void testGetSecurityMatrixMacrophasesWithValidVersion() throws Exception {
+  void getSecurityMatrixMacrophasesWithValidVersion() throws Exception {
     MacroPhase phase1 = mock(MacroPhase.class);
     when(phase1.getName()).thenReturn("phase1");
     when(phase1.getConnectionPhases()).thenReturn(Set.of());
@@ -101,15 +100,15 @@ class SecurityMatrixMacrophaseHttpServiceTest {
     @SuppressWarnings("unchecked")
     Map<String, Map<String, String>> matrix = (Map<String, Map<String, String>>) body.getMatrices();
 
-    assertThat(matrix.get("phase1").get("phase1")).isEqualTo("red");
-    assertThat(matrix.get("phase1").get("phase2")).isEqualTo("red");
-    assertThat(matrix.get("phase2").get("phase1")).isEqualTo("red");
-    assertThat(matrix.get("phase2").get("phase2")).isEqualTo("red");
+    assertThat(matrix.get("phase1")).containsEntry("phase1", "red");
+    assertThat(matrix.get("phase1")).containsEntry("phase2", "red");
+    assertThat(matrix.get("phase2")).containsEntry("phase1", "red");
+    assertThat(matrix.get("phase2")).containsEntry("phase2", "red");
   }
 
   @Test
   @DisplayName("should apply override controls from connection phases")
-  void testSecurityMatrixMacrophaseWithOverrides() throws Exception {
+  void securityMatrixMacrophaseWithOverrides() throws Exception {
     // ✅ Nouveau test avec ConnectionPhases (overrides)
     MacroPhase source = mock(MacroPhase.class);
     when(source.getName()).thenReturn("source");
@@ -146,15 +145,15 @@ class SecurityMatrixMacrophaseHttpServiceTest {
     @SuppressWarnings("unchecked")
     Map<String, Map<String, String>> matrix = (Map<String, Map<String, String>>) body.getMatrices();
 
-    assertThat(matrix.get("source").get("target")).isEqualTo("green");
-    assertThat(matrix.get("source").get("source")).isEqualTo("red");
-    assertThat(matrix.get("target").get("target")).isEqualTo("red");
-    assertThat(matrix.get("target").get("source")).isEqualTo("red");
+    assertThat(matrix.get("source")).containsEntry("target", "green");
+    assertThat(matrix.get("source")).containsEntry("source", "red");
+    assertThat(matrix.get("target")).containsEntry("target", "red");
+    assertThat(matrix.get("target")).containsEntry("source", "red");
   }
 
   @Test
   @DisplayName("should retrieve version from audService when using string version")
-  void testGetSecurityMatrixMacrophasesWithStringVersion() throws Exception {
+  void getSecurityMatrixMacrophasesWithStringVersion() throws Exception {
     MacroPhase phase = mock(MacroPhase.class);
     when(phase.getName()).thenReturn("phase1");
     when(phase.getConnectionPhases()).thenReturn(Set.of());
@@ -184,6 +183,6 @@ class SecurityMatrixMacrophaseHttpServiceTest {
     @SuppressWarnings("unchecked")
     Map<String, Map<String, String>> matrix = (Map<String, Map<String, String>>) body.getMatrices();
 
-    assertThat(matrix.get("phase1").get("phase1")).isEqualTo("red");
+    assertThat(matrix.get("phase1")).containsEntry("phase1", "red");
   }
 }

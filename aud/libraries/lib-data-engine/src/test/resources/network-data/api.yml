@@ -1,0 +1,1599 @@
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ' '
+  name: Backend API
+  scope: Application-1
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Frontend UI
+  scope: Application-1
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Storage Account
+  scope: Application-1
+spec:
+  parents:
+  - Azure Managed Service
+
+
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-spoke-1-net
+  name: Backend API TST
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Backend API
+  hostingComponent: Openshift
+  namespace: Backend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-spoke-1-net
+  name: Frontend UI TST
+  scope: Application-1
+spec:
+  applicationPhase: TST
+  component: Frontend UI
+  hostingComponent: Openshift
+  namespace: Frontend-Application-1
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Storage Account TST
+  scope: Application-1
+  labels:
+    application: Application-1
+spec:
+  applicationPhase: TST
+  component: Storage Account
+  inSubnetInstance: app_comp1
+  outSubnetInstance: app_comp1
+
+
+---
+apiVersion: v1
+kind: Dependency
+metadata:
+  comment: ''
+  name: Backend API to Storage Account
+  scope: Application-1
+spec:
+  component: Backend API
+  securityJustification: Backend API needs to access data file of Storage Account
+  targetComponent: Storage Account
+---
+apiVersion: v1
+kind: Dependency
+metadata:
+  comment: ''
+  name: Backend API Application-1 to Backend Service API Application-2
+  scope: Application-1
+spec:
+  component: Backend API
+  securityJustification: Backend API needs to update data on Backend Service API of
+    Application-2
+  targetComponent: Backend Service API
+---
+apiVersion: v1
+kind: Dependency
+metadata:
+  comment: ''
+  name: Frontend UI to Backend API
+  scope: Application-1
+spec:
+  component: Frontend UI
+  securityJustification: Frontend UI needs to access the Backend API to fetch data
+  targetComponent: Backend API
+
+
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Backend API TST to Storage Account TST
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST
+  componentInstanceLandingZone: azure-west-europe-spoke-1-net
+  dependency: Backend API to Storage Account
+  targetComponentInstance: Storage Account TST
+  targetComponentInstanceLandingZone: azure-west-europe-spoke-1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Frontend UI TST to Backend API TST
+  scope: Application-1
+spec:
+  componentInstance: Frontend UI TST
+  componentInstanceLandingZone: azure-west-europe-spoke-1-net
+  dependency: Frontend UI to Backend API
+  targetComponentInstance: Backend API TST
+  targetComponentInstanceLandingZone: azure-west-europe-spoke-1-net
+  targetService: https
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Backend API Application-1 TST to Backend Service API Application-2 TST
+  scope: Application-1
+spec:
+  componentInstance: Backend API TST
+  componentInstanceLandingZone: azure-west-europe-spoke-1-net
+  dependency: Backend API Application-1 to Backend Service API Application-2
+  targetComponentInstance: Backend Service API TST
+  targetComponentInstanceLandingZone: azure-west-europe-spoke-1-net
+  targetService: https
+
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Backend API TST container instances
+  name: Backend-Application-1
+  scope: Application-1
+spec:
+  isShared: false
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Frontend UI TST container instances
+  name: Frontend-Application-1
+  scope: Application-1
+spec:
+  isShared: false
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Backend API
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: entry point to access the Backend API Application-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Frontend UI
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: Access to the UI in https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-1
+spec:
+  component: Storage Account
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: The https port exposed to consume the Backend API Storage
+    Account
+
+
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ' '
+  name: Backend Service API
+  scope: Application-2
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Database
+  scope: Application-2
+spec:
+  isPrivate: true
+  parents: []
+
+
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: .
+  landingzone: azure-west-europe-spoke-1-net
+  name: Backend Service API TST
+  scope: Application-2
+spec:
+  applicationPhase: TST
+  component: Backend Service API
+  hostingComponent: Openshift
+  namespace: Backend-Application-2
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Database TST
+  scope: Application-2
+  labels:
+    application: Application-2
+spec:
+  applicationPhase: TST
+  component: Database
+  inSubnetInstance: db1
+  outSubnetInstance: db1
+
+
+---
+apiVersion: v1
+kind: Dependency
+metadata:
+  comment: ''
+  name: Backend Service API to Database
+  scope: Application-2
+spec:
+  component: Backend Service API
+  securityJustification: Backend Service API needs to access data from Database
+  targetComponent: Database
+
+
+---
+apiVersion: v1
+kind: DependencyInstance
+metadata:
+  comment: ''
+  landingzone: azure-west-europe-spoke-1-net
+  name: Backend Service API TST to Database TST
+  scope: Application-2
+spec:
+  componentInstance: Backend Service API TST
+  componentInstanceLandingZone: azure-west-europe-spoke-1-net
+  dependency: Backend Service API to Database
+  targetComponentInstance: Database TST
+  targetComponentInstanceLandingZone: azure-west-europe-spoke-1-net
+  targetService: https
+
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  comment: for Backend Service API TST container instances
+  name: Backend-Application-2
+  scope: Application-2
+spec:
+  isShared: false
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-2
+spec:
+  component: Backend Service API
+  isEncrypted: true
+  ports:
+  - '443'
+  protocol: Tcp
+  securityJustification: entry point to access the Backend Service API Application-2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  comment: ''
+  name: https
+  scope: Application-2
+spec:
+  component: Database
+  isEncrypted: true
+  isPci: true
+  ports:
+  - '27017'
+  protocol: Tcp
+  securityJustification: The https port exposed to consume the Backend Service API
+    Database
+
+
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: TopLevel object, parent of all components
+  name: TopLevel
+  scope: GlobalDefinitions
+spec:
+  isTechnical: true
+  isPublicInheritance: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: TopLevelContainer object, parent of all container components
+  name: TopLevelContainer
+  scope: GlobalDefinitions
+spec:
+  isTechnical: true
+  isContainer: true
+  isPublicInheritance: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: TopLevelIaaS object, parent of all iaas components
+  name: TopLevelIaaS
+  scope: GlobalDefinitions
+spec:
+  isTechnical: true
+  isPublicInheritance: true
+  parents: []
+
+
+---
+apiVersion: v1
+kind: Continent
+metadata:
+  name: America
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Continent
+metadata:
+  name: Asia
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Continent
+metadata:
+  name: Europe
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Continent
+metadata:
+  name: Worldwide
+  scope: GlobalDefinitions
+
+
+
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: DNS HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Default Azure HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Default Azure Spoke
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Regional HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Google HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Google Spoke
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Amazon HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: LandingzoneType
+metadata:
+  name: Amazon Spoke
+  scope: GlobalDefinitions
+
+
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: Openshift hosting platform
+  name: Openshift
+  scope: GlobalDefinitions
+spec:
+  isHosting: true
+  parents: []
+---
+apiVersion: v1
+kind: ComponentInstance
+metadata:
+  comment: Openshift shared hosting platform
+  landingzone: azure-west-europe-spoke-1-net
+  name: Openshift
+  scope: GlobalDefinitions
+spec:
+  component: Openshift
+  inSubnetInstance: app_comp1
+  outSubnetInstance: app_comp1
+  zoneType: tnz
+
+
+---
+apiVersion: v1
+kind: Provider
+metadata:
+  name: Amazon - AWS
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Provider
+metadata:
+  name: Equinix
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Provider
+metadata:
+  name: Google - GCP
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Provider
+metadata:
+  name: Microsoft - Azure
+  scope: GlobalDefinitions
+
+
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP America
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: GCP Worldwide
+  scope: GlobalDefinitions
+spec:
+  continent: Worldwide
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: us-central1
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Google - GCP
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Asia Pacific
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Americas
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: EMEA
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Equinix
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: East US 2
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: West US 2
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Germany West Central
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: North Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: France Central
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: Southeast Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: West Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Microsoft - Azure
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Europe
+  scope: GlobalDefinitions
+spec:
+  continent: Europe
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Asia
+  scope: GlobalDefinitions
+spec:
+  continent: Asia
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS America
+  scope: GlobalDefinitions
+spec:
+  continent: America
+  provider: Amazon - AWS
+---
+apiVersion: v1
+kind: Region
+metadata:
+  name: AWS Worldwide
+  scope: GlobalDefinitions
+spec:
+  continent: Worldwide
+  provider: Amazon - AWS
+
+
+---
+apiVersion: v1
+kind: Role
+metadata:
+  name: Admin
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Role
+metadata:
+  name: Application
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Role
+metadata:
+  name: Network
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: Role
+metadata:
+  name: Security
+  scope: GlobalDefinitions
+
+
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Application
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Mixed
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Database
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Management
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: GatewaySubnet
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  comment: To be used to specify virtual logical subnet to target all the subnet of
+    a given LZ
+  name: Global
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Load Balancer
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Logging
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Security
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Cardholder Data
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Storage
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: VIP
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: Tooling
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: SubnetType
+metadata:
+  name: VMWare
+  scope: GlobalDefinitions
+
+
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Legacy
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Regional Hub
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Google HUB
+  scope: GlobalDefinitions
+---
+apiVersion: v1
+kind: TargetType
+metadata:
+  name: Google Spoke
+  scope: GlobalDefinitions
+
+
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: tnz
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: cri
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: app
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: dmz
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: mgmt
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: cde
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure HUB for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-hub-net
+  providerSpecific: "{\r\n  \"fw_subnet\": \"fw_priv\",\r\n  \"resource_group\": \"\
+    net\",\r\n  \"subscription\": \"azure-west-europe-hub\"\r\n}"
+  scope: Network_Azure
+spec:
+  cidrs:
+  - 10.10.0.0/24
+  landingzonetype: Default Azure HUB
+  region: West Europe
+  target: azure-west-europe
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure SPOKE for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-spoke-1-net
+  providerSpecific: "{\r\n  \"resource_group\": \"net\",\r\n  \"subscription\": \"\
+    azure-west-europe-spoke-1\"\r\n}"
+  scope: Network_Azure
+spec:
+  cidrs:
+  - 10.20.0.0/23
+  landingzonetype: Default Azure Spoke
+  region: West Europe
+  target: azure-west-europe
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: Azure SPOKE for West Europe
+  labels:
+    infrastructure-environment: dev
+  name: azure-west-europe-spoke-2-net
+  providerSpecific: "{\r\n  \"resource_group\": \"net\",\r\n  \"subscription\": \"\
+    azure-west-europe-spoke-2\"\r\n}"
+  scope: Network_Azure
+spec:
+  cidrs:
+  - 10.21.0.0/24
+  landingzonetype: Default Azure Spoke
+  region: West Europe
+  target: azure-west-europe
+
+
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase PRD
+  name: PRD
+  providerSpecific: ''
+  scope: Infra_Azure
+spec:
+  automation_order: 1
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase RND
+  name: RND
+  providerSpecific: ''
+  scope: Infra_Azure
+spec:
+  automation_order: 2
+
+
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall transit subnet
+  landingzone: azure-west-europe-hub-net
+  name: fw_transit
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.10.0.0/27
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: fw_transit
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall management subnet
+  landingzone: azure-west-europe-hub-net
+  name: fw_mgmt
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.10.0.32/27
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: fw_mgmt
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Database subnet
+  landingzone: azure-west-europe-spoke-1-net
+  name: db1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.ServiceBus\",\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.20.0.0/26
+  subnetType: Database
+  vlan: ''
+  zoneInstance: db1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application component subnet
+  landingzone: azure-west-europe-spoke-1-net
+  name: app_comp1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.20.0.64/26
+  subnetType: Application
+  vlan: ''
+  zoneInstance: app_comp1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet
+  landingzone: azure-west-europe-spoke-1-net
+  name: dmz1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.20.0.128/26
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: dmz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Management subnet
+  landingzone: azure-west-europe-spoke-1-net
+  name: mgmt1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.20.0.192/26
+  subnetType: Management
+  vlan: ''
+  zoneInstance: mgmt1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Cardholder Data subnet
+  landingzone: azure-west-europe-spoke-1-net
+  name: cde1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.20.1.0/26
+  subnetType: Cardholder Data
+  vlan: ''
+  zoneInstance: cde1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Database subnet
+  landingzone: azure-west-europe-spoke-2-net
+  name: db2
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.ServiceBus\",\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.21.0.0/26
+  subnetType: Database
+  vlan: ''
+  zoneInstance: db2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application component subnet
+  landingzone: azure-west-europe-spoke-2-net
+  name: app_comp2
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.21.0.64/26
+  subnetType: Application
+  vlan: ''
+  zoneInstance: app_comp2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet
+  landingzone: azure-west-europe-spoke-2-net
+  name: dmz2
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.21.0.128/26
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: dmz2
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Management subnet
+  landingzone: azure-west-europe-spoke-2-net
+  name: mgmt2
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_Azure
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 10.21.0.192/26
+  subnetType: Management
+  vlan: ''
+  zoneInstance: mgmt2
+
+
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Azure hub network setup for West Europe
+  name: azure-west-europe
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  cidrs:
+  - 10.10.0.0/24
+  continent: Europe
+  enableJumpserverConnectivity: true
+  isCloud: true
+  macroPhase: PRD
+  provider: Microsoft - Azure
+  targettype: Regional Hub
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Azure spoke network setup for West Europe
+  name: azure-west-europe-spoke-1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  continent: Europe
+  cidrs:
+  - 10.20.0.0/23
+  - 10.21.0.0/24
+  enableJumpserverConnectivity: true
+  enableOfficeConnectivity: true
+  enableVnetToVnet: true
+  isCloud: true
+  macroPhase: RND
+  provider: Microsoft - Azure
+  targettype: Regional Hub
+
+
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall transit zone
+  landingzone: azure-west-europe-hub-net
+  name: fw_transit
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: cri
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall management zone
+  landingzone: azure-west-europe-hub-net
+  name: fw_mgmt
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Application component zone
+  landingzone: azure-west-europe-spoke-1-net
+  name: app_comp1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Database zone
+  landingzone: azure-west-europe-spoke-1-net
+  name: db1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: DMZ security zone
+  landingzone: azure-west-europe-spoke-1-net
+  name: dmz1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: dmz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Management zone
+  landingzone: azure-west-europe-spoke-1-net
+  name: mgmt1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: mgmt
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Cardholder Data zone
+  landingzone: azure-west-europe-spoke-1-net
+  name: cde1
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: cde
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Database zone
+  landingzone: azure-west-europe-spoke-2-net
+  name: db2
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Application component zone
+  landingzone: azure-west-europe-spoke-2-net
+  name: app_comp2
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: DMZ security zone
+  landingzone: azure-west-europe-spoke-2-net
+  name: dmz2
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: dmz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Management zone
+  landingzone: azure-west-europe-spoke-2-net
+  name: mgmt2
+  providerSpecific: ''
+  scope: Network_Azure
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: mgmt
+
+
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: GCP HUB for us-central1
+  labels:
+    infrastructure-environment: dev
+  name: gcp-us-central1-hub-net
+  providerSpecific: "{\r\n  \"project\": \"gcp-us-central1-hub\",\r\n  \"network\": \"net\"\r\n}"
+  scope: Network_GCP
+spec:
+  cidrs:
+  - 192.168.0.0/24
+  landingzonetype: Google HUB
+  region: us-central1
+  target: gcp-us-central1
+---
+apiVersion: v1
+kind: LandingZone
+metadata:
+  comment: GCP SPOKE for us-central1
+  labels:
+    infrastructure-environment: dev
+  name: gcp-us-central1-spoke-net
+  providerSpecific: "{\r\n  \"project\": \"gcp-us-central1-spoke\",\r\n  \"network\": \"net\"\r\n}"
+  scope: Network_GCP
+spec:
+  cidrs:
+  - 172.16.30.0/24
+  landingzonetype: Google Spoke
+  region: us-central1
+  target: gcp-us-central1
+
+
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase PRD
+  name: PRD
+  providerSpecific: ''
+  scope: Infra_GCP
+spec:
+  automation_order: 1
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase RND
+  name: RND
+  providerSpecific: ''
+  scope: Infra_GCP
+spec:
+  automation_order: 2
+
+
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall transit subnet
+  landingzone: gcp-us-central1-hub-net
+  name: fw_transit
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 192.168.0.0/27
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: fw_transit
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Firewall management subnet
+  landingzone: gcp-us-central1-hub-net
+  name: fw_mgmt
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 192.168.0.32/27
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: fw_mgmt
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Database subnet
+  landingzone: gcp-us-central1-spoke-net
+  name: db1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.ServiceBus\",\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 172.16.30.0/26
+  subnetType: Database
+  vlan: ''
+  zoneInstance: db1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Application component subnet
+  landingzone: gcp-us-central1-spoke-net
+  name: app_comp1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true,\r\n  \"service_endpoints\"\
+    : [\r\n    \"Microsoft.Storage\"\r\n  ]\r\n}"
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 172.16.30.64/26
+  subnetType: Application
+  vlan: ''
+  zoneInstance: app_comp1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: DMZ security subnet
+  landingzone: gcp-us-central1-spoke-net
+  name: dmz1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 172.16.30.128/26
+  subnetType: Mixed
+  vlan: ''
+  zoneInstance: dmz1
+---
+apiVersion: v1
+kind: SubnetInstance
+metadata:
+  comment: Management subnet
+  landingzone: gcp-us-central1-spoke-net
+  name: mgmt1
+  providerSpecific: "{\r\n  \"link_endpoint_policies\": true\r\n}"
+  scope: Network_GCP
+spec:
+  applicationPhase: DEV
+  availabilityZoneInstance: Global
+  cidr: 172.16.30.192/26
+  subnetType: Management
+  vlan: ''
+  zoneInstance: mgmt1
+
+
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Network Setup of GCP us-central1
+  name: gcp-us-central1
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  cidrs:
+  - 192.168.0.0/24
+  continent: America
+  enableJumpserverConnectivity: true
+  isCloud: true
+  macroPhase: PRD
+  provider: Google - GCP
+  targettype: Google HUB
+---
+apiVersion: v1
+kind: Target
+metadata:
+  comment: Network Setup of GCP spoke us-central1
+  name: gcp-us-central1-spoke
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  continent: America
+  cidrs:
+  - 172.16.30.0/24
+  enableJumpserverConnectivity: true
+  enableOfficeConnectivity: true
+  enableVnetToVnet: true
+  isCloud: true
+  macroPhase: RND
+  provider: Google - GCP
+  targettype: Google Spoke
+
+
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall transit zone
+  landingzone: gcp-us-central1-hub-net
+  name: fw_transit
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: cri
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Firewall management zone
+  landingzone: gcp-us-central1-hub-net
+  name: fw_mgmt
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: tnz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Database zone
+  landingzone: gcp-us-central1-spoke-net
+  name: db1
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: app
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: DMZ security zone
+  landingzone: gcp-us-central1-spoke-net
+  name: dmz1
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: dmz
+---
+apiVersion: v1
+kind: ZoneInstance
+metadata:
+  comment: Management zone
+  landingzone: gcp-us-central1-spoke-net
+  name: mgmt1
+  providerSpecific: ''
+  scope: Network_GCP
+spec:
+  firewallGroup: ''
+  networkPhase: TST
+  zoneType: mgmt
+
+

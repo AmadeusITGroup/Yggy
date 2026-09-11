@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: Openshift hosting platform
+  name: Openshift
+  scope: Openshift
+spec:
+  isHosting: true
+  parents: []

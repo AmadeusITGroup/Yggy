@@ -75,8 +75,7 @@ public final class AudRequirementsLocalFileService
     repository.setDataVersion(tagDisplayId);
 
     dataProcessingService.calculateHashes(repository, responses);
-
-    if (responses.length > 0 && responses[0] != null) {
+    if (responses.length > 0 && responses[0] != null && !responses[0].isEmpty()) {
       repository.setData(importData(responses[0], jsonPreferred));
     }
 

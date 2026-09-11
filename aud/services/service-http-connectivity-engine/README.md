@@ -32,13 +32,14 @@ cp ../service-http-apis/.env.example .env.local
 
 Key environment variables:
 
-|           Variable            |               Description                |
-|-------------------------------|------------------------------------------|
-| `AZURE_TENANT_ID`             | Azure AD tenant ID                       |
-| `AZURE_CLIENT_ID`             | Azure AD app client ID                   |
-| `AZURE_CLIENT_SECRET`         | Azure AD app client secret               |
-| `AUD_GOVERNANCE_SCOPES`       | Scopes for the Governance API            |
-| `AZURE_STORAGE_BLOB_ENDPOINT` | Azure Storage Blob endpoint for AUD data |
+|                 Variable                 |                Description                 |
+|------------------------------------------|--------------------------------------------|
+| `AZURE_TENANT_ID`                        | Azure AD tenant ID                         |
+| `AZURE_CLIENT_ID`                        | Azure AD app client ID                     |
+| `AZURE_CLIENT_SECRET`                    | Azure AD app client secret                 |
+| `AUD_GOVERNANCE_SCOPES`                  | Scopes for the Governance API              |
+| `AZURE_STORAGE_BLOB_ENDPOINT`            | Azure Storage Blob endpoint for AUD data   |
+| `AUD_CONNECTIVITY_ENGINE_OIDC_CLIENT_ID` | OIDC client ID for the connectivity engine |
 
 ### Build the Project
 
@@ -145,8 +146,14 @@ The API is exposed under `/api/v1` and includes the following endpoints:
 | `GET`  | `/api/v1/versions/{version}/graph`                   | Get graph for a specific version                       |
 | `GET`  | `/api/v1/versions/{version}/graph/nodes`             | Get nodes (with pagination and filtering)              |
 | `GET`  | `/api/v1/versions/{version}/graph/edges`             | Get edges (with pagination and filtering)              |
-| `GET`  | `/api/v1/versions/{version}/graph/edges/by-node-ids` | Get edges by source/destination node IDs               |
+| `POST` | `/api/v1/versions/{version}/graph/edges/by-node-ids` | Get edges by source/destination node IDs               |
 | `GET`  | `/api/v1/versions/{version}/graph/statistics`        | Get pre-computed graph statistics                      |
+
+### RBAC Roles
+
+- `ConnectivityEngine.Read` authorizes `GET` endpoints under `/api/v1`.
+- `ConnectivityEngine.Write` authorizes `POST` endpoints under `/api/v1`.
+- `POST /api/v1/versions/{version}/graph/edges/by-node-ids` requires `ConnectivityEngine.Read`.
 
 ### Query Parameters
 

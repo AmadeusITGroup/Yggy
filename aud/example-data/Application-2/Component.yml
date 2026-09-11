@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ' '
+  name: Backend Service API
+  scope: Application-2
+spec:
+  isContainer: true
+  parents: []
+---
+apiVersion: v1
+kind: Component
+metadata:
+  comment: ''
+  name: Database
+  scope: Application-2
+spec:
+  isPrivate: true
+  parents: []

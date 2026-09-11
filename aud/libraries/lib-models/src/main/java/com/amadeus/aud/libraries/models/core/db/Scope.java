@@ -44,6 +44,9 @@ public class Scope extends AbstractBase<V1Scope> {
   private Set<BlockedPort> blockedPorts;
 
   @OneToMany(mappedBy = "scope", cascade = CascadeType.PERSIST)
+  private Set<Blacklist> blacklists;
+
+  @OneToMany(mappedBy = "scope", cascade = CascadeType.PERSIST)
   private Set<BlackListedURL> blackListedURLs;
 
   @OneToMany(mappedBy = "scope", cascade = CascadeType.PERSIST)
@@ -303,6 +306,28 @@ public class Scope extends AbstractBase<V1Scope> {
       this.blockedPorts = new HashSet<>();
     }
     this.blockedPorts.addAll(blockedPorts);
+  }
+
+  public Set<Blacklist> getBlacklists() {
+    return blacklists;
+  }
+
+  public void setBlacklists(Set<Blacklist> blacklists) {
+    this.blacklists = blacklists;
+  }
+
+  public void addBlacklist(Blacklist blacklist) {
+    if (this.blacklists == null) {
+      this.blacklists = new HashSet<>();
+    }
+    this.blacklists.add(blacklist);
+  }
+
+  public void addBlacklists(Set<Blacklist> blacklists) {
+    if (this.blacklists == null) {
+      this.blacklists = new HashSet<>();
+    }
+    this.blacklists.addAll(blacklists);
   }
 
   public Set<BlackListedURL> getBlackListedURLs() {

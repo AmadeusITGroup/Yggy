@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: tnz
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: cri
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: app
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: dmz
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: mgmt
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true
+---
+apiVersion: v1
+kind: ZoneType
+metadata:
+  comment: Tenant Network Zone
+  name: cde
+  scope: GlobalDefinitions
+spec:
+  isTechnical: false
+  isPaas: false
+  isReal: true

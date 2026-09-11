@@ -9,6 +9,7 @@ import com.amadeus.aud.libraries.graphql.utils.PaginationGraphQL;
 import com.amadeus.aud.libraries.models.core.db.ApplicationId;
 import com.amadeus.aud.libraries.models.core.db.ApplicationPhase;
 import com.amadeus.aud.libraries.models.core.db.AutomaticTemplateInstance;
+import com.amadeus.aud.libraries.models.core.db.Blacklist;
 import com.amadeus.aud.libraries.models.core.db.BlockedPort;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
@@ -2119,6 +2120,102 @@ class DtosGraphQLTest {
       when(cidr.getPorts()).thenReturn(null);
 
       assertThat(BlackListedCIDRGraphQL.from(cidr).ports()).isEmpty();
+    }
+  }
+
+  // ─── BlacklistGraphQL ────────────────────────────────────────────────
+
+  @Nested
+  class BlacklistGraphQLTests {
+
+    @Test
+    void fromNull_returnsNull() {
+      assertThat(BlacklistGraphQL.from(null)).isNull();
+    }
+
+    @Test
+    void from_mapsAllFields() {
+      Blacklist blacklist = mock(Blacklist.class);
+      when(blacklist.id()).thenReturn("block-google");
+      when(blacklist.getName()).thenReturn("block-google");
+      when(blacklist.getScope()).thenReturn(null);
+      when(blacklist.getSourceComponent()).thenReturn("my-app");
+      when(blacklist.getDestinationHostFqdns()).thenReturn(List.of("*.google.com"));
+      when(blacklist.getDestinationHostCidrs()).thenReturn(null);
+      when(blacklist.getSourceZones()).thenReturn(List.of("CSZ", "TNZ"));
+      when(blacklist.getSourceMacrophases()).thenReturn(List.of("TST", "PRD"));
+      when(blacklist.getSourceTargets()).thenReturn(List.of("prd-we"));
+      when(blacklist.getDestinationApplicationProtocols()).thenReturn(List.of("http", "https"));
+      when(blacklist.getDestinationTransportProtocols()).thenReturn(List.of("Tcp"));
+      when(blacklist.getDestinationPortRanges()).thenReturn(List.of("443", "8080"));
+
+      BlacklistGraphQL dto = BlacklistGraphQL.from(blacklist);
+
+      assertThat(dto).isNotNull();
+      assertThat(dto.id()).isEqualTo("block-google");
+      assertThat(dto.name()).isEqualTo("block-google");
+      assertThat(dto.sourceComponent()).isEqualTo("my-app");
+      assertThat(dto.destinationHostFqdns()).contains("*.google.com");
+      assertThat(dto.destinationHostCidrs()).isEmpty();
+      assertThat(dto.sourceZones()).containsExactlyInAnyOrder("CSZ", "TNZ");
+      assertThat(dto.sourceMacrophases()).containsExactlyInAnyOrder("TST", "PRD");
+      assertThat(dto.sourceTargets()).containsExactly("prd-we");
+      assertThat(dto.destinationApplicationProtocols()).containsExactlyInAnyOrder("http", "https");
+      assertThat(dto.destinationTransportProtocols()).containsExactly("Tcp");
+      assertThat(dto.destinationPortRanges()).containsExactlyInAnyOrder("443", "8080");
+    }
+
+    @Test
+    void from_mapsWithCIDR() {
+      Blacklist blacklist = mock(Blacklist.class);
+      when(blacklist.id()).thenReturn("block-subnet");
+      when(blacklist.getName()).thenReturn("block-subnet");
+      when(blacklist.getScope()).thenReturn(null);
+      when(blacklist.getSourceComponent()).thenReturn("infra-team");
+      when(blacklist.getDestinationHostFqdns()).thenReturn(null);
+      when(blacklist.getDestinationHostCidrs()).thenReturn(List.of("10.0.0.0/8"));
+      when(blacklist.getSourceZones()).thenReturn(List.of("*"));
+      when(blacklist.getSourceMacrophases()).thenReturn(List.of("*"));
+      when(blacklist.getSourceTargets()).thenReturn(List.of("*"));
+      when(blacklist.getDestinationApplicationProtocols()).thenReturn(null);
+      when(blacklist.getDestinationTransportProtocols()).thenReturn(List.of("*"));
+      when(blacklist.getDestinationPortRanges()).thenReturn(List.of("*"));
+
+      BlacklistGraphQL dto = BlacklistGraphQL.from(blacklist);
+
+      assertThat(dto).isNotNull();
+      assertThat(dto.destinationHostCidrs()).contains("10.0.0.0/8");
+      assertThat(dto.destinationHostFqdns()).isEmpty();
+      assertThat(dto.destinationApplicationProtocols()).isEmpty();
+    }
+
+    @Test
+    void from_nullCollections_returnsEmptySets() {
+      Blacklist blacklist = mock(Blacklist.class);
+      when(blacklist.id()).thenReturn("block-minimal");
+      when(blacklist.getName()).thenReturn("block-minimal");
+      when(blacklist.getScope()).thenReturn(null);
+      when(blacklist.getSourceComponent()).thenReturn("app");
+      when(blacklist.getDestinationHostFqdns()).thenReturn(List.of("example.com"));
+      when(blacklist.getDestinationHostCidrs()).thenReturn(null);
+      when(blacklist.getSourceZones()).thenReturn(null);
+      when(blacklist.getSourceMacrophases()).thenReturn(null);
+      when(blacklist.getSourceTargets()).thenReturn(null);
+      when(blacklist.getDestinationApplicationProtocols()).thenReturn(null);
+      when(blacklist.getDestinationTransportProtocols()).thenReturn(null);
+      when(blacklist.getDestinationPortRanges()).thenReturn(null);
+
+      BlacklistGraphQL dto = BlacklistGraphQL.from(blacklist);
+
+      assertThat(dto).isNotNull();
+      assertThat(dto.destinationHostFqdns()).contains("example.com");
+      assertThat(dto.destinationHostCidrs()).isEmpty();
+      assertThat(dto.sourceZones()).isEmpty();
+      assertThat(dto.sourceMacrophases()).isEmpty();
+      assertThat(dto.sourceTargets()).isEmpty();
+      assertThat(dto.destinationApplicationProtocols()).isEmpty();
+      assertThat(dto.destinationTransportProtocols()).isEmpty();
+      assertThat(dto.destinationPortRanges()).isEmpty();
     }
   }
 }

@@ -108,7 +108,7 @@ public abstract class BaseService<T extends AbstractBase<N>, N extends ModelElem
       }
     }
 
-    Log.debugf("Completed loading %d %s", map.size(), toClazzName);
+    Log.infof("Completed loading %d %s", map.size(), toClazzName);
     if (duplicatedCount.get() > 0) {
       Log.warnf("Found %d Duplicated %s", duplicatedCount.get(), toClazzName);
     }

@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Dependency
+metadata:
+  comment: ''
+  name: Backend Service API to Database
+  scope: Application-2
+spec:
+  component: Backend Service API
+  securityJustification: Backend Service API needs to access data from Database
+  targetComponent: Database

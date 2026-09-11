@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase PRD
+  name: PRD
+  scope: Infra_GCP
+spec:
+  automation_order: 1
+---
+apiVersion: v1
+kind: MacroPhase
+metadata:
+  comment: Macrophase RND
+  name: RND
+  scope: Infra_GCP
+spec:
+  automation_order: 2

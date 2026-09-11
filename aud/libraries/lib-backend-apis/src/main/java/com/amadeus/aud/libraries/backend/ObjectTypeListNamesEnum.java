@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 public enum ObjectTypeListNamesEnum {
   APPLICATIONIDS(
@@ -29,6 +30,24 @@ public enum ObjectTypeListNamesEnum {
       List.of(
           "name", Constants.SCOPE, Constants.LANDINGZONE, Constants.COMPONENT, Constants.COMMENT),
       "AutomaticTemplateInstance"),
+  BLACKLISTS(
+      "blacklist",
+      "blacklists",
+      "Blacklists",
+      AmadeusConstants.SECURITY_OFFICE,
+      List.of(
+          "name",
+          Constants.SCOPE,
+          "sourceComponent",
+          "destinationHostFqdns",
+          "destinationHostCidrs",
+          "sourceZones",
+          "sourceMacrophases",
+          "sourceTargets",
+          "destinationApplicationProtocols",
+          "destinationTransportProtocols",
+          "destinationPortRanges"),
+      "Blacklist"),
   BLACKLISTEDCIDRS(
       "blacklistedcidr",
       "blacklistedcidrs",
@@ -437,5 +456,21 @@ public enum ObjectTypeListNamesEnum {
       }
     }
     return Optional.empty();
+  }
+
+  private static final String KNOWN_REPOSITORY_KEYS;
+
+  static {
+    StringJoiner joiner = new StringJoiner("\n");
+    ObjectTypeListNamesEnum[] values = ObjectTypeListNamesEnum.values();
+    for (ObjectTypeListNamesEnum value : values) {
+      String key = value.getRepositoryKey();
+      joiner.add(key);
+    }
+    KNOWN_REPOSITORY_KEYS = joiner.toString();
+  }
+
+  public static String knownRepositoryKeys() {
+    return KNOWN_REPOSITORY_KEYS;
   }
 }

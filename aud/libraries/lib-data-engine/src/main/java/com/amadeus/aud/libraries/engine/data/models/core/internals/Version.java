@@ -10,6 +10,7 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.ApplicationPha
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.AutomaticTemplateInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.BlackListedCIDRsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.BlackListedURLsRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.BlacklistsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.BlockedPortsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentsRepository;
@@ -48,6 +49,7 @@ import com.amadeus.aud.libraries.models.core.db.ApplicationPhase;
 import com.amadeus.aud.libraries.models.core.db.AutomaticTemplateInstance;
 import com.amadeus.aud.libraries.models.core.db.BlackListedCIDR;
 import com.amadeus.aud.libraries.models.core.db.BlackListedURL;
+import com.amadeus.aud.libraries.models.core.db.Blacklist;
 import com.amadeus.aud.libraries.models.core.db.BlockedPort;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
@@ -164,7 +166,7 @@ public class Version {
     @SuppressWarnings("unchecked")
     ConcurrentRepository<T> output = (ConcurrentRepository<T>) modelsRepositoryMap.get(key);
     if (output == null) {
-      Log.errorf("Getting repo of type %s failed", key);
+      Log.infof("Getting repo of type %s failed", key);
     }
     return output;
   }
@@ -176,7 +178,6 @@ public class Version {
 
   public synchronized void addRepository(ConcurrentRepository<? extends BomElement> repository) {
     String key = getRepositoryName(repository);
-    // Log.errorf("YO Adding %s of %s", key, repository.getClass().getSimpleName());
     this.modelsRepositoryMap.put(key, repository);
     Type superClass = repository.getClass().getGenericSuperclass();
     if (superClass instanceof ParameterizedType parameterizedType) {
@@ -251,6 +252,14 @@ public class Version {
   public void setAutomaticTemplateInstancesRepository(
       AutomaticTemplateInstancesRepository automaticTemplateInstancesRepository) {
     addRepository(automaticTemplateInstancesRepository);
+  }
+
+  public BlacklistsRepository getBlacklistsRepository() {
+    return (BlacklistsRepository) getRepository(Blacklist.class);
+  }
+
+  public void setBlacklistsRepository(BlacklistsRepository blacklistsRepository) {
+    addRepository(blacklistsRepository);
   }
 
   public BlackListedURLsRepository getBlackListedURLsRepository() {

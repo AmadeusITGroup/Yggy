@@ -36,7 +36,7 @@ public class ComponentService extends BaseService<Component, V1Component> {
               }
               scope.addComponent(component);
             });
-    if (repository == null) {
+    if (repository == null || repository.getDataSize() == 0) {
       return;
     }
 

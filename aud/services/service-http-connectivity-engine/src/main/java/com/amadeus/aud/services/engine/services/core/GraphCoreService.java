@@ -1,11 +1,13 @@
 package com.amadeus.aud.services.engine.services.core;
 
+import com.amadeus.aud.libraries.engine.data.exceptions.InvalidVersionException;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.graph.models.GraphStatistics;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphVersion;
 import com.amadeus.aud.libraries.engine.graph.services.storage.SimpleGraphVersion;
+import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import com.azure.storage.blob.models.BlobStorageException;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheManager;
@@ -78,12 +80,12 @@ public class GraphCoreService {
       return null;
     }
 
-    if (graphDbService.isReady(versionNumber)) {
-      Log.debugf("Found existing graph for version %s", versionNumber);
-      return buildGraphVersion(versionNumber);
+    if (!graphDbService.isReady(versionNumber)) {
+      return null;
     }
 
-    return getOrStartInitialization(versionNumber).uni().await().indefinitely();
+    Log.debugf("Found existing graph for version %s", versionNumber);
+    return buildGraphVersion(versionNumber);
   }
 
   public InitRequestStatus requestVersionInitialization(@Nullable String versionId) {
@@ -187,21 +189,29 @@ public class GraphCoreService {
     return new SimpleGraphVersion(versionNumber, LocalDateTime.now(Clock.systemUTC()), stats);
   }
 
-  private String resolveVersionNumber(@Nullable String versionId) {
+  private @Nullable String resolveVersionNumber(@Nullable String versionId) {
+    String versionNumber = versionId;
     if ("latest".equalsIgnoreCase(versionId)) {
-      return audVersionsService
-          .getLatestVersion()
-          .onFailure()
-          .invoke(
-              failure ->
-                  Log.errorf(
-                      failure,
-                      "Failed to retrieve latest version from storage account: %s",
-                      failure.getMessage()))
-          .await()
-          .indefinitely();
+      versionNumber =
+          audVersionsService
+              .getLatestVersion()
+              .onFailure()
+              .invoke(
+                  failure ->
+                      Log.errorf(
+                          failure,
+                          "Failed to retrieve latest version from storage account: %s",
+                          failure.getMessage()))
+              .await()
+              .indefinitely();
     }
-    return versionId;
+
+    if (versionNumber != null
+        && !versionNumber.isBlank()
+        && !VersionUtils.isSemver(versionNumber)) {
+      throw new InvalidVersionException(versionNumber);
+    }
+    return versionNumber;
   }
 
   /**

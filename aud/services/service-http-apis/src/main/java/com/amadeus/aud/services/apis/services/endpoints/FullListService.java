@@ -6,15 +6,16 @@ import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheKeyGenerator;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
+import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
+import com.amadeus.aud.libraries.models.core.db.Target;
+import com.amadeus.aud.libraries.models.core.db.TargetType;
+import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
 import com.amadeus.aud.services.apis.models.http.responses.GenericResponse;
 import com.amadeus.aud.services.apis.utils.FullListResponseTransformer;
 import com.amadeus.aud.services.apis.utils.UrlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -22,6 +23,7 @@ import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
@@ -39,6 +41,8 @@ public class FullListService extends BaseService {
   private static final String SNOW_START_FILTER = "SNOWStartFilter";
   private static final String SNOW_NUMBER_FILTER = "SNOWNumberFilter";
   private static final String SNOW_FILTER = "SNOWFilter";
+  private static final String TARGET_TYPE = "targettype";
+  private static final String ZONE_INSTANCE = "zoneinstance";
 
   /**
    * Object types that support SNOW offset/limit pagination via SNOWStartFilter+SNOWNumberFilter.
@@ -73,12 +77,12 @@ public class FullListService extends BaseService {
   @CacheResult(cacheName = "getFullListJavaFormat", keyGenerator = VersionCacheKeyGenerator.class)
   public Uni<Response> getFullListJavaFormat(Version version, String objectType, UriInfo uriInfo) {
     return Uni.createFrom()
-        .item(Unchecked.supplier(() -> getResponseDeprecated(version, objectType, uriInfo)))
+        .item(Unchecked.supplier(() -> getResponseJavaFormat(version, objectType, uriInfo)))
         .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
         .emitOn(Infrastructure.getDefaultWorkerPool());
   }
 
-  private Response getResponseDeprecated(Version version, String objectType, UriInfo uriInfo)
+  private Response getResponseJavaFormat(Version version, String objectType, UriInfo uriInfo)
       throws JsonProcessingException {
 
     ConcurrentRepository<? extends BomElement> repository =
@@ -107,28 +111,47 @@ public class FullListService extends BaseService {
             values));
   }
 
-  /** Fulllist endpoint aligned with python */
-  public Uni<Response> getFullList(String version, String objectType, UriInfo uriInfo) {
+  /** Fulllist endpoint aligned with python format */
+  public Uni<Response> getFullListPythonFormat(String version, String objectType, UriInfo uriInfo) {
+    return getFullListPythonFormat(version, objectType, uriInfo, null);
+  }
+
+  public Uni<Response> getFullListPythonFormat(
+      String version,
+      String objectType,
+      UriInfo uriInfo,
+      @Nullable MultivaluedMap<String, String> queryParams) {
     return audService
         .getVersion(version)
         .onItem()
-        .transformToUni((Version ver) -> getFullList(ver, objectType, uriInfo));
+        .transformToUni(
+            (Version ver) ->
+                getFullListPythonFormatFiltered(ver, objectType, uriInfo, queryParams));
   }
 
-  @CacheResult(cacheName = "getFullList", keyGenerator = VersionCacheKeyGenerator.class)
-  public Uni<Response> getFullList(Version version, String objectType, UriInfo uriInfo) {
+  public Uni<Response> getFullListPythonFormatFiltered(
+      Version version,
+      String objectType,
+      UriInfo uriInfo,
+      @Nullable MultivaluedMap<String, String> queryParams) {
     return Uni.createFrom()
-        .item(Unchecked.supplier(() -> getResponse(version, objectType, uriInfo)))
+        .item(
+            Unchecked.supplier(
+                () -> getResponseFiltered(version, objectType, uriInfo, queryParams)))
         .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
         .emitOn(Infrastructure.getDefaultWorkerPool());
   }
 
-  private Response getResponse(Version version, String objectType, UriInfo uriInfo)
+  private Response getResponseFiltered(
+      Version version,
+      String objectType,
+      UriInfo uriInfo,
+      @Nullable MultivaluedMap<String, String> queryParams)
       throws IOException {
     String versionNumber = version.getVersionNumber();
 
-    ConcurrentRepository<? extends BomElement> repository =
-        version.getRepository(objectType.toLowerCase(Locale.ROOT));
+    String javaType = getJavaObjectType(objectType);
+    ConcurrentRepository<? extends BomElement> repository = version.getRepository(javaType);
     if (repository == null) {
       throw new NotFoundException();
     }
@@ -142,7 +165,15 @@ public class FullListService extends BaseService {
       values = data.values();
     }
 
-    // Serialize via existing pipeline (applies all @JacksonMixin annotations)
+    Collection<? extends BomElement> filteredValues =
+        filterBomElements(values, javaType, queryParams);
+    Collection<?> dataToSerialize = filteredValues;
+
+    List<Map<String, Object>> enrichedData = enrichWithChildArrays(filteredValues, javaType);
+    if (enrichedData != null) {
+      dataToSerialize = enrichedData;
+    }
+
     byte[] raw =
         objectMapper.writeValueAsBytes(
             new GenericResponse<>(
@@ -150,62 +181,268 @@ public class FullListService extends BaseService {
                 versionNumber,
                 UrlUtils.getUrl(uriInfo),
                 UrlUtils.getVersionedUrl(uriInfo, versionNumber),
-                values));
+                dataToSerialize));
 
-    byte[] transformed = FullListResponseTransformer.transform(objectMapper, raw, objectType);
+    byte[] transformed = FullListResponseTransformer.transform(objectMapper, raw, javaType);
 
     return Response.status(Response.Status.OK).entity(transformed).build();
   }
 
-  /**
-   * Applies query parameter filtering on a cached full-list response. Called AFTER the cached
-   * method so the cache always holds the unfiltered result.
-   *
-   * <p>Each query parameter is treated as a field filter: {@code ?endpoint_type=ZonedPaaS} keeps
-   * only items whose {@code endpoint_type} field equals {@code "ZonedPaaS"}. Multiple parameters
-   * are ANDed. Unknown / complex (nested) fields are ignored.
-   */
-  public Response applyQueryParamFilter(
-      Response cachedResponse,
-      String objectType,
-      @Nullable MultivaluedMap<String, String> queryParams) {
+  private Collection<? extends BomElement> filterBomElements(
+      Collection<? extends BomElement> items,
+      String javaType,
+      @Nullable MultivaluedMap<String, String> queryParams)
+      throws BadRequestException {
+
     if (queryParams == null || queryParams.isEmpty()) {
-      return cachedResponse;
-    }
-    try {
-      return buildFilteredResponse(cachedResponse, objectType, queryParams);
-    } catch (IOException e) {
-      return cachedResponse;
-    }
-  }
-
-  private Response buildFilteredResponse(
-      Response cachedResponse, String objectType, MultivaluedMap<String, String> queryParams)
-      throws IOException {
-    byte[] bytes = (byte[]) cachedResponse.getEntity();
-    JsonNode root = objectMapper.readTree(bytes);
-    if (!(root instanceof ObjectNode responseNode)) {
-      return cachedResponse;
+      return items;
     }
 
-    String typeKey = objectType.toLowerCase(Locale.ROOT).replace("instance", "_instance");
-    JsonNode itemsNode = responseNode.get(typeKey);
-    if (!(itemsNode instanceof ArrayNode itemsArray)) {
-      return cachedResponse;
-    }
-
-    Integer[] snowPage = resolveSnowPage(objectType, queryParams);
     Map<String, List<String>> filters = buildFieldFilters(queryParams);
-    ArrayNode filtered = filterItems(itemsArray, filters, snowPage[0], snowPage[1]);
+    Integer[] snowPage = resolveSnowPage(javaType, queryParams);
 
-    responseNode.set(typeKey, filtered);
-    byte[] filteredBytes = objectMapper.writeValueAsBytes(responseNode);
-    return Response.status(Response.Status.OK).entity(filteredBytes).build();
+    validateFilterFields(items, filters);
+
+    List<BomElement> filtered = new ArrayList<>();
+    int index = 0;
+
+    for (BomElement item : items) {
+      if (matchesAllFilters(item, filters) && isInSnowPage(index, snowPage[0], snowPage[1])) {
+        filtered.add(item);
+      }
+      index++;
+    }
+
+    return filtered;
   }
 
-  private static Integer[] resolveSnowPage(
-      String objectType, MultivaluedMap<String, String> queryParams) {
-    if (!SNOW_PAGINATED_TYPES.contains(objectType.toLowerCase(Locale.ROOT))) {
+  private void validateFilterFields(
+      Collection<? extends BomElement> items, Map<String, List<String>> filters)
+      throws BadRequestException {
+
+    if (items.isEmpty()) {
+      return;
+    }
+
+    BomElement sample = items.iterator().next();
+
+    for (String fieldName : filters.keySet()) {
+      if (!fieldExists(sample, fieldName)) {
+        throw new BadRequestException(
+            "Invalid filter field: '" + fieldName + "' does not exist on this object type.");
+      }
+    }
+  }
+
+  private boolean matchesAllFilters(BomElement item, Map<String, List<String>> filters) {
+    for (Map.Entry<String, List<String>> filter : filters.entrySet()) {
+      if (!matchesSingleFilter(item, filter.getKey(), filter.getValue())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean matchesSingleFilter(
+      BomElement item, String fieldName, List<String> acceptedValues) {
+
+    Object fieldValue = findFieldValueFromBomElement(item, fieldName);
+
+    if (fieldValue == null) {
+      return false;
+    }
+
+    String itemValue = extractFilterValue(fieldValue);
+
+    if (itemValue == null) {
+      return false;
+    }
+
+    for (String accepted : acceptedValues) {
+      if (accepted.equalsIgnoreCase(itemValue)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private @Nullable String extractFilterValue(Object fieldValue) {
+    if (fieldValue == null) {
+      return null;
+    }
+
+    Class<?> clazz = fieldValue.getClass();
+
+    if (!isComplexObject(fieldValue)) {
+      return fieldValue.toString();
+    }
+
+    if (clazz.isEnum()) {
+      String value = invokeGetterIfExists(fieldValue, "getValue");
+      if (value != null) {
+        return value;
+      }
+      return ((Enum<?>) fieldValue).name();
+    }
+
+    String[] possibleGetters = {"getName", "getValue"};
+    for (String getterName : possibleGetters) {
+      String value = invokeGetterIfExists(fieldValue, getterName);
+      if (value != null) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  private @Nullable String invokeGetterIfExists(Object obj, String getterName) {
+    try {
+      java.lang.reflect.Method getter = findMethodCaseInsensitive(obj.getClass(), getterName);
+      if (getter != null) {
+        Object result = getter.invoke(obj);
+        if (result != null) {
+          return result.toString();
+        }
+      }
+    } catch (Exception e) {
+    }
+    return null;
+  }
+
+  private boolean fieldExists(BomElement sample, String fieldName) {
+    return findGetterMethod(sample, fieldName) != null;
+  }
+
+  private @Nullable Object findFieldValueFromBomElement(BomElement item, String fieldName) {
+    java.lang.reflect.Method method = findGetterMethod(item, fieldName);
+    if (method == null) {
+      return null;
+    }
+
+    try {
+      return method.invoke(item);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private @Nullable java.lang.reflect.Method findGetterMethod(BomElement item, String fieldName) {
+    if (item == null) {
+      return null;
+    }
+
+    try {
+      Class<?> itemClass = item.getClass();
+      String[] fieldVariants = {fieldName, pythonToJavaFieldName(fieldName), capitalize(fieldName)};
+
+      for (String variant : fieldVariants) {
+        String[] getterNames = {"get" + capitalize(variant), "is" + capitalize(variant)};
+
+        for (String getterName : getterNames) {
+          java.lang.reflect.Method foundMethod = findMethodCaseInsensitive(itemClass, getterName);
+          if (foundMethod != null) {
+            return foundMethod;
+          }
+        }
+
+        Class<?> parent = itemClass.getSuperclass();
+        while (parent != null && !parent.equals(Object.class)) {
+          for (String getterName : getterNames) {
+            java.lang.reflect.Method foundMethod = findMethodCaseInsensitive(parent, getterName);
+            if (foundMethod != null) {
+              return foundMethod;
+            }
+          }
+          parent = parent.getSuperclass();
+        }
+      }
+    } catch (Exception e) {
+    }
+
+    return null;
+  }
+
+  private @Nullable Object tryGetterOnClass(BomElement item, Class<?> clazz, String getterName) {
+    try {
+      java.lang.reflect.Method getter = clazz.getMethod(getterName);
+      return getter.invoke(item);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private @Nullable java.lang.reflect.Method findMethodCaseInsensitive(
+      Class<?> clazz, String methodName) {
+    try {
+      for (java.lang.reflect.Method method : clazz.getMethods()) {
+        if (method.getName().equalsIgnoreCase(methodName) && method.getParameterCount() == 0) {
+          return method;
+        }
+      }
+    } catch (Exception e) {
+    }
+    return null;
+  }
+
+  private String getJavaObjectType(String objectType) {
+    return pythonToJavaFieldName(objectType.toLowerCase(Locale.ROOT));
+  }
+
+  private String pythonToJavaFieldName(String pythonName) {
+    if (!pythonName.contains("_")) {
+      return pythonName;
+    }
+
+    String[] parts = pythonName.split("_");
+    StringBuilder javaName = new StringBuilder(parts[0]);
+    for (int i = 1; i < parts.length; i++) {
+      String part = parts[i];
+      if (!part.isEmpty()) {
+        javaName
+            .append(Character.toUpperCase(part.charAt(0)))
+            .append(part.substring(1).toLowerCase());
+      }
+    }
+    return javaName.toString();
+  }
+
+  private String capitalize(String str) {
+    if (str == null || str.isEmpty()) {
+      return str;
+    }
+    return str.substring(0, 1).toUpperCase() + str.substring(1);
+  }
+
+  private boolean isComplexObject(Object value) {
+    if (value == null) {
+      return false;
+    }
+
+    Class<?> clazz = value.getClass();
+    if (clazz.isPrimitive()
+        || clazz == String.class
+        || clazz == Boolean.class
+        || clazz == Integer.class
+        || clazz == Long.class
+        || clazz == Float.class
+        || clazz == Double.class) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private boolean isInSnowPage(
+      int index, @Nullable Integer snowStart, @Nullable Integer snowNumber) {
+    if (snowStart == null || snowNumber == null) {
+      return true;
+    }
+    return index >= snowStart && index < snowStart + snowNumber;
+  }
+
+  private Integer[] resolveSnowPage(String javaType, MultivaluedMap<String, String> queryParams) {
+    if (!SNOW_PAGINATED_TYPES.contains(javaType)) {
       return new Integer[] {null, null};
     }
     return new Integer[] {
@@ -214,9 +451,7 @@ public class FullListService extends BaseService {
     };
   }
 
-  /** Collects field-level filter criteria, excluding SNOW pagination params. */
-  private static Map<String, List<String>> buildFieldFilters(
-      MultivaluedMap<String, String> queryParams) {
+  private Map<String, List<String>> buildFieldFilters(MultivaluedMap<String, String> queryParams) {
     Map<String, List<String>> filters = new java.util.LinkedHashMap<>();
     for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
       String key = entry.getKey();
@@ -227,76 +462,68 @@ public class FullListService extends BaseService {
       }
       List<String> values = entry.getValue();
       if (values != null && !values.isEmpty()) {
-        filters.put(key.toLowerCase(Locale.ROOT), values);
+        filters.put(key, values);
       }
     }
     return filters;
   }
 
-  private ArrayNode filterItems(
-      ArrayNode itemsArray,
-      Map<String, List<String>> filters,
-      Integer snowStart,
-      Integer snowNumber) {
-    ArrayNode filtered = objectMapper.createArrayNode();
-    int index = 0;
-    for (JsonNode item : itemsArray) {
-      if (matchesAllFilters(item, filters) && isInSnowPage(index, snowStart, snowNumber)) {
-        filtered.add(item);
-      }
-      index++;
+  private @Nullable List<Map<String, Object>> enrichWithChildArrays(
+      Collection<? extends BomElement> items, String javaType) {
+    String lowerCase = javaType.toLowerCase(Locale.ROOT);
+    if (!(TARGET_TYPE.equals(lowerCase) || ZONE_INSTANCE.equals(lowerCase))) {
+      return null;
     }
-    return filtered;
+
+    List<Map<String, Object>> enrichedList = new ArrayList<>();
+
+    for (BomElement item : items) {
+      Map<String, Object> itemMap =
+          objectMapper.convertValue(
+              item, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+
+      switch (lowerCase) {
+        case TARGET_TYPE:
+          if (item instanceof TargetType tt) {
+            List<Map<String, String>> targets = new ArrayList<>();
+            if (tt.getTargets() != null) {
+              for (Target target : tt.getTargets()) {
+                targets.add(target.getSimpleJsonRepresentation());
+              }
+            }
+            itemMap.put("targets", targets);
+          }
+          break;
+
+        case ZONE_INSTANCE:
+          if (item instanceof ZoneInstance zi) {
+            List<Map<String, String>> subnets = new ArrayList<>();
+            if (zi.getSubnetInstances() != null) {
+              for (SubnetInstance subnet : zi.getSubnetInstances()) {
+                subnets.add(subnet.getSimpleJsonRepresentation());
+              }
+            }
+            itemMap.put("subnet_instances", subnets);
+          }
+          break;
+      }
+
+      enrichedList.add(itemMap);
+    }
+
+    return enrichedList;
   }
 
-  private static Integer resolveSnowParam(
+  private @Nullable Integer resolveSnowParam(
       MultivaluedMap<String, String> queryParams, String paramName) {
     String val = queryParams.getFirst(paramName);
-    return val != null ? Integer.parseInt(val) : null;
-  }
-
-  private static boolean isInSnowPage(int index, Integer snowStart, Integer snowNumber) {
-    if (snowStart == null || snowNumber == null) {
-      return true;
+    if (val == null) {
+      return null;
     }
-    return index >= snowStart && index < snowStart + snowNumber;
-  }
-
-  private static boolean matchesAllFilters(JsonNode item, Map<String, List<String>> filters) {
-    for (Map.Entry<String, List<String>> filter : filters.entrySet()) {
-      if (!matchesSingleFilter(item, filter.getKey(), filter.getValue())) {
-        return false;
-      }
+    try {
+      return Integer.parseInt(val);
+    } catch (NumberFormatException e) {
+      throw new BadRequestException(paramName + " must be an integer: " + val);
     }
-    return true;
-  }
-
-  /** Returns false if the item fails the given single-field filter, true otherwise. */
-  private static boolean matchesSingleFilter(
-      JsonNode item, String fieldName, List<String> acceptedValues) {
-    JsonNode fieldValue = findFieldValue(item, fieldName);
-
-    if (fieldValue == null || fieldValue.isNull()) {
-      return false;
-    }
-    // Skip complex objects — they are not filterable
-    if (fieldValue.isObject() || fieldValue.isArray()) {
-      return true;
-    }
-
-    String itemValue = fieldValue.asText();
-    return acceptedValues.stream().anyMatch(accepted -> accepted.equalsIgnoreCase(itemValue));
-  }
-
-  /** Finds a field in a JsonNode by case-insensitive name, or returns null if not found. */
-  private static @Nullable JsonNode findFieldValue(JsonNode item, String fieldName) {
-    java.util.Iterator<Map.Entry<String, JsonNode>> fields = item.properties().iterator();
-    while (fields.hasNext()) {
-      Map.Entry<String, JsonNode> field = fields.next();
-      if (field.getKey().toLowerCase(Locale.ROOT).equals(fieldName)) {
-        return field.getValue();
-      }
-    }
-    return null;
   }
 }

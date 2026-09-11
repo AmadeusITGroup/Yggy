@@ -21,6 +21,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -315,8 +316,7 @@ public class ObjectByIdResource {
                         new com.amadeus.aud.libraries.backend.models.v2.Response<>(
                             refs,
                             new Metadata()
-                                .withInitialColumns(
-                                    java.util.List.of("Name", "Scope", "Description"))))
+                                .withInitialColumns(List.of("Name", "Scope", "Description"))))
                     .build());
   }
 
