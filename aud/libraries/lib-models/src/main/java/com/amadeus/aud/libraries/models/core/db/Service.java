@@ -5,8 +5,8 @@ import static com.amadeus.aud.libraries.models.core.db.base.BaseInstance.ID_SEPA
 import com.amadeus.aud.libraries.models.core.db.base.AbstractBase;
 import com.amadeus.aud.libraries.models.core.utils.PortUtils;
 import com.amadeus.aud.libraries.yaml.models.DeprecatedStatus;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1Service;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
@@ -34,7 +34,7 @@ public class Service extends AbstractBase<V1Service> implements WithDeprecation 
 
   @Transient private RangeSet<Integer> approvedPorts;
 
-  private V1ServiceSpec.ProtocolEnum approvedProtocol;
+  private ProtocolEnum approvedProtocol;
 
   private String serviceNowId;
 
@@ -43,7 +43,7 @@ public class Service extends AbstractBase<V1Service> implements WithDeprecation 
 
   private String ports;
 
-  private V1ServiceSpec.ProtocolEnum protocol;
+  private ProtocolEnum protocol;
 
   @Transient private RangeSet<Integer> portsRange;
 
@@ -173,11 +173,11 @@ public class Service extends AbstractBase<V1Service> implements WithDeprecation 
     this.approvedPorts.addAll(approvedPorts);
   }
 
-  public V1ServiceSpec.ProtocolEnum getApprovedProtocol() {
+  public ProtocolEnum getApprovedProtocol() {
     return approvedProtocol;
   }
 
-  public void setApprovedProtocol(V1ServiceSpec.ProtocolEnum approvedProtocol) {
+  public void setApprovedProtocol(ProtocolEnum approvedProtocol) {
     this.approvedProtocol = approvedProtocol;
   }
 
@@ -211,11 +211,11 @@ public class Service extends AbstractBase<V1Service> implements WithDeprecation 
     this.dependencyInstances.addAll(dependencyInstances);
   }
 
-  public void setProtocol(V1ServiceSpec.ProtocolEnum protocol) {
+  public void setProtocol(ProtocolEnum protocol) {
     this.protocol = protocol;
   }
 
-  public V1ServiceSpec.ProtocolEnum getProtocol() {
+  public ProtocolEnum getProtocol() {
     if (this.protocol == null) {
       return getData().getSpec().getProtocol();
     }

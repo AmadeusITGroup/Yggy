@@ -1,5 +1,6 @@
 package com.amadeus.aud.libraries.engine.data.services.external;
 
+import com.amadeus.aud.libraries.engine.data.AudDataLoader;
 import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudRequirementsRepository;
@@ -9,6 +10,7 @@ import com.amadeus.aud.libraries.engine.data.services.external.storage.DataProce
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @ApplicationScoped
 public class DataProcessorProducer {
@@ -51,5 +53,15 @@ public class DataProcessorProducer {
     return audDataConfig.localFile().useLocalData()
         ? audRequirementsLocalFileService
         : audRequirementsStorageAccountService;
+  }
+
+  /**
+   * Default {@link AudDataLoader}, for modules that only see {@code lib-data-engine-api} and cannot
+   * use {@link StorageAccountQualifier}. Always loads from the storage account.
+   */
+  @Produces
+  @Singleton
+  public AudDataLoader storageAccountAudDataLoader() {
+    return audDataStorageAccountService;
   }
 }

@@ -44,6 +44,10 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.logging</groupId>
@@ -93,7 +97,7 @@
   <build>
     <plugins>
       <plugin>
-        <!-- Yandex index needed so that Quarkus discovers the checks -->
+        <!-- Jandex index needed so that Quarkus discovers the checks -->
         <groupId>io.smallrye</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <version>${jandex-maven-plugin.version}</version>

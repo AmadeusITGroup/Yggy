@@ -19,11 +19,9 @@ public class V1BlockedPortSpec {
 
   /** The protocol e.g. TCP, UDP, Icmp. */
   public enum ProtocolEnum {
-    TCP(String.valueOf("Tcp")),
-
-    UDP(String.valueOf("Udp")),
-
-    ICMP(String.valueOf("Icmp"));
+    TCP("Tcp"),
+    UDP("Udp"),
+    ICMP("Icmp");
 
     private String value;
 

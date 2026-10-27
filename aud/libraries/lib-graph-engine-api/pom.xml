@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.amadeus.aud</groupId>
+    <artifactId>libraries</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.amadeus.aud.libraries</groupId>
+  <artifactId>lib-graph-engine-api</artifactId>
+  <inceptionYear>2026</inceptionYear>
+
+  <properties>
+    <!-- JVM 21: due to being a dependency in cli-checker -->
+    <maven.compiler.release>21</maven.compiler.release>
+    <unittests.instruction.coverage>0.87</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.93</unittests.branch.coverage>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Jandex index needed so that Quarkus discovers the GraphEngineConfig @ConfigMapping -->
+        <groupId>io.smallrye</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>${jandex-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

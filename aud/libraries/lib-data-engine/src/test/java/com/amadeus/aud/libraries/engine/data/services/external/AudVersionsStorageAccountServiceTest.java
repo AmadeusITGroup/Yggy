@@ -6,8 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.amadeus.aud.libraries.engine.data.models.core.internals.SingleVersion;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.BlobService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.SingleVersion;
 import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobContainerAsyncClient;

@@ -35,8 +35,8 @@ import com.amadeus.aud.libraries.models.core.utils.StringUtils;
 import com.amadeus.aud.libraries.nsg.models.NetworkRule;
 import com.amadeus.aud.libraries.nsg.models.Protocol;
 import com.amadeus.aud.libraries.nsg.models.SecurityGroupMap;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1ComponentInstanceSpec;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
@@ -151,8 +151,8 @@ public class NsgService extends BaseService {
             SecurityGroupMap value = entry.getValue();
 
             RangeSet<Integer> ports;
-            V1ServiceSpec.ProtocolEnum protocol = service.getProtocol();
-            if (protocol == V1ServiceSpec.ProtocolEnum.ICMP) {
+            ProtocolEnum protocol = service.getProtocol();
+            if (protocol == ProtocolEnum.ICMP) {
               ports = TreeRangeSet.create(PortUtils.ALL_RANGE_SET);
             } else {
               ports = service.getPortsRange();
@@ -747,17 +747,22 @@ public class NsgService extends BaseService {
     if (viaComponentInstance == null) {
       return;
     }
+
     Service viaService = dependencyInstance.getViaService();
-    ZoneInstance viaZoneInstance = viaComponentInstance.getInZoneInstance();
+
+    ZoneInstance viaZoneInstance = resolveZoneInstance(viaComponentInstance);
     if (viaZoneInstance == null) {
-      viaZoneInstance = viaComponentInstance.getInSubnetInstance().getZoneInstance();
+      return;
     }
-    ZoneInstance dstZoneInstance = destinationComponentInstance.getInZoneInstance();
+
+    ZoneInstance dstZoneInstance = resolveZoneInstance(destinationComponentInstance);
     if (dstZoneInstance == null) {
-      dstZoneInstance = destinationComponentInstance.getInSubnetInstance().getZoneInstance();
+      return;
     }
+
     String viaZoneNsgRuleName =
         String.join("-", viaZoneInstance.getZoneTypeName(), viaZoneInstance.getName());
+
     nsgMap
         .computeIfAbsent(viaZoneNsgRuleName, _ -> new SecurityGroupMap())
         .addInbound(
@@ -768,6 +773,28 @@ public class NsgService extends BaseService {
                 dstZoneInstance.getInternalDstCidrRangeSetForNSG(),
                 viaService,
                 sourceComponentInstance));
+  }
+
+  private static @Nullable ZoneInstance resolveZoneInstance(
+      @Nullable ComponentInstance componentInstance) {
+    Set<ComponentInstance> visitedComponentInstances = new HashSet<>();
+    ComponentInstance currentComponentInstance = componentInstance;
+
+    while (currentComponentInstance != null
+        && visitedComponentInstances.add(currentComponentInstance)) {
+      ZoneInstance inZone = currentComponentInstance.getInZoneInstance();
+      if (inZone != null) {
+        return inZone;
+      }
+
+      SubnetInstance inSubnet = currentComponentInstance.getInSubnetInstance();
+      if (inSubnet != null) {
+        return inSubnet.getZoneInstance();
+      }
+      currentComponentInstance = currentComponentInstance.getDeployComponentInstance();
+    }
+
+    return null;
   }
 
   /** Adds a service-tag based inbound NSG rule. */
@@ -1057,12 +1084,12 @@ public class NsgService extends BaseService {
       }
     }
 
-    V1ServiceSpec.ProtocolEnum protocol = service.getProtocol();
+    ProtocolEnum protocol = service.getProtocol();
 
     RangeSet<Integer> portsRangeSet = service.getPortsRange();
 
     String protocolString;
-    if (protocol == V1ServiceSpec.ProtocolEnum.STAR) {
+    if (protocol == ProtocolEnum.STAR) {
       protocolString = "ANY";
     } else {
       protocolString = protocol.toString();
@@ -1113,7 +1140,7 @@ public class NsgService extends BaseService {
     // TODO: Think at how to ensure that at string building time
     groupName = StringUtils.normalize(groupName);
 
-    V1ServiceSpec.ProtocolEnum protocol = service.getProtocol();
+    ProtocolEnum protocol = service.getProtocol();
 
     RangeSet<Integer> portsRangeSet = service.getPortsRange();
 
@@ -1122,9 +1149,9 @@ public class NsgService extends BaseService {
   }
 
   //  private static List<String> getPorts(
-  //      Service service, V1ServiceSpec.ProtocolEnum protocol) {
+  //      Service service, ProtocolEnum protocol) {
   //    List<String> ports = new ArrayList<>();
-  //    if (protocol != V1ServiceSpec.ProtocolEnum.ICMP) {
+  //    if (protocol != ProtocolEnum.ICMP) {
   //      String collapsedPorts = service.getCollapsedPorts();
   //      if (collapsedPorts != null && !collapsedPorts.isBlank()) {
   //        ports.addAll(Arrays.asList(collapsedPorts.split(",")));

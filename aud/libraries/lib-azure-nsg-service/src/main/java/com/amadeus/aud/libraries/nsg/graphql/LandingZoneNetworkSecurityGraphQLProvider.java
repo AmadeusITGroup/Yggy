@@ -16,11 +16,12 @@ import com.amadeus.aud.libraries.graphql.utils.PageGraphQL;
 import com.amadeus.aud.libraries.graphql.utils.StringFilter;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.Target;
+import com.amadeus.aud.libraries.nsg.models.Network;
 import com.amadeus.aud.libraries.nsg.models.NetworkSecurity;
+import com.amadeus.aud.libraries.nsg.models.ServiceTagOutboundRule;
+import com.amadeus.aud.libraries.nsg.models.Subnet;
 import com.amadeus.aud.libraries.nsg.models.ZoneSecurityGroups;
 import com.amadeus.aud.libraries.nsg.services.LandingZoneService;
-import com.amadeus.aud.libraries.yaml.models.Network;
-import com.amadeus.aud.libraries.yaml.models.Subnet;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.Size;
 import java.time.temporal.ChronoUnit;
@@ -223,8 +224,7 @@ public class LandingZoneNetworkSecurityGraphQLProvider {
           if (sgMap.getOutbound() != null) {
             List<NetworkSecurityGraphQL.ServiceTagOutboundRuleGraphQL> outboundList =
                 new ArrayList<>();
-            for (com.amadeus.aud.libraries.yaml.models.ServiceTagOutboundRule rule :
-                sgMap.getOutbound()) {
+            for (ServiceTagOutboundRule rule : sgMap.getOutbound()) {
               NetworkSecurityGraphQL.ServiceTagOutboundRuleGraphQL outboundDto =
                   new NetworkSecurityGraphQL.ServiceTagOutboundRuleGraphQL();
               outboundDto.setName(rule.getName());

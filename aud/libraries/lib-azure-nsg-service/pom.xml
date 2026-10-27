@@ -38,8 +38,12 @@
       <artifactId>quarkus-smallrye-graphql</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-opentelemetry</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-azure-nsg-ports</artifactId>
+      <artifactId>lib-azure-nsg-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -54,12 +58,12 @@
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-data-engine</artifactId>
+      <artifactId>lib-data-engine-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-graph-engine</artifactId>
+      <artifactId>lib-graph-engine-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -81,6 +85,17 @@
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-launcher</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- JAX-RS RuntimeDelegate needed to build jakarta.ws.rs exceptions in unit tests -->
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

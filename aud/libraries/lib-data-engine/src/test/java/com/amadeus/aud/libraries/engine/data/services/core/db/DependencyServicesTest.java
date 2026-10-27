@@ -23,6 +23,7 @@ import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.base.BaseInstance;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1Dependency;
 import com.amadeus.aud.libraries.yaml.models.V1DependencyInstance;
 import com.amadeus.aud.libraries.yaml.models.V1DependencyInstanceSpec;
@@ -423,7 +424,7 @@ class DependencyServicesTest {
                     new V1ServiceSpec()
                         .component(component.getName())
                         .ports(List.of("443"))
-                        .protocol(V1ServiceSpec.ProtocolEnum.TCP)));
+                        .protocol(ProtocolEnum.TCP)));
     service.setComponent(component);
     return service;
   }

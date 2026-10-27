@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,13 +52,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class V1DependencyInstanceSpec {
   /** Gets or Sets delegateGovernanceTo */
   public enum DelegateGovernanceToEnum {
-    OWNER(String.valueOf("Owner")),
+    OWNER("Owner"),
 
-    SOURCE(String.valueOf("Source")),
+    SOURCE("Source"),
 
-    DESTINATION(String.valueOf("Destination"));
+    DESTINATION("Destination");
 
-    private String value;
+    private final String value;
 
     DelegateGovernanceToEnum(String value) {
       this.value = value;
@@ -72,7 +71,7 @@ public class V1DependencyInstanceSpec {
 
     @Override
     public String toString() {
-      return String.valueOf(value);
+      return value;
     }
 
     @JsonCreator
@@ -214,14 +213,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return delegateGovernanceTo
    */
-  @Schema(required = false, description = "Scope to which governance is delegated.")
-  @JsonProperty(value = JSON_PROPERTY_DELEGATE_GOVERNANCE_TO, required = false)
+  @Schema(description = "Scope to which governance is delegated.")
+  @JsonProperty(value = JSON_PROPERTY_DELEGATE_GOVERNANCE_TO)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable DelegateGovernanceToEnum getDelegateGovernanceTo() {
     return delegateGovernanceTo;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DELEGATE_GOVERNANCE_TO, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DELEGATE_GOVERNANCE_TO)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDelegateGovernanceTo(@Nullable DelegateGovernanceToEnum delegateGovernanceTo) {
     this.delegateGovernanceTo = delegateGovernanceTo;
@@ -238,16 +237,15 @@ public class V1DependencyInstanceSpec {
    * @return viaComponentInstance
    */
   @Schema(
-      required = false,
       description =
           "Name of the component instance used for the VIA feature (transparent Transit NVA)")
-  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getViaComponentInstance() {
     return viaComponentInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setViaComponentInstance(@Nullable String viaComponentInstance) {
     this.viaComponentInstance = viaComponentInstance;
@@ -266,16 +264,15 @@ public class V1DependencyInstanceSpec {
    * @return viaComponentInstanceLandingZone
    */
   @Schema(
-      required = false,
       description =
           "Name of the component Instance LandingZone used for the VIA feature (transparent Transit NVA) (for future use)")
-  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getViaComponentInstanceLandingZone() {
     return viaComponentInstanceLandingZone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VIA_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setViaComponentInstanceLandingZone(@Nullable String viaComponentInstanceLandingZone) {
     this.viaComponentInstanceLandingZone = viaComponentInstanceLandingZone;
@@ -291,14 +288,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return viaService
    */
-  @Schema(required = false, description = "Name of the service targetted on the VIA component")
-  @JsonProperty(value = JSON_PROPERTY_VIA_SERVICE, required = false)
+  @Schema(description = "Name of the service targetted on the VIA component")
+  @JsonProperty(value = JSON_PROPERTY_VIA_SERVICE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getViaService() {
     return viaService;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VIA_SERVICE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VIA_SERVICE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setViaService(@Nullable String viaService) {
     this.viaService = viaService;
@@ -314,14 +311,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return componentInstance
    */
-  @Schema(required = false, description = "Name of the source component instance")
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE, required = false)
+  @Schema(description = "Name of the source component instance")
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getComponentInstance() {
     return componentInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setComponentInstance(@Nullable String componentInstance) {
     this.componentInstance = componentInstance;
@@ -338,16 +335,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return componentInstanceLandingZone
    */
-  @Schema(
-      required = false,
-      description = "Name of the source component Instance LandingZone (for future use)")
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @Schema(description = "Name of the source component Instance LandingZone (for future use)")
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getComponentInstanceLandingZone() {
     return componentInstanceLandingZone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setComponentInstanceLandingZone(@Nullable String componentInstanceLandingZone) {
     this.componentInstanceLandingZone = componentInstanceLandingZone;
@@ -364,15 +359,14 @@ public class V1DependencyInstanceSpec {
    * @return isSourceAsComponent
    */
   @Schema(
-      required = false,
       description = "Generic source ? take into account all the instances of the source component")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_AS_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_AS_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceAsComponent() {
     return isSourceAsComponent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_AS_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_AS_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceAsComponent(@Nullable Boolean isSourceAsComponent) {
     this.isSourceAsComponent = isSourceAsComponent;
@@ -389,16 +383,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToLegacyOnly
    */
-  @Schema(
-      required = false,
-      description = "is the source instance limited to legacy on-premises systems")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LEGACY_ONLY, required = false)
+  @Schema(description = "is the source instance limited to legacy on-premises systems")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LEGACY_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToLegacyOnly() {
     return isSourceLimitedToLegacyOnly;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LEGACY_ONLY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LEGACY_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToLegacyOnly(@Nullable Boolean isSourceLimitedToLegacyOnly) {
     this.isSourceLimitedToLegacyOnly = isSourceLimitedToLegacyOnly;
@@ -415,16 +407,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToCloudOnly
    */
-  @Schema(
-      required = false,
-      description = "is source instance limited to the cloud systems (non legacy mainly)")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CLOUD_ONLY, required = false)
+  @Schema(description = "is source instance limited to the cloud systems (non legacy mainly)")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CLOUD_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToCloudOnly() {
     return isSourceLimitedToCloudOnly;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CLOUD_ONLY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CLOUD_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToCloudOnly(@Nullable Boolean isSourceLimitedToCloudOnly) {
     this.isSourceLimitedToCloudOnly = isSourceLimitedToCloudOnly;
@@ -441,16 +431,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToLandingzone
    */
-  @Schema(
-      required = false,
-      description = "is source instance limited to the landing zone of the dependency instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LANDINGZONE, required = false)
+  @Schema(description = "is source instance limited to the landing zone of the dependency instance")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LANDINGZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToLandingzone() {
     return isSourceLimitedToLandingzone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LANDINGZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_LANDINGZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToLandingzone(@Nullable Boolean isSourceLimitedToLandingzone) {
     this.isSourceLimitedToLandingzone = isSourceLimitedToLandingzone;
@@ -467,16 +455,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToTarget
    */
-  @Schema(
-      required = false,
-      description = "is source instance limited to the target of the dependency instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_TARGET, required = false)
+  @Schema(description = "is source instance limited to the target of the dependency instance")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToTarget() {
     return isSourceLimitedToTarget;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_TARGET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToTarget(@Nullable Boolean isSourceLimitedToTarget) {
     this.isSourceLimitedToTarget = isSourceLimitedToTarget;
@@ -493,16 +479,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToContinent
    */
-  @Schema(
-      required = false,
-      description = "is source instance limited to the continent of the dependency instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CONTINENT, required = false)
+  @Schema(description = "is source instance limited to the continent of the dependency instance")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToContinent() {
     return isSourceLimitedToContinent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToContinent(@Nullable Boolean isSourceLimitedToContinent) {
     this.isSourceLimitedToContinent = isSourceLimitedToContinent;
@@ -519,16 +503,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isSourceLimitedToMacrophase
    */
-  @Schema(
-      required = false,
-      description = "is source instance limited to the macrophase of the dependency instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_MACROPHASE, required = false)
+  @Schema(description = "is source instance limited to the macrophase of the dependency instance")
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToMacrophase() {
     return isSourceLimitedToMacrophase;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_MACROPHASE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToMacrophase(@Nullable Boolean isSourceLimitedToMacrophase) {
     this.isSourceLimitedToMacrophase = isSourceLimitedToMacrophase;
@@ -546,16 +528,15 @@ public class V1DependencyInstanceSpec {
    * @return isSourceLimitedToSelector
    */
   @Schema(
-      required = false,
       description =
           "is source instance limited to the selectors defined in the destination component instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_SELECTOR, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_SELECTOR)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsSourceLimitedToSelector() {
     return isSourceLimitedToSelector;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_SELECTOR, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SOURCE_LIMITED_TO_SELECTOR)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsSourceLimitedToSelector(@Nullable Boolean isSourceLimitedToSelector) {
     this.isSourceLimitedToSelector = isSourceLimitedToSelector;
@@ -571,14 +552,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return dependency
    */
-  @Schema(required = false, description = "Name of the dependency")
-  @JsonProperty(value = JSON_PROPERTY_DEPENDENCY, required = false)
+  @Schema(description = "Name of the dependency")
+  @JsonProperty(value = JSON_PROPERTY_DEPENDENCY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDependency() {
     return dependency;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPENDENCY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPENDENCY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDependency(@Nullable String dependency) {
     this.dependency = dependency;
@@ -595,14 +576,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return targetComponentInstance
    */
-  @Schema(required = false, description = "Name of the target Component Instance")
-  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE, required = false)
+  @Schema(description = "Name of the target Component Instance")
+  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getTargetComponentInstance() {
     return targetComponentInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargetComponentInstance(@Nullable String targetComponentInstance) {
     this.targetComponentInstance = targetComponentInstance;
@@ -619,16 +600,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return targetComponentInstanceLandingZone
    */
-  @Schema(
-      required = false,
-      description = "Name of the target Component Instance Landing Zone (for future use)")
-  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @Schema(description = "Name of the target Component Instance Landing Zone (for future use)")
+  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getTargetComponentInstanceLandingZone() {
     return targetComponentInstanceLandingZone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE_LANDING_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGET_COMPONENT_INSTANCE_LANDING_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargetComponentInstanceLandingZone(
       @Nullable String targetComponentInstanceLandingZone) {
@@ -646,15 +625,14 @@ public class V1DependencyInstanceSpec {
    * @return isTargetAsComponent
    */
   @Schema(
-      required = false,
       description = "Generic target ? take into account all the instances of the target component")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_AS_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_AS_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetAsComponent() {
     return isTargetAsComponent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_AS_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_AS_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetAsComponent(@Nullable Boolean isTargetAsComponent) {
     this.isTargetAsComponent = isTargetAsComponent;
@@ -671,16 +649,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToLegacyOnly
    */
-  @Schema(
-      required = false,
-      description = "is the target instance limited to legacy on-premises systems")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_LEGACY_ONLY, required = false)
+  @Schema(description = "is the target instance limited to legacy on-premises systems")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_LEGACY_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToLegacyOnly() {
     return isTargetLimitedToLegacyOnly;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_LEGACY_ONLY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_LEGACY_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToLegacyOnly(@Nullable Boolean isTargetLimitedToLegacyOnly) {
     this.isTargetLimitedToLegacyOnly = isTargetLimitedToLegacyOnly;
@@ -697,16 +673,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToCloudOnly
    */
-  @Schema(
-      required = false,
-      description = "is target instance limited to the cloud systems (non legacy mainly)")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_CLOUD_ONLY, required = false)
+  @Schema(description = "is target instance limited to the cloud systems (non legacy mainly)")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_CLOUD_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToCloudOnly() {
     return isTargetLimitedToCloudOnly;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_CLOUD_ONLY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_CLOUD_ONLY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToCloudOnly(@Nullable Boolean isTargetLimitedToCloudOnly) {
     this.isTargetLimitedToCloudOnly = isTargetLimitedToCloudOnly;
@@ -722,14 +696,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return targetService
    */
-  @Schema(required = false, description = "Name of the target service")
-  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICE, required = false)
+  @Schema(description = "Name of the target service")
+  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getTargetService() {
     return targetService;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargetService(@Nullable String targetService) {
     this.targetService = targetService;
@@ -753,14 +727,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return targetServices
    */
-  @Schema(required = false, description = "List of targeted services")
-  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICES, required = false)
+  @Schema(description = "List of targeted services")
+  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getTargetServices() {
     return targetServices;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGET_SERVICES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargetServices(@Nullable List<String> targetServices) {
     this.targetServices = targetServices;
@@ -777,14 +751,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceNamespace
    */
-  @Schema(required = false, description = "is target instances limited to the source namespace")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_NAMESPACE, required = false)
+  @Schema(description = "is target instances limited to the source namespace")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_NAMESPACE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceNamespace() {
     return isTargetLimitedToSourceNamespace;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_NAMESPACE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_NAMESPACE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceNamespace(
       @Nullable Boolean isTargetLimitedToSourceNamespace) {
@@ -802,14 +776,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourcePaas
    */
-  @Schema(required = false, description = "is target instances limited to the source paas")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_PAAS, required = false)
+  @Schema(description = "is target instances limited to the source paas")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_PAAS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourcePaas() {
     return isTargetLimitedToSourcePaas;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_PAAS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_PAAS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourcePaas(@Nullable Boolean isTargetLimitedToSourcePaas) {
     this.isTargetLimitedToSourcePaas = isTargetLimitedToSourcePaas;
@@ -826,14 +800,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceSecurityzone
    */
-  @Schema(required = false, description = "is target instances limited to the source security zone")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_SECURITYZONE, required = false)
+  @Schema(description = "is target instances limited to the source security zone")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_SECURITYZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceSecurityzone() {
     return isTargetLimitedToSourceSecurityzone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_SECURITYZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_SECURITYZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceSecurityzone(
       @Nullable Boolean isTargetLimitedToSourceSecurityzone) {
@@ -851,9 +825,7 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceApplicationphase
    */
-  @Schema(
-      required = false,
-      description = "is target instances limited to the source applicationphase")
+  @Schema(description = "is target instances limited to the source applicationphase")
   @JsonProperty(
       value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_APPLICATIONPHASE,
       required = false)
@@ -882,14 +854,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceLandingzone
    */
-  @Schema(required = false, description = "is target instances limited to the source landing zone")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_LANDINGZONE, required = false)
+  @Schema(description = "is target instances limited to the source landing zone")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_LANDINGZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceLandingzone() {
     return isTargetLimitedToSourceLandingzone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_LANDINGZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_LANDINGZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceLandingzone(
       @Nullable Boolean isTargetLimitedToSourceLandingzone) {
@@ -907,14 +879,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceTarget
    */
-  @Schema(required = false, description = "is target instances limited to the source target")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_TARGET, required = false)
+  @Schema(description = "is target instances limited to the source target")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceTarget() {
     return isTargetLimitedToSourceTarget;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_TARGET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceTarget(@Nullable Boolean isTargetLimitedToSourceTarget) {
     this.isTargetLimitedToSourceTarget = isTargetLimitedToSourceTarget;
@@ -931,14 +903,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceContinent
    */
-  @Schema(required = false, description = "is target instances limited to the source continent")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_CONTINENT, required = false)
+  @Schema(description = "is target instances limited to the source continent")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceContinent() {
     return isTargetLimitedToSourceContinent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceContinent(
       @Nullable Boolean isTargetLimitedToSourceContinent) {
@@ -956,14 +928,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return isTargetLimitedToSourceMacrophase
    */
-  @Schema(required = false, description = "is target instances limited to the source macrophase")
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_MACROPHASE, required = false)
+  @Schema(description = "is target instances limited to the source macrophase")
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTargetLimitedToSourceMacrophase() {
     return isTargetLimitedToSourceMacrophase;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_MACROPHASE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TARGET_LIMITED_TO_SOURCE_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTargetLimitedToSourceMacrophase(
       @Nullable Boolean isTargetLimitedToSourceMacrophase) {
@@ -990,15 +962,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return sourcesSelectors
    */
-  @Valid
-  @Schema(required = false, description = "List of filtering on sources")
-  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS, required = false)
+  @Schema(description = "List of filtering on sources")
+  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<Map<String, String>> getSourcesSelectors() {
     return sourcesSelectors;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSourcesSelectors(@Nullable List<Map<String, String>> sourcesSelectors) {
     this.sourcesSelectors = sourcesSelectors;
@@ -1024,15 +995,14 @@ public class V1DependencyInstanceSpec {
    *
    * @return targetsSelectors
    */
-  @Valid
-  @Schema(required = false, description = "List of filtering on targets")
-  @JsonProperty(value = JSON_PROPERTY_TARGETS_SELECTORS, required = false)
+  @Schema(description = "List of filtering on targets")
+  @JsonProperty(value = JSON_PROPERTY_TARGETS_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<Map<String, String>> getTargetsSelectors() {
     return targetsSelectors;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGETS_SELECTORS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGETS_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargetsSelectors(@Nullable List<Map<String, String>> targetsSelectors) {
     this.targetsSelectors = targetsSelectors;

@@ -1,9 +1,9 @@
 package com.amadeus.aud.libraries.engine.data.services.external;
 
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
 import com.amadeus.aud.libraries.engine.data.services.external.qualifiers.LocalFileQualifier;
 import com.amadeus.aud.libraries.engine.data.services.external.qualifiers.StorageAccountQualifier;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;

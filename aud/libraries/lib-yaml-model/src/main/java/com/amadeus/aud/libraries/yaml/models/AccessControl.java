@@ -37,14 +37,14 @@ public class AccessControl {
    * @return deny
    */
   @Valid
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_DENY, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_DENY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable AccessControlDeny getDeny() {
     return deny;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DENY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DENY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeny(@Nullable AccessControlDeny deny) {
     this.deny = deny;
@@ -61,14 +61,14 @@ public class AccessControl {
    * @return allow
    */
   @Valid
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_ALLOW, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_ALLOW)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable AccessControlAllow getAllow() {
     return allow;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ALLOW, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ALLOW)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAllow(@Nullable AccessControlAllow allow) {
     this.allow = allow;

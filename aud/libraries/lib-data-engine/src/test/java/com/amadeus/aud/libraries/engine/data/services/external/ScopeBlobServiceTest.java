@@ -12,12 +12,12 @@ import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
 import com.amadeus.aud.libraries.engine.data.configs.AudScopesConfig;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudRequirementsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopesRepository;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.JsonService;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.YamlService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.BlobService;
 import com.amadeus.aud.libraries.models.core.db.Requirement;
 import com.amadeus.aud.libraries.models.core.db.Scope;
 import com.amadeus.aud.libraries.models.core.internals.Requirements;
+import com.amadeus.aud.libraries.models.parsing.JsonService;
+import com.amadeus.aud.libraries.models.parsing.YamlService;
 import io.smallrye.mutiny.Uni;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -87,8 +87,8 @@ class ScopeBlobServiceTest {
       assertThat(repository.getData()).hasSize(2);
       Scope governance = findScope(repository, "Governance");
       Scope application = findScope(repository, "Application");
-      assertThat(governance.getOwners()).containsExactly("platform");
-      assertThat(application.getOwners()).containsExactly("application-owner");
+      assertThat(governance.getName()).isEqualTo("Governance");
+      assertThat(application.getName()).isEqualTo("Application");
       assertThat(application.getScope()).isSameAs(governance);
     }
 
@@ -99,7 +99,7 @@ class ScopeBlobServiceTest {
 
       assertThat(repository.getData()).hasSize(1);
       Scope scope = findScope(repository, "JsonScope");
-      assertThat(scope.getOwners()).containsExactly("json-owner");
+      assertThat(scope.getName()).isEqualTo("JsonScope");
     }
 
     @Test
@@ -109,8 +109,7 @@ class ScopeBlobServiceTest {
               "1.2.3", new String[] {ExternalServiceTestFixture.DUPLICATE_SCOPE_YAML}, false);
 
       assertThat(repository.getData()).hasSize(1);
-      assertThat(findScope(repository, "Application").getOwners())
-          .isIn(java.util.Set.of("first"), java.util.Set.of("second"));
+      assertThat(findScope(repository, "Application").getName()).isEqualTo("Application");
     }
 
     @Test

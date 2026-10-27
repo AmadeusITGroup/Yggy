@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-/** Metadata to identify a resource - Mandatory part of all the AUD objects */
-@Schema(description = "Metadata to identify a resource - Mandatory part of all the AUD objects")
+@Schema(description = "Metadata to identify a resource - Mandatory part of all AUD objects")
 @JsonPropertyOrder({
   V1Metadata.JSON_PROPERTY_SCOPE,
   V1Metadata.JSON_PROPERTY_NAME,
@@ -99,16 +98,14 @@ public class V1Metadata {
    *
    * @return providerSpecific
    */
-  @Schema(
-      required = false,
-      description = "Json including all properties that are provider specific.")
-  @JsonProperty(value = JSON_PROPERTY_PROVIDER_SPECIFIC, required = false)
+  @Schema(description = "Json including all properties that are provider specific.")
+  @JsonProperty(value = JSON_PROPERTY_PROVIDER_SPECIFIC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getProviderSpecific() {
     return providerSpecific;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PROVIDER_SPECIFIC, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PROVIDER_SPECIFIC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setProviderSpecific(@Nullable String providerSpecific) {
     this.providerSpecific = providerSpecific;
@@ -132,14 +129,14 @@ public class V1Metadata {
    *
    * @return labels
    */
-  @Schema(required = false, description = "Labels to further describe the resource.")
-  @JsonProperty(value = JSON_PROPERTY_LABELS, required = false)
+  @Schema(description = "Labels to further describe the resource.")
+  @JsonProperty(value = JSON_PROPERTY_LABELS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Map<String, String> getLabels() {
     return labels;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LABELS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LABELS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLabels(@Nullable Map<String, String> labels) {
     this.labels = labels;
@@ -155,14 +152,14 @@ public class V1Metadata {
    *
    * @return comment
    */
-  @Schema(required = false, description = "Any comment related to this object.")
-  @JsonProperty(value = JSON_PROPERTY_COMMENT, required = false)
+  @Schema(description = "Any comment related to this object.")
+  @JsonProperty(value = JSON_PROPERTY_COMMENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getComment() {
     return comment;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMMENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMMENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setComment(@Nullable String comment) {
     this.comment = comment;

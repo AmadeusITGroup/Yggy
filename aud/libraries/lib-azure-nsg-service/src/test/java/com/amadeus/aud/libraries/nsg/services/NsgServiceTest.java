@@ -12,12 +12,16 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.DependencyInst
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ServicesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.SubnetInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ZoneInstancesRepository;
+import com.amadeus.aud.libraries.engine.graph.models.dto.Edge;
+import com.amadeus.aud.libraries.engine.graph.models.filters.EdgeDirection;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
+import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
+import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
 import com.amadeus.aud.libraries.models.core.db.ZoneType;
 import com.amadeus.aud.libraries.models.core.internals.Direction;
@@ -25,8 +29,8 @@ import com.amadeus.aud.libraries.models.core.internals.Endpoint;
 import com.amadeus.aud.libraries.models.core.utils.PortUtils;
 import com.amadeus.aud.libraries.nsg.models.NetworkRule;
 import com.amadeus.aud.libraries.nsg.models.SecurityGroupMap;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1ComponentInstanceSpec;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
 import com.google.common.collect.TreeRangeSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -58,7 +62,7 @@ class NsgServiceTest {
     ServicesRepository servicesRepo = mock(ServicesRepository.class);
     doReturn(true).when(servicesRepo).isReady();
     Service allService = mock(Service.class);
-    doReturn(V1ServiceSpec.ProtocolEnum.TCP).when(allService).getProtocol();
+    doReturn(ProtocolEnum.TCP).when(allService).getProtocol();
     doReturn(TreeRangeSet.create(PortUtils.ALL_RANGE_SET)).when(allService).getPortsRange();
 
     doReturn(allService).when(servicesRepo).getAllService();
@@ -237,7 +241,7 @@ class NsgServiceTest {
     ServicesRepository sr = mock(ServicesRepository.class);
     doReturn(true).when(sr).isReady();
     Service all = mock(Service.class);
-    doReturn(V1ServiceSpec.ProtocolEnum.TCP).when(all).getProtocol();
+    doReturn(ProtocolEnum.TCP).when(all).getProtocol();
     doReturn(TreeRangeSet.create(PortUtils.ALL_RANGE_SET)).when(all).getPortsRange();
     doReturn(all).when(sr).getAllService();
     doReturn(sr).when(v).getServicesRepository();
@@ -322,5 +326,118 @@ class NsgServiceTest {
                     version, mock(LandingZone.class), Set.of(), new HashMap<>()))
         .isInstanceOf(IllegalCallerException.class)
         .hasMessageContaining("Repository not ready yet");
+  }
+
+  @Test
+  void
+      addBasicConnectivity_whenViaAndDestinationAreHostedComponents_resolvesZoneFromDeployComponentInstance() {
+    // Arrange
+    Version version = mock(Version.class);
+    doReturn("1.0.0").when(version).getVersionNumber();
+
+    DependencyInstancesRepository depRepo = mock(DependencyInstancesRepository.class);
+    doReturn(true).when(depRepo).isReady();
+    doReturn(depRepo).when(version).getDependencyInstancesRepository();
+
+    ComponentInstancesRepository compRepo = mock(ComponentInstancesRepository.class);
+    doReturn(true).when(compRepo).isReady();
+    doReturn(compRepo).when(version).getComponentInstancesRepository();
+
+    ServicesRepository svcRepo = mock(ServicesRepository.class);
+    doReturn(true).when(svcRepo).isReady();
+    doReturn(svcRepo).when(version).getServicesRepository();
+
+    LandingZone destinationLandingZone = mock(LandingZone.class);
+    doReturn("lz-dest-id").when(destinationLandingZone).id();
+    Target destTarget = mock(Target.class);
+    doReturn("Azure").when(destTarget).getProviderName();
+    doReturn(false).when(destTarget).isEnableVnetToVnet();
+    doReturn(destTarget).when(destinationLandingZone).getTarget();
+
+    LandingZone sourceLandingZone = mock(LandingZone.class);
+    doReturn("lz-src-id").when(sourceLandingZone).id();
+    Target srcTarget = mock(Target.class);
+    doReturn("Azure").when(srcTarget).getProviderName();
+    doReturn(false).when(srcTarget).isEnableVnetToVnet();
+    doReturn(srcTarget).when(sourceLandingZone).getTarget();
+
+    ComponentInstance sourceCi = mock(ComponentInstance.class);
+    Component sourceComp = mock(Component.class);
+    doReturn(false).when(sourceComp).isContainer();
+    doReturn(sourceComp).when(sourceCi).getComponent();
+    doReturn(sourceLandingZone).when(sourceCi).getLandingZone();
+    doReturn(null).when(sourceCi).getServiceTag();
+    Endpoint srcEndpoint = new Endpoint(Endpoint.TypeEnum.CIDR, "10.0.0.1/32", "src-ep");
+    doReturn(Set.of(srcEndpoint)).when(sourceCi).getInternalEndpoints(Direction.OUT);
+
+    ZoneInstance destHostZone = createZoneMock("Technical", "dest-host-zone");
+    doReturn(TreeRangeSet.create()).when(destHostZone).getInternalDstCidrRangeSetForNSG();
+
+    ComponentInstance destHostCi = mock(ComponentInstance.class);
+    doReturn(destHostZone).when(destHostCi).getInZoneInstance();
+
+    ComponentInstance destCi = mock(ComponentInstance.class);
+    Component destComp = mock(Component.class);
+    doReturn(false).when(destComp).isContainer();
+    doReturn(destComp).when(destCi).getComponent();
+    doReturn(destinationLandingZone).when(destCi).getLandingZone();
+    doReturn(null).when(destCi).getServiceTag();
+    doReturn(null).when(destCi).getInZoneInstance();
+    doReturn(null).when(destCi).getInSubnetInstance();
+    doReturn(destHostCi).when(destCi).getDeployComponentInstance();
+    Endpoint destInEndpoint = new Endpoint(Endpoint.TypeEnum.CIDR, "10.1.0.0/24", "dest-ep");
+    doReturn(Set.of(destInEndpoint)).when(destCi).getInternalEndpoints(Direction.IN);
+
+    ZoneInstance viaHostZone = createZoneMock("Technical", "via-host-zone");
+    doReturn(TreeRangeSet.create()).when(viaHostZone).getInternalDstCidrRangeSetForNSG();
+
+    ComponentInstance viaHostCi = mock(ComponentInstance.class);
+    doReturn(viaHostZone).when(viaHostCi).getInZoneInstance();
+
+    ComponentInstance viaCi = mock(ComponentInstance.class);
+    doReturn(null).when(viaCi).getInZoneInstance();
+    doReturn(null).when(viaCi).getInSubnetInstance();
+    doReturn(viaHostCi).when(viaCi).getDeployComponentInstance();
+
+    Service mainService = mock(Service.class);
+    doReturn(ProtocolEnum.TCP).when(mainService).getProtocol();
+    doReturn(TreeRangeSet.create(PortUtils.ALL_RANGE_SET)).when(mainService).getPortsRange();
+
+    Service viaService = mock(Service.class);
+    doReturn(ProtocolEnum.TCP).when(viaService).getProtocol();
+    doReturn(TreeRangeSet.create(PortUtils.ALL_RANGE_SET)).when(viaService).getPortsRange();
+
+    DependencyInstance dependencyInstance = mock(DependencyInstance.class);
+    doReturn(false).when(dependencyInstance).isUseWideSubnet();
+    doReturn(viaCi).when(dependencyInstance).getViaComponentInstance();
+    doReturn(viaService).when(dependencyInstance).getViaService();
+
+    ZoneInstance matchedZone = createZoneMock("Technical", "matched-zone");
+    doReturn(TreeRangeSet.create()).when(matchedZone).getInternalDstCidrRangeSetForNSG();
+    SubnetInstance matchedSubnet = mock(SubnetInstance.class);
+    doReturn("10.1.0.0/24").when(matchedSubnet).getCidr();
+    doReturn(matchedZone).when(matchedSubnet).getZoneInstance();
+
+    Edge edge = new Edge("edge-test", "dep-1", "svc-main", true, "ci-src", "ci-dest");
+
+    doReturn(List.of(edge))
+        .when(graphEngineService)
+        .getAllEdgesByLandingZones("1.0.0", List.of("lz-dest-id"), EdgeDirection.INBOUND);
+
+    doReturn(dependencyInstance).when(depRepo).get("dep-1");
+    doReturn(sourceCi).when(compRepo).get("ci-src");
+    doReturn(destCi).when(compRepo).get("ci-dest");
+    doReturn(mainService).when(svcRepo).get("svc-main");
+
+    Map<String, SecurityGroupMap> nsgMap = new HashMap<>();
+
+    // Act
+    nsgService.addBasicConnectivity(version, destinationLandingZone, Set.of(matchedSubnet), nsgMap);
+
+    // Assert
+    assertThat(nsgMap).containsKey("Technical-matched-zone");
+    assertThat(nsgMap).containsKey("Technical-via-host-zone");
+    SecurityGroupMap viaNsg = nsgMap.get("Technical-via-host-zone");
+    assertThat(viaNsg.getInbound()).isNotEmpty();
   }
 }

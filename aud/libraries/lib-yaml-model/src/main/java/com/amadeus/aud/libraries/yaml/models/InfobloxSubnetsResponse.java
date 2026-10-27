@@ -40,11 +40,10 @@ public class InfobloxSubnetsResponse extends ApiMetadata {
    * @return subnets
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "List of Infoblox subnets")
   @JsonProperty(value = JSON_PROPERTY_SUBNETS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<InfobloxSubnet> getSubnets() {
+  public List<@Valid InfobloxSubnet> getSubnets() {
     return subnets;
   }
 

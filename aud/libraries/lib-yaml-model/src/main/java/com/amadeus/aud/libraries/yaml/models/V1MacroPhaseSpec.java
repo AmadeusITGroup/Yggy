@@ -27,14 +27,14 @@ public class V1MacroPhaseSpec {
    *
    * @return automationOrder
    */
-  @Schema(required = false, description = "Automation order in ascending order")
-  @JsonProperty(value = JSON_PROPERTY_AUTOMATION_ORDER, required = false)
+  @Schema(description = "Automation order in ascending order")
+  @JsonProperty(value = JSON_PROPERTY_AUTOMATION_ORDER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Integer getAutomationOrder() {
     return automationOrder;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_AUTOMATION_ORDER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_AUTOMATION_ORDER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAutomationOrder(@Nullable Integer automationOrder) {
     this.automationOrder = automationOrder;

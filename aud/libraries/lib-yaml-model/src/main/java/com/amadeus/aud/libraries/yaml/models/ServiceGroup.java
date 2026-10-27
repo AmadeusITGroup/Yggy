@@ -1,10 +1,8 @@
 package com.amadeus.aud.libraries.yaml.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -32,43 +30,6 @@ public class ServiceGroup extends ObjectMetadata {
 
   public static final String JSON_PROPERTY_PORTS = "ports";
   private List<String> ports;
-
-  /** Gets or Sets protocol */
-  public enum ProtocolEnum {
-    TCP(String.valueOf("Tcp")),
-
-    UDP(String.valueOf("Udp")),
-
-    ICMP(String.valueOf("Icmp")),
-
-    STAR(String.valueOf("*"));
-
-    private String value;
-
-    ProtocolEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static ProtocolEnum fromValue(String value) {
-      for (ProtocolEnum b : ProtocolEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-  }
 
   public static final String JSON_PROPERTY_PROTOCOL = "protocol";
   private ProtocolEnum protocol;
@@ -192,14 +153,14 @@ public class ServiceGroup extends ObjectMetadata {
    *
    * @return scope
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_SCOPE, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_SCOPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getScope() {
     return scope;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SCOPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setScope(@Nullable String scope) {
     this.scope = scope;

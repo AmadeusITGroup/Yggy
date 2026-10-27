@@ -15,22 +15,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-/// Aggregates a directory of descriptor YAML files into the network data the
-/// services read at startup.
+/// Aggregates a directory of descriptor YAML files into the network data the services read at
+/// startup.
 ///
 /// Usage: `java scripts/generateNetworkData.java <data-directory>`
 ///
-/// The directory must contain a `Scope/` directory of YAML descriptors plus one
-/// directory per scope. The four aggregated files documented in `aud/README.md`
-/// are written to `<data-directory>/network-data`.
+/// The directory must contain a `Scope/` directory of YAML descriptors plus one directory per
+/// scope. The four aggregated files documented in `aud/README.md` are written to
+/// `<data-directory>/network-data`.
 ///
-/// The argument is required: no fixture data set ships with this repository, so
-/// there is nothing sensible to default to.
+/// The argument is required: no fixture data set ships with this repository, so there is nothing
+/// sensible to default to.
 ///
 /// Must be run from the `aud/` directory.
 final String SCOPE_VERSION = "1.0.1";
-
-final String NETWORK_VERSION = "1.0.1";
 
 final Pattern DOCUMENT_SEPARATOR = Pattern.compile("^---\\s*$");
 final Pattern COMMENT = Pattern.compile("^\\s*#");
@@ -208,9 +206,6 @@ String renderMetadata(List<String> includedScopes, String runTimestamp) {
         .append("spec:\n")
         .append("  scope_version: ")
         .append(SCOPE_VERSION)
-        .append('\n')
-        .append("  network_version: ")
-        .append(NETWORK_VERSION)
         .append('\n')
         .append("  version_datetime: ")
         .append(runTimestamp)

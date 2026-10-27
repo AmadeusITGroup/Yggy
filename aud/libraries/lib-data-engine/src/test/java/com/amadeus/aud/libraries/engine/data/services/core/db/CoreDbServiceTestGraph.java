@@ -2,13 +2,13 @@ package com.amadeus.aud.libraries.engine.data.services.core.db;
 
 import static com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseLogServiceTestSupport.configure;
 
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudRequirementsRepository;
 import com.amadeus.aud.libraries.engine.data.services.VersionPostInitHook;
 import com.amadeus.aud.libraries.engine.data.services.VersionPreInitHook;
 import com.amadeus.aud.libraries.engine.data.services.VersionService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.DataProcessor;
 import org.eclipse.microprofile.context.ManagedExecutor;
 

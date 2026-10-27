@@ -2,6 +2,7 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheKeyGenerator;
@@ -9,7 +10,6 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.SubnetInstance
 import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
 import com.amadeus.aud.libraries.yaml.models.SecurityZoningResponse;
 import com.amadeus.aud.services.apis.models.core.securityzoning.SecurityZoningSubnet;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;

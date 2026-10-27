@@ -26,14 +26,14 @@ public class V1ServicetagSpec {
    *
    * @return anyNeededInNsg
    */
-  @Schema(required = false, description = "is Namespace authorized in other scopes ?")
-  @JsonProperty(value = JSON_PROPERTY_ANY_NEEDED_IN_NSG, required = false)
+  @Schema(description = "is Namespace authorized in other scopes ?")
+  @JsonProperty(value = JSON_PROPERTY_ANY_NEEDED_IN_NSG)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getAnyNeededInNsg() {
     return anyNeededInNsg;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ANY_NEEDED_IN_NSG, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ANY_NEEDED_IN_NSG)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAnyNeededInNsg(@Nullable Boolean anyNeededInNsg) {
     this.anyNeededInNsg = anyNeededInNsg;

@@ -16,7 +16,7 @@
     <unittests.instruction.coverage>0.88</unittests.instruction.coverage>
     <unittests.branch.coverage>0.80</unittests.branch.coverage>
 
-    <postgresql.version>42.7.13</postgresql.version>
+    <postgresql.version>42.7.14</postgresql.version>
   </properties>
 
   <dependencies>
@@ -24,6 +24,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-oidc-filter</artifactId>
     </dependency>
 
     <!--        Annotations-->
@@ -39,7 +43,7 @@
 
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-data-engine</artifactId>
+      <artifactId>lib-graph-engine-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

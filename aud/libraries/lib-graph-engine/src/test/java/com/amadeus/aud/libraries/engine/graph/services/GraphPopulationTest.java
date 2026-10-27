@@ -22,7 +22,7 @@ import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.models.core.db.ZoneType;
 import com.amadeus.aud.libraries.models.core.internals.Direction;
 import com.amadeus.aud.libraries.models.core.internals.Endpoint;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Nested;
@@ -822,7 +822,7 @@ class GraphPopulationTest {
     doReturn("service-id").when(service).id();
     doReturn("service-name").when(service).getName();
     doReturn("8080").when(service).getPorts();
-    doReturn(V1ServiceSpec.ProtocolEnum.TCP).when(service).getProtocol();
+    doReturn(ProtocolEnum.TCP).when(service).getProtocol();
 
     return dependencyInstance;
   }

@@ -38,15 +38,14 @@ public class AccessControlDenyAnyOf {
    *
    * @return accessRights
    */
-  @Valid
-  @Schema(required = false, description = "the section specifying access rights to deny")
-  @JsonProperty(value = JSON_PROPERTY_ACCESS_RIGHTS, required = false)
+  @Schema(description = "the section specifying access rights to deny")
+  @JsonProperty(value = JSON_PROPERTY_ACCESS_RIGHTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<@Valid AccessRightsEntry> getAccessRights() {
     return accessRights;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ACCESS_RIGHTS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ACCESS_RIGHTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAccessRights(@Nullable List<@Valid AccessRightsEntry> accessRights) {
     this.accessRights = accessRights;

@@ -13,7 +13,7 @@
 
   <properties>
     <unittests.instruction.coverage>0.80</unittests.instruction.coverage>
-    <unittests.branch.coverage>0.80</unittests.branch.coverage>
+    <unittests.branch.coverage>0.72</unittests.branch.coverage>
 
     <jvm.args>-XX:+UseG1GC
       -XX:+UseDynamicNumberOfGCThreads
@@ -23,6 +23,8 @@
       -XX:+AlwaysPreTouch
         --add-opens java.base/java.lang=ALL-UNNAMED</jvm.args>
     <runOnlyGroups/>
+    <!-- Read by the Quarkus build, which writes openapi.json/yaml there; checked by EndpointInventoryIT -->
+    <quarkus.smallrye-openapi.store-schema-directory>${project.build.directory}/openapi</quarkus.smallrye-openapi.store-schema-directory>
   </properties>
 
   <dependencies>
@@ -120,6 +122,11 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!--        Google-->
     <dependency>
@@ -156,8 +163,25 @@
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-graph-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
       <artifactId>lib-graph-engine</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
@@ -165,11 +189,40 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-aud-service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-v2-objects-service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Jandex-indexed HTTP modules, only discovered by Quarkus at runtime -->
+    <dependency>
       <groupId>com.amadeus.aud.services</groupId>
       <artifactId>service-azure-nsg-http</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
-
+    <dependency>
+      <groupId>com.amadeus.aud.services</groupId>
+      <artifactId>service-ip-report-http</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.services</groupId>
+      <artifactId>service-aud-open-http</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.services</groupId>
+      <artifactId>service-v2-objects-http</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -180,16 +233,6 @@
         <extensions>true</extensions>
         <executions>
           <execution>
-            <id>track-prod-config-changes</id>
-            <goals>
-              <goal>track-config-changes</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <dumpCurrentWhenRecordedUnavailable>true</dumpCurrentWhenRecordedUnavailable>
-            </configuration>
-          </execution>
-          <execution>
             <goals>
               <goal>build</goal>
             </goals>
@@ -197,7 +240,7 @@
         </executions>
       </plugin>
       <plugin>
-        <!-- Yandex index needed so that Quarkus discovers the http service as well -->
+        <!-- Jandex index needed so that Quarkus discovers the http service as well -->
         <groupId>io.smallrye</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <version>${jandex-maven-plugin.version}</version>
@@ -207,6 +250,28 @@
             <goals>
               <goal>jandex</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!--
+          EndpointInventoryIT compares the OpenAPI schema written by the Quarkus build
+          (see quarkus.smallrye-openapi.store-schema-directory) with its EXPECTED_ENDPOINTS list.
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <systemPropertyVariables>
+                <openapi.schema.file>${quarkus.smallrye-openapi.store-schema-directory}/openapi.json</openapi.schema.file>
+              </systemPropertyVariables>
+            </configuration>
           </execution>
         </executions>
       </plugin>

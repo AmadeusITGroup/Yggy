@@ -43,11 +43,8 @@ public class ScopeGraphQLProvider {
       @Name(AbstractBaseMixin.JSON_PROPERTY_ID) StringFilter id,
       @Name(AbstractBaseMixin.JSON_PROPERTY_NAME) StringFilter name,
       @Name("serviceNowId") StringFilter serviceNowId,
-      @Name("nanoId") StringFilter nanoId,
-      @Name("assigneeGroup") StringFilter assigneeGroup,
       @Name("repositoryVersion") StringFilter repositoryVersion,
       @Name("isDeleted") Boolean isDeleted,
-      @Name("owner") StringFilter owner,
       @Name("role") StringFilter role,
       @Name("targetName") StringFilter targetName,
       @Name("landingZoneName") StringFilter landingZoneName,
@@ -64,11 +61,8 @@ public class ScopeGraphQLProvider {
     scopeFilter.setId(id);
     scopeFilter.setName(name);
     scopeFilter.setServiceNowId(serviceNowId);
-    scopeFilter.setNanoId(nanoId);
-    scopeFilter.setAssigneeGroup(assigneeGroup);
     scopeFilter.setRepositoryVersion(repositoryVersion);
     scopeFilter.setIsDeleted(isDeleted);
-    scopeFilter.setOwner(owner);
     scopeFilter.setRole(role);
     scopeFilter.setTargetName(targetName);
     scopeFilter.setLandingZoneName(landingZoneName);

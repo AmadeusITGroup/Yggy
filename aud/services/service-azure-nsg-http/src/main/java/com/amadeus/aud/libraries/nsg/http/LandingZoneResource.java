@@ -55,38 +55,6 @@ public class LandingZoneResource {
         @APIResponse(responseCode = "500", ref = "#/components/responses/InternalError")
       })
   @Parameters(
-      @Parameter(
-          name = "landingZone",
-          description = "The landing zone name",
-          required = true,
-          in = ParameterIn.PATH,
-          schema = @Schema(type = SchemaType.STRING)))
-  @Path("landingzone/{landingZoneName}/network-security")
-  public Uni<Response> getNetworkSecurity(@PathParam("landingZoneName") String landingZoneName) {
-    return landingZoneService
-        .getNetworkSecurity("latest", landingZoneName)
-        .map(networkSecurity -> Response.ok(withUrls(networkSecurity)).build());
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(summary = "Network Security (with version)")
-  @Tags(value = @Tag(name = "Azure NSG"))
-  @APIResponses(
-      value = {
-        @APIResponse(
-            responseCode = "200",
-            description = "network, subnets and security groups",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = NetworkSecurity.class))),
-        @APIResponse(responseCode = "401", ref = "#/components/responses/UnauthorizedError"),
-        @APIResponse(responseCode = "403", ref = "#/components/responses/ForbiddenError"),
-        @APIResponse(responseCode = "404", ref = "#/components/responses/NotFoundError"),
-        @APIResponse(responseCode = "500", ref = "#/components/responses/InternalError")
-      })
-  @Parameters(
       value = {
         @Parameter(
             name = "version",

@@ -62,14 +62,14 @@ public class V1ZoneTypeSpec {
    *
    * @return isPaas
    */
-  @Schema(required = false, description = "is this used for ACS?")
-  @JsonProperty(value = JSON_PROPERTY_IS_PAAS, required = false)
+  @Schema(description = "is this used for ACS?")
+  @JsonProperty(value = JSON_PROPERTY_IS_PAAS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPaas() {
     return isPaas;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PAAS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PAAS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPaas(@Nullable Boolean isPaas) {
     this.isPaas = isPaas;
@@ -85,14 +85,14 @@ public class V1ZoneTypeSpec {
    *
    * @return isReal
    */
-  @Schema(required = false, description = "does it contain an actual Amadeus workload?")
-  @JsonProperty(value = JSON_PROPERTY_IS_REAL, required = false)
+  @Schema(description = "does it contain an actual Amadeus workload?")
+  @JsonProperty(value = JSON_PROPERTY_IS_REAL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsReal() {
     return isReal;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_REAL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_REAL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsReal(@Nullable Boolean isReal) {
     this.isReal = isReal;

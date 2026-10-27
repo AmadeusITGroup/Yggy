@@ -40,11 +40,10 @@ public class SpokesCIDRsResponse extends ApiMetadata {
    * @return spokesCidrs
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_SPOKES_CIDRS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<SpokeCIDRs> getSpokesCidrs() {
+  public List<@Valid SpokeCIDRs> getSpokesCidrs() {
     return spokesCidrs;
   }
 

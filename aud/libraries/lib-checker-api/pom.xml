@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.amadeus.aud</groupId>
+    <artifactId>libraries</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.amadeus.aud.libraries</groupId>
+  <artifactId>lib-checker-api</artifactId>
+  <inceptionYear>2025</inceptionYear>
+
+  <properties>
+    <!-- JVM 21: due to being a dependency in cli-checker -->
+    <maven.compiler.release>21</maven.compiler.release>
+    <unittests.instruction.coverage>0.36</unittests.instruction.coverage>
+    <unittests.branch.coverage>0.17</unittests.branch.coverage>
+
+    <annotations.version>4.10.4</annotations.version>
+    <httpcore5.version>5.4.4</httpcore5.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
+      <version>${httpcore5.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-graph-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>

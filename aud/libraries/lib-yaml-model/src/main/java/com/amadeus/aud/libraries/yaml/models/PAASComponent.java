@@ -95,14 +95,14 @@ public class PAASComponent extends ObjectMetadata {
    *
    * @return identifier
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_IDENTIFIER, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_IDENTIFIER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Object getIdentifier() {
     return identifier;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IDENTIFIER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IDENTIFIER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIdentifier(@Nullable Object identifier) {
     this.identifier = identifier;
@@ -118,14 +118,14 @@ public class PAASComponent extends ObjectMetadata {
    *
    * @return inNetwork
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_IN_NETWORK, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_IN_NETWORK)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getInNetwork() {
     return inNetwork;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IN_NETWORK, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IN_NETWORK)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInNetwork(@Nullable String inNetwork) {
     this.inNetwork = inNetwork;
@@ -141,14 +141,14 @@ public class PAASComponent extends ObjectMetadata {
    *
    * @return outNetwork
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_OUT_NETWORK, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_OUT_NETWORK)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getOutNetwork() {
     return outNetwork;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_OUT_NETWORK, required = false)
+  @JsonProperty(value = JSON_PROPERTY_OUT_NETWORK)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOutNetwork(@Nullable String outNetwork) {
     this.outNetwork = outNetwork;

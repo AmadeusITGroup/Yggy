@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.amadeus.aud</groupId>
@@ -8,14 +8,14 @@
   <inceptionYear>2024</inceptionYear>
 
   <modules>
+    <module>clis</module>
     <module>libraries</module>
     <module>services</module>
   </modules>
 
   <properties>
+    <project.build.outputTimestamp>1970-01-01T00:00:00Z</project.build.outputTimestamp>
     <maven.compiler.release>25</maven.compiler.release>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
     <unittests.instruction.coverage>0.80</unittests.instruction.coverage>
     <unittests.branch.coverage>0.80</unittests.branch.coverage>
@@ -30,10 +30,10 @@
     <junit.timeout>60 s</junit.timeout>
 
     <assertj-core.version>3.27.7</assertj-core.version>
-    <azure-identity.version>1.18.6</azure-identity.version>
+    <azure-identity.version>1.18.7</azure-identity.version>
     <commons-net.version>3.13.0</commons-net.version>
     <download-maven-plugin.version>1.9.0</download-maven-plugin.version>
-    <guava.version>33.7.1-jre</guava.version>
+    <guava.version>33.7.2-jre</guava.version>
     <google.failureaccess.version>1.0.3</google.failureaccess.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
@@ -43,32 +43,33 @@
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
-    <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-    <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+    <maven-deploy-plugin.version>3.2.0</maven-deploy-plugin.version>
+    <maven-install-plugin.version>3.2.0</maven-install-plugin.version>
     <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
     <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
     <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
-    <jackson-datatype.version>2.22.2</jackson-datatype.version>
+    <jackson-datatype.version>2.22.4</jackson-datatype.version>
     <jandex-maven-plugin.version>3.6.0</jandex-maven-plugin.version>
     <osgi-annotation-bundle.version>2.0.0</osgi-annotation-bundle.version>
 
     <!-- Stay on Quarkus LTS if possible -->
-    <quarkus.version>3.39.2</quarkus.version>
+    <quarkus.version>3.40.1.1</quarkus.version>
+    <quarkus.azure.services.version>1.2.5</quarkus.azure.services.version>
 
     <rewrite-maven-plugin.version>6.46.1</rewrite-maven-plugin.version>
     <rewrite-migrate-java.version>3.42.1</rewrite-migrate-java.version>
     <rewrite-static-analysis.version>2.41.1</rewrite-static-analysis.version>
     <rewrite-testing-frameworks.version>3.44.0</rewrite-testing-frameworks.version>
 
-    <spotless-maven-plugin.version>3.10.2</spotless-maven-plugin.version>
-    <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+    <spotless-maven-plugin.version>3.10.4</spotless-maven-plugin.version>
+    <versions-maven-plugin.version>2.23.0</versions-maven-plugin.version>
     <maven-sonar-plugin.version>5.8.0.7211</maven-sonar-plugin.version>
-    <spotbugs-annotations.version>4.10.4</spotbugs-annotations.version>
+    <spotbugs-annotations.version>4.10.5</spotbugs-annotations.version>
 
     <!-- Sonar and Jacoco Interaction (unit test coverage checks) -->
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -82,6 +83,13 @@
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
         <version>${quarkus.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.azureservices</groupId>
+        <artifactId>quarkus-azure-services-bom</artifactId>
+        <version>${quarkus.azure.services.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -248,7 +256,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
           <showWarnings>true</showWarnings>
           <compilerArgs>
             <!-- We turn off:
@@ -257,7 +264,7 @@
             -->
             <arg>-Xlint:all,-serial</arg>
           </compilerArgs>
-          <annotationProcessorPaths />
+          <annotationProcessorPaths/>
         </configuration>
       </plugin>
       <plugin>
@@ -369,27 +376,27 @@
             </includes>
             <!-- apply a specific flavor of google-java-format -->
             <googleJavaFormat>
-              <version>1.35.0</version>
+              <version>1.36.1</version>
               <style>GOOGLE</style>
             </googleJavaFormat>
             <removeUnusedImports>
               <engine>google-java-format</engine>
             </removeUnusedImports>
-            <forbidWildcardImports />
+            <forbidWildcardImports/>
             <replaceRegex>
               <name>Remove @NonNull annotations. See ADR-004.</name>
               <searchRegex>@.*Non[Nn]ull</searchRegex>
-              <replacement />
+              <replacement/>
             </replaceRegex>
             <replaceRegex>
               <name>Remove jupiter assertions. Use assertj assertions. See ADR-010.</name>
               <searchRegex>import org\.junit\.jupiter\.api\.Assertions</searchRegex>
-              <replacement />
+              <replacement/>
             </replaceRegex>
             <replaceRegex>
               <name>Remove mockito.lenient. See ADR-010.</name>
               <searchRegex>import org\.mockito\.Mockito\.lenient</searchRegex>
-              <replacement />
+              <replacement/>
             </replaceRegex>
           </java>
           <pom>
@@ -413,7 +420,8 @@
           </markdown>
           <json>
             <excludes>
-              <exclude>**/target/*.json</exclude>
+              <!-- patterns are relative to each module: also covers child modules' build output -->
+              <exclude>**/target/**</exclude>
               <exclude>**/.devcontainer/devcontainer.json</exclude>
             </excludes>
             <includes>
@@ -423,7 +431,7 @@
               <indentSpaces>2</indentSpaces>
               <sortByKeys>false</sortByKeys>
               <escapeHtml>false</escapeHtml>
-              <version>2.13.2</version>
+              <version>2.14.0</version>
             </gson>
           </json>
         </configuration>

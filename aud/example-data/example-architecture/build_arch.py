@@ -186,7 +186,7 @@ for lab, col in [("DMZ", Z_DMZ), ("App", Z_APP), ("Data Stores", Z_DATA),
     lx += len(lab) * 7.2 + 46
 
 svg = g.done()
-with open("docs/network_architecture.svg", "w", encoding="utf-8") as f:
+with open("assets/network_architecture.svg", "w", encoding="utf-8") as f:
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n' + svg)
 print("Azure hub  :", f"{AZ_HUB}.0.0/16", "| DNS", f"{AZ_HUB}.10.0/24", "Jump", f"{AZ_HUB}.11.0/24", "AD", f"{AZ_HUB}.12.0/24")
 print("Azure LZ1  :", f"{AZ_SP1}.0.0/16")

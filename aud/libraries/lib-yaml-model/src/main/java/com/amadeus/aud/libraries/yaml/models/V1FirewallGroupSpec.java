@@ -64,14 +64,14 @@ public class V1FirewallGroupSpec {
    *
    * @return target
    */
-  @Schema(required = false, description = "Name of the target")
-  @JsonProperty(value = JSON_PROPERTY_TARGET, required = false)
+  @Schema(description = "Name of the target")
+  @JsonProperty(value = JSON_PROPERTY_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getTarget() {
     return target;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTarget(@Nullable String target) {
     this.target = target;
@@ -95,14 +95,14 @@ public class V1FirewallGroupSpec {
    *
    * @return externalIps
    */
-  @Schema(required = false, description = "List of IPs for internet facade")
-  @JsonProperty(value = JSON_PROPERTY_EXTERNAL_IPS, required = false)
+  @Schema(description = "List of IPs for internet facade")
+  @JsonProperty(value = JSON_PROPERTY_EXTERNAL_IPS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getExternalIps() {
     return externalIps;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_EXTERNAL_IPS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_EXTERNAL_IPS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setExternalIps(@Nullable List<String> externalIps) {
     this.externalIps = externalIps;

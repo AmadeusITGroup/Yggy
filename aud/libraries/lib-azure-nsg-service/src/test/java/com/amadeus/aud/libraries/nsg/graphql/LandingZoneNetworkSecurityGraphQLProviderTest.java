@@ -13,14 +13,15 @@ import com.amadeus.aud.libraries.graphql.utils.PageGraphQL;
 import com.amadeus.aud.libraries.graphql.utils.StringFilter;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.Target;
+import com.amadeus.aud.libraries.nsg.models.Network;
 import com.amadeus.aud.libraries.nsg.models.NetworkRule;
 import com.amadeus.aud.libraries.nsg.models.NetworkSecurity;
+import com.amadeus.aud.libraries.nsg.models.Protocol;
 import com.amadeus.aud.libraries.nsg.models.SecurityGroupMap;
+import com.amadeus.aud.libraries.nsg.models.ServiceTagOutboundRule;
+import com.amadeus.aud.libraries.nsg.models.Subnet;
 import com.amadeus.aud.libraries.nsg.models.ZoneSecurityGroups;
 import com.amadeus.aud.libraries.nsg.services.LandingZoneService;
-import com.amadeus.aud.libraries.yaml.models.Network;
-import com.amadeus.aud.libraries.yaml.models.ServiceTagOutboundRule;
-import com.amadeus.aud.libraries.yaml.models.Subnet;
 import io.smallrye.mutiny.Uni;
 import java.util.HashMap;
 import java.util.List;
@@ -243,15 +244,13 @@ class LandingZoneNetworkSecurityGraphQLProviderTest {
     doReturn(List.of("10.10.0.0/16")).when(inboundRule).getCidrs();
     doReturn(List.of("10.0.1.0/24")).when(inboundRule).getDstCidrs();
     doReturn(List.of("443")).when(inboundRule).getPorts();
-    doReturn(com.amadeus.aud.libraries.nsg.models.Protocol.TCP).when(inboundRule).getProtocol();
+    doReturn(Protocol.TCP).when(inboundRule).getProtocol();
 
     ServiceTagOutboundRule outboundRule = mock(ServiceTagOutboundRule.class);
     doReturn("allow-storage-out").when(outboundRule).getName();
     doReturn("Storage").when(outboundRule).getServiceTag();
     doReturn(List.of("443")).when(outboundRule).getPorts();
-    doReturn(com.amadeus.aud.libraries.yaml.models.ServiceTagOutboundRule.ProtocolEnum.TCP)
-        .when(outboundRule)
-        .getProtocol();
+    doReturn(Protocol.TCP).when(outboundRule).getProtocol();
     doReturn(List.of("0.0.0.0/0")).when(outboundRule).getCidrs();
 
     SecurityGroupMap securityGroupMap = new SecurityGroupMap();

@@ -463,7 +463,9 @@ public class PostgresEdgeRepository implements PanacheRepository<EdgeEntity> {
               ALTER TABLE edges DROP CONSTRAINT IF EXISTS fk_edges_source_node; \
               ALTER TABLE edges DROP CONSTRAINT IF EXISTS fk_edges_destination_node; \
               DROP INDEX IF EXISTS idx_edges_version_rank; \
-              DROP INDEX IF EXISTS idx_edges_identity""";
+              DROP INDEX IF EXISTS idx_edges_identity; \
+              DROP INDEX IF EXISTS idx_edges_sourcenode_id; \
+              DROP INDEX IF EXISTS idx_edges_destinationnode_id""";
 
     try (Connection connection = dataSourceInstance.get().getConnection();
         java.sql.Statement stmt = connection.createStatement()) {
@@ -494,6 +496,10 @@ public class PostgresEdgeRepository implements PanacheRepository<EdgeEntity> {
               ON edges (( \
                 sourcecomponentinstanceid || '***' || destinationcomponentinstanceid || '***' || serviceid || '***' || dependencyinstanceid \
               )); \
+              CREATE INDEX IF NOT EXISTS idx_edges_sourcenode_id \
+              ON edges (sourcenode_id); \
+              CREATE INDEX IF NOT EXISTS idx_edges_destinationnode_id \
+              ON edges (destinationnode_id); \
               ALTER TABLE edges ADD CONSTRAINT fk_edges_source_node \
               FOREIGN KEY (sourcenode_id) REFERENCES nodes (id); \
               ALTER TABLE edges ADD CONSTRAINT fk_edges_destination_node \

@@ -49,9 +49,9 @@ setup:
     sdk install java 25-zulu
     sdk use java 25-zulu
     sdk default java 25-zulu
-    sdk install maven 3.9.16
-    sdk use maven 3.9.16
-    sdk default maven 3.9.16
+    sdk install maven 3.10.0
+    sdk use maven 3.10.0
+    sdk default maven 3.10.0
     sdk install mvnd 1.0.6
     sdk use mvnd 1.0.6
     sdk default mvnd 1.0.6
@@ -66,6 +66,7 @@ test:
 fmt:
     @ echo "📄 Formatting code & refactoring..."
     mvnd --define 'maven.build.cache.enabled=false' rewrite:run && mvnd --define 'maven.build.cache.enabled=false' spotless:apply
+    just --fmt --unstable
 
 # update all java dependencies via the properties in each pom.xml
 update:
@@ -80,12 +81,12 @@ generate-network-data data-dir:
 # start the API in Quarkus dev mode
 start-api-dev:
     @ echo "🚀 Starting API in dev mode..."
-    bash ./scripts/start_api_quarkus_dev.sh
+    java ./scripts/startApiQuarkusDev.java
 
 # start the connectivity engine in Quarkus dev mode
 start-engine-dev profile="inmemory" force-version="":
     @ echo "📊 Starting service-connectivity-engine in dev mode with profile '{{ profile }}'..."
-    bash ./scripts/start_engine_quarkus_dev.sh {{ profile }} {{ force-version }}
+    java ./scripts/startEngineQuarkusDev.java {{ quote(profile) }} {{ quote(force-version) }}
 
 # build and run the API locally in a container against a data directory
 # usage: just start-api-local ./path/to/network-data
@@ -93,3 +94,15 @@ start-api-local data-dir:
     @ echo "🚀 Building and starting the API from local.dockerfile with data from '{{ data-dir }}'..."
     docker build . -f local.dockerfile -t aud-local
     docker run --rm -p 8088:8080 -v {{ data-dir }}:/tmp/yggy-data/1.0.1/ aud-local:latest
+
+# build and run the checker, by default on the example-data/network-data
+checker path="./example-data/network-data" domains="Application-1":
+    java ./scripts/runChecker.java {{ quote(path) }} {{ quote(domains) }} | tee check.log
+
+# start json schema http service Quarkus dev mode
+start-json-schema-dev:
+    @ echo "🚀 Starting JSON Schema HTTP service in dev mode..."
+    exec mvn --also-make --projects services/service-json-schema-http quarkus:dev
+
+generate-adr-index:
+    java ./scripts/generateAdrIndexes.java

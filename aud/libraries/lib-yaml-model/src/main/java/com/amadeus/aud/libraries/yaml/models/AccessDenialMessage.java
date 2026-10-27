@@ -71,16 +71,15 @@ public class AccessDenialMessage {
    * @return userMessage
    */
   @Schema(
-      required = false,
       description =
           "Message displayed to user; if null default hardcoded message will be displayed; users can use two placeholders {edge} and {checked_object} they will be replaced by AUD engine")
-  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUserMessage() {
     return userMessage;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUserMessage(@Nullable String userMessage) {
     this.userMessage = userMessage;
@@ -98,16 +97,15 @@ public class AccessDenialMessage {
    * @return userMessageSeverity
    */
   @Schema(
-      required = false,
       description =
           "The severity of the denial; empty value defaults to ERROR in AUD engine; one of")
-  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE_SEVERITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE_SEVERITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable UserMessageSeverityEnum getUserMessageSeverity() {
     return userMessageSeverity;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE_SEVERITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_USER_MESSAGE_SEVERITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUserMessageSeverity(@Nullable UserMessageSeverityEnum userMessageSeverity) {
     this.userMessageSeverity = userMessageSeverity;

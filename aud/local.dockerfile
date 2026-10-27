@@ -1,6 +1,6 @@
-FROM --platform=$BUILDPLATFORM maven:3.9-eclipse-temurin-25 AS maven
+FROM --platform=$BUILDPLATFORM maven:3.10-eclipse-temurin-25 AS maven
 
-RUN mkdir -p /workdir
+RUN mkdir -p /workdir/.m2
 
 WORKDIR /workdir/java
 
@@ -8,10 +8,12 @@ FROM maven AS maven-package
 
 COPY .mvn ./.mvn
 COPY pom.xml rewrite.yaml ./
+COPY clis clis
 COPY libraries libraries
 COPY services services
 
-RUN mvn \
+RUN --mount=type=secret,id=maven_settings,target=/workdir/.m2/settings.xml,required=false \
+    mvn \
     --define 'user.home=/workdir' \
     --define 'maven.repo.local=/workdir/.m2/repository' \
     --define 'quarkus.package.jar.type=uber-jar' \

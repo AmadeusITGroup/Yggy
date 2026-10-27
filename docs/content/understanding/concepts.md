@@ -79,6 +79,7 @@ The topology captures:
 By combining descriptors with topology, Yggy can reason about connectivity end-to-end, across platforms and providers.
 
 ## Intent
+**Not released yet.**
 
 Yggy distinguishes between two types of intent:
 
@@ -101,6 +102,14 @@ What the infrastructure team wants to enforce:
 - "Egress traffic must go through the network service edge"
 
 Infrastructure intent is processed by the **Infra Intent Service**, which generates the Infra Intent Graph — a graph structure capturing topology constraints, security boundaries, and routing policies.
+
+!!! note "Current deployment"
+
+    The App Intent Service and the Infra Intent Service are currently two API resource groups served by the same
+    deployable, `svc-yggy-infra-intent-api` — see its service-boundary decision record
+    for the rationale. They are described here as separate responsibilities because that is how the model
+    distinguishes them conceptually, not because they are necessarily separate deployables.
+
 
 ### The Intent Graph
 
@@ -154,7 +163,7 @@ The provider model targets a growing set of infrastructure platforms:
 !!! info "One provider integration ships today"
 
     This release publishes the Azure network security group integration
-    (`aud/libraries/lib-azure-nsg`). The other rows describe where the provider
+    (`aud/libraries/lib-azure-nsg-service`). The other rows describe where the provider
     model is going; there is no code for them in this repository. See the scope
     note on [Architecture](../system-design/architecture.md).
 

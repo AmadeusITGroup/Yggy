@@ -85,14 +85,14 @@ public class Endpoint {
    *
    * @return description
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDescription() {
     return description;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDescription(@Nullable String description) {
     this.description = description;

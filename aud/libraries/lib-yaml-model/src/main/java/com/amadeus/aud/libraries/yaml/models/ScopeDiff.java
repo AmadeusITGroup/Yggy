@@ -76,14 +76,14 @@ public class ScopeDiff {
    *
    * @return oldVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_OLD_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_OLD_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getOldVersion() {
     return oldVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_OLD_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_OLD_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOldVersion(@Nullable String oldVersion) {
     this.oldVersion = oldVersion;
@@ -99,14 +99,14 @@ public class ScopeDiff {
    *
    * @return newVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_NEW_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_NEW_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getNewVersion() {
     return newVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NEW_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NEW_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setNewVersion(@Nullable String newVersion) {
     this.newVersion = newVersion;
@@ -122,14 +122,14 @@ public class ScopeDiff {
    *
    * @return nanoid
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_NANOID, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_NANOID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getNanoid() {
     return nanoid;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NANOID, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NANOID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setNanoid(@Nullable String nanoid) {
     this.nanoid = nanoid;
@@ -154,7 +154,6 @@ public class ScopeDiff {
    * @return prs
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_PRS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
@@ -187,7 +186,6 @@ public class ScopeDiff {
    * @return messages
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_MESSAGES, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

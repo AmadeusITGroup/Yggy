@@ -6,7 +6,6 @@ metadata:
   scope: Application-1
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 
 ---
@@ -17,7 +16,6 @@ metadata:
   scope: Application-2
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 
 ---
@@ -28,7 +26,6 @@ metadata:
   scope: GlobalDefinitions
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 
 ---
@@ -39,7 +36,6 @@ metadata:
   scope: Infra_Azure
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 
 ---
@@ -50,7 +46,6 @@ metadata:
   scope: Infra_GCP
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 
 ---
@@ -61,6 +56,5 @@ metadata:
   scope: Openshift
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-09-09T15:46:25Z
 

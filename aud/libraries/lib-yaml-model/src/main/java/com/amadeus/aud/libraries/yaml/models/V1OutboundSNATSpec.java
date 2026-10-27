@@ -56,11 +56,9 @@ public class V1OutboundSNATSpec {
 
   /** protocol */
   public enum ProtocolEnum {
-    ANY(String.valueOf("Any")),
-
-    TCP(String.valueOf("Tcp")),
-
-    UDP(String.valueOf("Udp"));
+    ANY("Any"),
+    TCP("Tcp"),
+    UDP("Udp");
 
     private String value;
 
@@ -208,14 +206,14 @@ public class V1OutboundSNATSpec {
    *
    * @return components
    */
-  @Schema(required = false, description = "List of component")
-  @JsonProperty(value = JSON_PROPERTY_COMPONENTS, required = false)
+  @Schema(description = "List of component")
+  @JsonProperty(value = JSON_PROPERTY_COMPONENTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getComponents() {
     return components;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMPONENTS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMPONENTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setComponents(@Nullable List<String> components) {
     this.components = components;
@@ -239,14 +237,14 @@ public class V1OutboundSNATSpec {
    *
    * @return componentInstances
    */
-  @Schema(required = false, description = "List of component_instance")
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCES, required = false)
+  @Schema(description = "List of component_instance")
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getComponentInstances() {
     return componentInstances;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMPONENT_INSTANCES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setComponentInstances(@Nullable List<String> componentInstances) {
     this.componentInstances = componentInstances;
@@ -270,14 +268,14 @@ public class V1OutboundSNATSpec {
    *
    * @return cidrs
    */
-  @Schema(required = false, description = "List of vnet")
-  @JsonProperty(value = JSON_PROPERTY_CIDRS, required = false)
+  @Schema(description = "List of vnet")
+  @JsonProperty(value = JSON_PROPERTY_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getCidrs() {
     return cidrs;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CIDRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCidrs(@Nullable List<String> cidrs) {
     this.cidrs = cidrs;
@@ -301,14 +299,14 @@ public class V1OutboundSNATSpec {
    *
    * @return destinationCidrs
    */
-  @Schema(required = false, description = "List of vnet")
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_CIDRS, required = false)
+  @Schema(description = "List of vnet")
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getDestinationCidrs() {
     return destinationCidrs;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_CIDRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDestinationCidrs(@Nullable List<String> destinationCidrs) {
     this.destinationCidrs = destinationCidrs;
@@ -332,14 +330,14 @@ public class V1OutboundSNATSpec {
    *
    * @return destinationFqdns
    */
-  @Schema(required = false, description = "List of fqdn")
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_FQDNS, required = false)
+  @Schema(description = "List of fqdn")
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_FQDNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getDestinationFqdns() {
     return destinationFqdns;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_FQDNS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_FQDNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDestinationFqdns(@Nullable List<String> destinationFqdns) {
     this.destinationFqdns = destinationFqdns;

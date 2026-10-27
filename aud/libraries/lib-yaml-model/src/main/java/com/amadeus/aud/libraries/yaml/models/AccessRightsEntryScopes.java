@@ -37,16 +37,15 @@ public class AccessRightsEntryScopes {
    * @return scopes
    */
   @Schema(
-      required = false,
       description =
           "List of AUD Scope names which are allowed or denied to inherit from controlled components")
-  @JsonProperty(value = JSON_PROPERTY_SCOPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getScopes() {
     return scopes;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SCOPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setScopes(@Nullable List<String> scopes) {
     this.scopes = scopes;

@@ -29,14 +29,14 @@ public class V1Commit {
    *
    * @return commitid
    */
-  @Schema(required = false, description = "commit id in the repo")
-  @JsonProperty(value = JSON_PROPERTY_COMMITID, required = false)
+  @Schema(description = "commit id in the repo")
+  @JsonProperty(value = JSON_PROPERTY_COMMITID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getCommitid() {
     return commitid;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMMITID, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMMITID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCommitid(@Nullable String commitid) {
     this.commitid = commitid;
@@ -52,14 +52,14 @@ public class V1Commit {
    *
    * @return message
    */
-  @Schema(required = false, description = "associated commit message")
-  @JsonProperty(value = JSON_PROPERTY_MESSAGE, required = false)
+  @Schema(description = "associated commit message")
+  @JsonProperty(value = JSON_PROPERTY_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getMessage() {
     return message;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setMessage(@Nullable String message) {
     this.message = message;

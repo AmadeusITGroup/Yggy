@@ -29,7 +29,7 @@ public class DBDumpResponse extends ApiMetadata {
    * @return targets
    */
   @NotNull
-  @Schema(required = true, description = "")
+  @Schema(required = true)
   @JsonProperty(value = JSON_PROPERTY_TARGETS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
   public Object getTargets() {

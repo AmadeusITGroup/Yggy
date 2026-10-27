@@ -77,14 +77,14 @@ public class V1MetadataInstance extends V1Metadata {
    * @return creationDate
    */
   @Valid
-  @Schema(required = false, description = "Instance creation date.")
-  @JsonProperty(value = JSON_PROPERTY_CREATION_DATE, required = false)
+  @Schema(description = "Instance creation date.")
+  @JsonProperty(value = JSON_PROPERTY_CREATION_DATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable java.time.LocalDateTime getCreationDate() {
     return creationDate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CREATION_DATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CREATION_DATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCreationDate(@Nullable java.time.LocalDateTime creationDate) {
     this.creationDate = creationDate;
@@ -101,14 +101,14 @@ public class V1MetadataInstance extends V1Metadata {
    * @return updateDate
    */
   @Valid
-  @Schema(required = false, description = "Instance update date.")
-  @JsonProperty(value = JSON_PROPERTY_UPDATE_DATE, required = false)
+  @Schema(description = "Instance update date.")
+  @JsonProperty(value = JSON_PROPERTY_UPDATE_DATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable java.time.LocalDateTime getUpdateDate() {
     return updateDate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_UPDATE_DATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_UPDATE_DATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUpdateDate(@Nullable java.time.LocalDateTime updateDate) {
     this.updateDate = updateDate;
@@ -124,14 +124,14 @@ public class V1MetadataInstance extends V1Metadata {
    *
    * @return creationVersion
    */
-  @Schema(required = false, description = "Instance creation requirements version.")
-  @JsonProperty(value = JSON_PROPERTY_CREATION_VERSION, required = false)
+  @Schema(description = "Instance creation requirements version.")
+  @JsonProperty(value = JSON_PROPERTY_CREATION_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getCreationVersion() {
     return creationVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CREATION_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CREATION_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCreationVersion(@Nullable String creationVersion) {
     this.creationVersion = creationVersion;
@@ -147,14 +147,14 @@ public class V1MetadataInstance extends V1Metadata {
    *
    * @return updateVersion
    */
-  @Schema(required = false, description = "Instance update requirements version.")
-  @JsonProperty(value = JSON_PROPERTY_UPDATE_VERSION, required = false)
+  @Schema(description = "Instance update requirements version.")
+  @JsonProperty(value = JSON_PROPERTY_UPDATE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUpdateVersion() {
     return updateVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_UPDATE_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_UPDATE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUpdateVersion(@Nullable String updateVersion) {
     this.updateVersion = updateVersion;

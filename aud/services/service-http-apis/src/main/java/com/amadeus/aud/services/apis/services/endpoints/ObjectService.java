@@ -2,10 +2,10 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheKeyGenerator;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

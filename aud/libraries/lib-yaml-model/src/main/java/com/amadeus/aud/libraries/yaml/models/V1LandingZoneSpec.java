@@ -99,14 +99,14 @@ public class V1LandingZoneSpec {
    *
    * @return macrophase
    */
-  @Schema(required = false, description = "Name of the macrophase")
-  @JsonProperty(value = JSON_PROPERTY_MACROPHASE, required = false)
+  @Schema(description = "Name of the macrophase")
+  @JsonProperty(value = JSON_PROPERTY_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getMacrophase() {
     return macrophase;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_MACROPHASE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setMacrophase(@Nullable String macrophase) {
     this.macrophase = macrophase;
@@ -186,14 +186,14 @@ public class V1LandingZoneSpec {
    *
    * @return functionaltypes
    */
-  @Schema(required = false, description = "Functional types of the Landing Zone")
-  @JsonProperty(value = JSON_PROPERTY_FUNCTIONALTYPES, required = false)
+  @Schema(description = "Functional types of the Landing Zone")
+  @JsonProperty(value = JSON_PROPERTY_FUNCTIONALTYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getFunctionaltypes() {
     return functionaltypes;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_FUNCTIONALTYPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_FUNCTIONALTYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFunctionaltypes(@Nullable List<String> functionaltypes) {
     this.functionaltypes = functionaltypes;

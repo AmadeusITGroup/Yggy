@@ -7,18 +7,12 @@ import static org.mockito.Mockito.when;
 import com.amadeus.aud.libraries.graphql.utils.StringFilter;
 import com.amadeus.aud.libraries.models.core.db.ApplicationId;
 import com.amadeus.aud.libraries.models.core.db.Service;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ApplicationIdFilterTest {
-
-  private StringFilter sf(String value) {
-    StringFilter sf = new StringFilter();
-    sf.setLike(value);
-    return sf;
-  }
 
   private ApplicationId appId(String name) {
     ApplicationId a = mock(ApplicationId.class);
@@ -30,7 +24,7 @@ class ApplicationIdFilterTest {
     when(svc.getComponentName()).thenReturn("comp-api");
     when(svc.getApplicationIdName()).thenReturn(name);
     when(svc.getServiceNowId()).thenReturn(null);
-    when(svc.getProtocol()).thenReturn(V1ServiceSpec.ProtocolEnum.TCP);
+    when(svc.getProtocol()).thenReturn(ProtocolEnum.TCP);
     when(svc.getApprovedProtocol()).thenReturn(null);
     when(svc.getDeprecatedStatus()).thenReturn(null);
     when(svc.isPrivate()).thenReturn(false);

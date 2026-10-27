@@ -40,14 +40,14 @@ public class ApiMetadata {
    *
    * @return url
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUrl() {
     return url;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrl(@Nullable String url) {
     this.url = url;
@@ -63,14 +63,14 @@ public class ApiMetadata {
    *
    * @return urlVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_URL_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_URL_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUrlVersion() {
     return urlVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_URL_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_URL_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrlVersion(@Nullable String urlVersion) {
     this.urlVersion = urlVersion;
@@ -86,14 +86,14 @@ public class ApiMetadata {
    *
    * @return version
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getVersion() {
     return version;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVersion(@Nullable String version) {
     this.version = version;
@@ -109,14 +109,14 @@ public class ApiMetadata {
    *
    * @return apiVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_API_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_API_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getApiVersion() {
     return apiVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_API_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_API_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setApiVersion(@Nullable String apiVersion) {
     this.apiVersion = apiVersion;

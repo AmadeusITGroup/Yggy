@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -167,15 +169,15 @@ public class V1ComponentInstanceSpec {
 
   /** The way to describe the endpoint associated to this instance */
   public enum EndpointTypeEnum {
-    CID_RLIST(String.valueOf("CIDRlist")),
+    CID_RLIST("CIDRlist"),
 
-    UR_LLIST(String.valueOf("URLlist")),
+    UR_LLIST("URLlist"),
 
-    ZONED_PAA_S(String.valueOf("ZonedPaaS")),
+    ZONED_PAA_S("ZonedPaaS"),
 
-    MULTI_SUBNET_PAA_S(String.valueOf("MultiSubnetPaaS"));
+    MULTI_SUBNET_PAA_S("MultiSubnetPaaS");
 
-    private String value;
+    private final String value;
 
     EndpointTypeEnum(String value) {
       this.value = value;
@@ -316,14 +318,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return inSubnetInstance
    */
-  @Schema(required = false, description = "Name of the incoming traffic subnet instance")
-  @JsonProperty(value = JSON_PROPERTY_IN_SUBNET_INSTANCE, required = false)
+  @Schema(description = "Name of the incoming traffic subnet instance")
+  @JsonProperty(value = JSON_PROPERTY_IN_SUBNET_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getInSubnetInstance() {
     return inSubnetInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IN_SUBNET_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IN_SUBNET_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInSubnetInstance(@Nullable String inSubnetInstance) {
     this.inSubnetInstance = inSubnetInstance;
@@ -339,14 +341,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return outSubnetInstance
    */
-  @Schema(required = false, description = "Name of the outcoming traffic subnet instance")
-  @JsonProperty(value = JSON_PROPERTY_OUT_SUBNET_INSTANCE, required = false)
+  @Schema(description = "Name of the outcoming traffic subnet instance")
+  @JsonProperty(value = JSON_PROPERTY_OUT_SUBNET_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getOutSubnetInstance() {
     return outSubnetInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_OUT_SUBNET_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_OUT_SUBNET_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOutSubnetInstance(@Nullable String outSubnetInstance) {
     this.outSubnetInstance = outSubnetInstance;
@@ -362,14 +364,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return inZoneInstance
    */
-  @Schema(required = false, description = "Name of the incoming traffic zone instance")
-  @JsonProperty(value = JSON_PROPERTY_IN_ZONE_INSTANCE, required = false)
+  @Schema(description = "Name of the incoming traffic zone instance")
+  @JsonProperty(value = JSON_PROPERTY_IN_ZONE_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getInZoneInstance() {
     return inZoneInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IN_ZONE_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IN_ZONE_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setInZoneInstance(@Nullable String inZoneInstance) {
     this.inZoneInstance = inZoneInstance;
@@ -385,14 +387,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return outZoneInstance
    */
-  @Schema(required = false, description = "Name of the outcoming traffic zone instance")
-  @JsonProperty(value = JSON_PROPERTY_OUT_ZONE_INSTANCE, required = false)
+  @Schema(description = "Name of the outcoming traffic zone instance")
+  @JsonProperty(value = JSON_PROPERTY_OUT_ZONE_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getOutZoneInstance() {
     return outZoneInstance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_OUT_ZONE_INSTANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_OUT_ZONE_INSTANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOutZoneInstance(@Nullable String outZoneInstance) {
     this.outZoneInstance = outZoneInstance;
@@ -411,16 +413,15 @@ public class V1ComponentInstanceSpec {
    * @return servicetag
    */
   @Schema(
-      required = false,
       description =
           "The name of a service tag (string, length <= 256) requested by a source of a dependency; the presence of a service tag allows manipulating (opening) a target of the dependency; mutually exclusive with inSubnetInstance, outSubnetInstance")
-  @JsonProperty(value = JSON_PROPERTY_SERVICETAG, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SERVICETAG)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getServicetag() {
     return servicetag;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SERVICETAG, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SERVICETAG)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setServicetag(@Nullable String servicetag) {
     this.servicetag = servicetag;
@@ -436,14 +437,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return hostingComponent
    */
-  @Schema(required = false, description = "Name of the hosting Component, if hosted.")
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT, required = false)
+  @Schema(description = "Name of the hosting Component, if hosted.")
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getHostingComponent() {
     return hostingComponent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setHostingComponent(@Nullable String hostingComponent) {
     this.hostingComponent = hostingComponent;
@@ -460,14 +461,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return hostingComponentType
    */
-  @Schema(required = false, description = "Type of the hosting Component, if isHosting.")
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_TYPE, required = false)
+  @Schema(description = "Type of the hosting Component, if isHosting.")
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable HostingComponentTypeEnum getHostingComponentType() {
     return hostingComponentType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setHostingComponentType(@Nullable HostingComponentTypeEnum hostingComponentType) {
     this.hostingComponentType = hostingComponentType;
@@ -484,14 +485,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return hostingComponentSecurity
    */
-  @Schema(required = false, description = "Type of the hosting Component Security, if isHosting.")
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_SECURITY, required = false)
+  @Schema(description = "Type of the hosting Component Security, if isHosting.")
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_SECURITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable HostingComponentSecurityEnum getHostingComponentSecurity() {
     return hostingComponentSecurity;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_SECURITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_HOSTING_COMPONENT_SECURITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setHostingComponentSecurity(
       @Nullable HostingComponentSecurityEnum hostingComponentSecurity) {
@@ -508,14 +509,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return zoneType
    */
-  @Schema(required = false, description = "Name of the zone type, if hosted")
-  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE, required = false)
+  @Schema(description = "Name of the zone type, if hosted")
+  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getZoneType() {
     return zoneType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setZoneType(@Nullable String zoneType) {
     this.zoneType = zoneType;
@@ -531,14 +532,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return namespace
    */
-  @Schema(required = false, description = "Name of the namespace, if hosted")
-  @JsonProperty(value = JSON_PROPERTY_NAMESPACE, required = false)
+  @Schema(description = "Name of the namespace, if hosted")
+  @JsonProperty(value = JSON_PROPERTY_NAMESPACE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getNamespace() {
     return namespace;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NAMESPACE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NAMESPACE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setNamespace(@Nullable String namespace) {
     this.namespace = namespace;
@@ -556,16 +557,19 @@ public class V1ComponentInstanceSpec {
    * @return k8sIdentifier
    */
   @Schema(
-      required = false,
       description =
           "The value of kubernetes' label, if of type Container; 63 chars max, [a-z0-9A-Z][a-z0-9A-Z\\-\\_\\.]*[a-z0-9A-Z]")
-  @JsonProperty(value = JSON_PROPERTY_K8S_IDENTIFIER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_K8S_IDENTIFIER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  @Size(max = 63, message = "k8s_identifier must not be longer than 63 chars.")
+  @Pattern(
+      regexp = "^[a-z0-9A-Z][a-z0-9A-Z\\-_\\.]*[a-z0-9A-Z]$",
+      message = "k8s_identifiers does not match its regexp.")
   public @Nullable String getK8sIdentifier() {
     return k8sIdentifier;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_K8S_IDENTIFIER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_K8S_IDENTIFIER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setK8sIdentifier(@Nullable String k8sIdentifier) {
     this.k8sIdentifier = k8sIdentifier;
@@ -591,16 +595,15 @@ public class V1ComponentInstanceSpec {
    * @return k8sSelector
    */
   @Schema(
-      required = false,
       description =
           "To be used only if the k8s_identifier is not fulfilling the need (e.g. kafka and splunk operators). Override k8s_identifier definition.")
-  @JsonProperty(value = JSON_PROPERTY_K8S_SELECTOR, required = false)
+  @JsonProperty(value = JSON_PROPERTY_K8S_SELECTOR)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Map<String, String> getK8sSelector() {
     return k8sSelector;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_K8S_SELECTOR, required = false)
+  @JsonProperty(value = JSON_PROPERTY_K8S_SELECTOR)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setK8sSelector(@Nullable Map<String, String> k8sSelector) {
     this.k8sSelector = k8sSelector;
@@ -624,14 +627,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return overlaySubnets
    */
-  @Schema(required = false, description = "List of overlay Subnets if hosting")
-  @JsonProperty(value = JSON_PROPERTY_OVERLAY_SUBNETS, required = false)
+  @Schema(description = "List of overlay Subnets if hosting")
+  @JsonProperty(value = JSON_PROPERTY_OVERLAY_SUBNETS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getOverlaySubnets() {
     return overlaySubnets;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_OVERLAY_SUBNETS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_OVERLAY_SUBNETS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOverlaySubnets(@Nullable List<String> overlaySubnets) {
     this.overlaySubnets = overlaySubnets;
@@ -647,16 +650,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return endpointType
    */
-  @Schema(
-      required = false,
-      description = "The way to describe the endpoint associated to this instance")
-  @JsonProperty(value = JSON_PROPERTY_ENDPOINT_TYPE, required = false)
+  @Schema(description = "The way to describe the endpoint associated to this instance")
+  @JsonProperty(value = JSON_PROPERTY_ENDPOINT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable EndpointTypeEnum getEndpointType() {
     return endpointType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ENDPOINT_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ENDPOINT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setEndpointType(@Nullable EndpointTypeEnum endpointType) {
     this.endpointType = endpointType;
@@ -674,16 +675,15 @@ public class V1ComponentInstanceSpec {
    * @return associatedImplementationZone
    */
   @Schema(
-      required = false,
       description =
           "This instance should be created each time an instance of the implemetationzone exist")
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_IMPLEMENTATION_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_IMPLEMENTATION_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getAssociatedImplementationZone() {
     return associatedImplementationZone;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_IMPLEMENTATION_ZONE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_IMPLEMENTATION_ZONE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAssociatedImplementationZone(@Nullable String associatedImplementationZone) {
     this.associatedImplementationZone = associatedImplementationZone;
@@ -701,16 +701,15 @@ public class V1ComponentInstanceSpec {
    * @return associatedPlatformComponent
    */
   @Schema(
-      required = false,
       description =
           "Does this instance should be created each time an instance of the platform component is created")
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_PLATFORM_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_PLATFORM_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getAssociatedPlatformComponent() {
     return associatedPlatformComponent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_PLATFORM_COMPONENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_PLATFORM_COMPONENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAssociatedPlatformComponent(@Nullable String associatedPlatformComponent) {
     this.associatedPlatformComponent = associatedPlatformComponent;
@@ -736,14 +735,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return associatedFunctionalTypes
    */
-  @Schema(required = false, description = "List of functional type where to instantiate")
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_FUNCTIONAL_TYPES, required = false)
+  @Schema(description = "List of functional type where to instantiate")
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_FUNCTIONAL_TYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getAssociatedFunctionalTypes() {
     return associatedFunctionalTypes;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_FUNCTIONAL_TYPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ASSOCIATED_FUNCTIONAL_TYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAssociatedFunctionalTypes(@Nullable List<String> associatedFunctionalTypes) {
     this.associatedFunctionalTypes = associatedFunctionalTypes;
@@ -769,16 +768,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return excludedFunctionalTypes
    */
-  @Schema(
-      required = false,
-      description = "List of functional type where to exclude from instantiation")
-  @JsonProperty(value = JSON_PROPERTY_EXCLUDED_FUNCTIONAL_TYPES, required = false)
+  @Schema(description = "List of functional type where to exclude from instantiation")
+  @JsonProperty(value = JSON_PROPERTY_EXCLUDED_FUNCTIONAL_TYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getExcludedFunctionalTypes() {
     return excludedFunctionalTypes;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_EXCLUDED_FUNCTIONAL_TYPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_EXCLUDED_FUNCTIONAL_TYPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setExcludedFunctionalTypes(@Nullable List<String> excludedFunctionalTypes) {
     this.excludedFunctionalTypes = excludedFunctionalTypes;
@@ -795,9 +792,7 @@ public class V1ComponentInstanceSpec {
    *
    * @return isAssociatedPlatformLimitedToLegacyOnly
    */
-  @Schema(
-      required = false,
-      description = "The automatic instantiation will only occurs in the Legacy target")
+  @Schema(description = "The automatic instantiation will only occurs in the Legacy target")
   @JsonProperty(
       value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_LEGACY_ONLY,
       required = false)
@@ -826,9 +821,7 @@ public class V1ComponentInstanceSpec {
    *
    * @return isAssociatedPlatformLimitedToCloudOnly
    */
-  @Schema(
-      required = false,
-      description = "The automatic instantiation will only occurs in the cloud target")
+  @Schema(description = "The automatic instantiation will only occurs in the cloud target")
   @JsonProperty(
       value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_CLOUD_ONLY,
       required = false)
@@ -858,7 +851,6 @@ public class V1ComponentInstanceSpec {
    * @return isAssociatedPlatformLimitedToLandingzone
    */
   @Schema(
-      required = false,
       description =
           "The automatic instantiation will only occurs in the landingzone of the generic instance")
   @JsonProperty(
@@ -890,16 +882,15 @@ public class V1ComponentInstanceSpec {
    * @return isAssociatedPlatformLimitedToTarget
    */
   @Schema(
-      required = false,
       description =
           "The automatic instantiation will only occurs in the target of the generic instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_TARGET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsAssociatedPlatformLimitedToTarget() {
     return isAssociatedPlatformLimitedToTarget;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_TARGET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_TARGET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsAssociatedPlatformLimitedToTarget(
       @Nullable Boolean isAssociatedPlatformLimitedToTarget) {
@@ -918,16 +909,15 @@ public class V1ComponentInstanceSpec {
    * @return isAssociatedPlatformLimitedToContinent
    */
   @Schema(
-      required = false,
       description =
           "The automatic instantiation will only occurs in the continent of the generic instance")
-  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsAssociatedPlatformLimitedToContinent() {
     return isAssociatedPlatformLimitedToContinent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_ASSOCIATED_PLATFORM_LIMITED_TO_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsAssociatedPlatformLimitedToContinent(
       @Nullable Boolean isAssociatedPlatformLimitedToContinent) {
@@ -946,7 +936,6 @@ public class V1ComponentInstanceSpec {
    * @return isAssociatedPlatformLimitedToMacrophase
    */
   @Schema(
-      required = false,
       description =
           "The automatic instantiation will only occurs in the macrophase of the generic instance")
   @JsonProperty(
@@ -977,14 +966,14 @@ public class V1ComponentInstanceSpec {
    * @return deprecatedStatus
    */
   @Valid
-  @Schema(required = false, description = "Deprecated status of the component instance.")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @Schema(description = "Deprecated status of the component instance.")
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable DeprecatedStatus getDeprecatedStatus() {
     return deprecatedStatus;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedStatus(@Nullable DeprecatedStatus deprecatedStatus) {
     this.deprecatedStatus = deprecatedStatus;
@@ -1002,16 +991,15 @@ public class V1ComponentInstanceSpec {
    * @return deprecatedMessage
    */
   @Schema(
-      required = false,
       description =
           "Additional info on the deprecated component instance (e.g. replacement information/ owner contact details)")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDeprecatedMessage() {
     return deprecatedMessage;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedMessage(@Nullable String deprecatedMessage) {
     this.deprecatedMessage = deprecatedMessage;
@@ -1035,14 +1023,14 @@ public class V1ComponentInstanceSpec {
    *
    * @return endpoints
    */
-  @Schema(required = false, description = "List of endpoints. Content depends on the endpoint_type")
-  @JsonProperty(value = JSON_PROPERTY_ENDPOINTS, required = false)
+  @Schema(description = "List of endpoints. Content depends on the endpoint_type")
+  @JsonProperty(value = JSON_PROPERTY_ENDPOINTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<Object> getEndpoints() {
     return endpoints;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ENDPOINTS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ENDPOINTS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setEndpoints(@Nullable List<Object> endpoints) {
     this.endpoints = endpoints;
@@ -1068,18 +1056,16 @@ public class V1ComponentInstanceSpec {
    *
    * @return sourcesSelectors
    */
-  @Valid
   @Schema(
-      required = false,
       description =
           "List of labels selectors to select component instance that will be able to connect if the dependency instance is defined with is_source_limited_to_target_selector.")
-  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<Map<String, String>> getSourcesSelectors() {
     return sourcesSelectors;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SOURCES_SELECTORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSourcesSelectors(@Nullable List<Map<String, String>> sourcesSelectors) {
     this.sourcesSelectors = sourcesSelectors;

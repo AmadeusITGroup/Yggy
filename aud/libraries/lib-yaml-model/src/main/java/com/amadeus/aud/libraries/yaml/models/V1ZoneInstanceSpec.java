@@ -62,14 +62,14 @@ public class V1ZoneInstanceSpec {
    *
    * @return isNSGNeeded
    */
-  @Schema(required = false, description = "Create or not an NSG on Azure (for technical zone only)")
-  @JsonProperty(value = JSON_PROPERTY_IS_N_S_G_NEEDED, required = false)
+  @Schema(description = "Create or not an NSG on Azure (for technical zone only)")
+  @JsonProperty(value = JSON_PROPERTY_IS_N_S_G_NEEDED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsNSGNeeded() {
     return isNSGNeeded;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_N_S_G_NEEDED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_N_S_G_NEEDED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsNSGNeeded(@Nullable Boolean isNSGNeeded) {
     this.isNSGNeeded = isNSGNeeded;
@@ -85,14 +85,14 @@ public class V1ZoneInstanceSpec {
    *
    * @return firewallGroup
    */
-  @Schema(required = false, description = "Name of the firewall Group")
-  @JsonProperty(value = JSON_PROPERTY_FIREWALL_GROUP, required = false)
+  @Schema(description = "Name of the firewall Group")
+  @JsonProperty(value = JSON_PROPERTY_FIREWALL_GROUP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getFirewallGroup() {
     return firewallGroup;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_FIREWALL_GROUP, required = false)
+  @JsonProperty(value = JSON_PROPERTY_FIREWALL_GROUP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setFirewallGroup(@Nullable String firewallGroup) {
     this.firewallGroup = firewallGroup;

@@ -6,8 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.amadeus.aud.libraries.engine.data.models.core.internals.SingleVersion;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.LocalFileService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.SingleVersion;
 import io.smallrye.mutiny.Uni;
 import java.io.IOException;
 import java.util.List;

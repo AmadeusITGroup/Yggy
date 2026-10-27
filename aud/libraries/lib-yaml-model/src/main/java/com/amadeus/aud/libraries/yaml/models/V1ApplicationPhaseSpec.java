@@ -34,14 +34,14 @@ public class V1ApplicationPhaseSpec {
    *
    * @return macroPhase
    */
-  @Schema(required = false, description = "Name of macro Phase")
-  @JsonProperty(value = JSON_PROPERTY_MACRO_PHASE, required = false)
+  @Schema(description = "Name of macro Phase")
+  @JsonProperty(value = JSON_PROPERTY_MACRO_PHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getMacroPhase() {
     return macroPhase;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_MACRO_PHASE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_MACRO_PHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setMacroPhase(@Nullable String macroPhase) {
     this.macroPhase = macroPhase;

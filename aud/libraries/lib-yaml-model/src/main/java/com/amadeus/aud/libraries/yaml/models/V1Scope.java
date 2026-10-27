@@ -29,14 +29,14 @@ public class V1Scope extends V1Base {
    * @return spec
    */
   @Valid
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_SPEC, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_SPEC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable V1ScopeSpec getSpec() {
     return spec;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SPEC, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SPEC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSpec(@Nullable V1ScopeSpec spec) {
     this.spec = spec;

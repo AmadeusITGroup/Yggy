@@ -36,14 +36,14 @@ public class V1ScopeVersionMappingSpec {
    *
    * @return versionDatetime
    */
-  @Schema(required = false, description = "Timestamp of scope version creation")
-  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME, required = false)
+  @Schema(description = "Timestamp of scope version creation")
+  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getVersionDatetime() {
     return versionDatetime;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVersionDatetime(@Nullable String versionDatetime) {
     this.versionDatetime = versionDatetime;
@@ -59,14 +59,14 @@ public class V1ScopeVersionMappingSpec {
    *
    * @return scopeVersion
    */
-  @Schema(required = false, description = "Version of the scope")
-  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION, required = false)
+  @Schema(description = "Version of the scope")
+  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getScopeVersion() {
     return scopeVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setScopeVersion(@Nullable String scopeVersion) {
     this.scopeVersion = scopeVersion;
@@ -82,14 +82,14 @@ public class V1ScopeVersionMappingSpec {
    *
    * @return audVersion
    */
-  @Schema(required = false, description = "Version of the scope")
-  @JsonProperty(value = JSON_PROPERTY_AUD_VERSION, required = false)
+  @Schema(description = "Version of the scope")
+  @JsonProperty(value = JSON_PROPERTY_AUD_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getAudVersion() {
     return audVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_AUD_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_AUD_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAudVersion(@Nullable String audVersion) {
     this.audVersion = audVersion;

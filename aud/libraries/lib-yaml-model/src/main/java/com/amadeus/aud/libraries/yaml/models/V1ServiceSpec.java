@@ -1,10 +1,8 @@
 package com.amadeus.aud.libraries.yaml.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -55,43 +53,6 @@ public class V1ServiceSpec {
   public static final String JSON_PROPERTY_PORTS = "ports";
   private List<String> ports;
 
-  /** The protocol e.g. TCP, UDP, Icmp. */
-  public enum ProtocolEnum {
-    TCP(String.valueOf("Tcp")),
-
-    UDP(String.valueOf("Udp")),
-
-    ICMP(String.valueOf("Icmp")),
-
-    STAR(String.valueOf("*"));
-
-    private String value;
-
-    ProtocolEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static ProtocolEnum fromValue(String value) {
-      for (ProtocolEnum b : ProtocolEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-  }
-
   public static final String JSON_PROPERTY_PROTOCOL = "protocol";
   private ProtocolEnum protocol;
 
@@ -140,14 +101,14 @@ public class V1ServiceSpec {
    *
    * @return isPrivate
    */
-  @Schema(required = false, description = "is it private to your scope?")
-  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE, required = false)
+  @Schema(description = "is it private to your scope?")
+  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPrivate() {
     return isPrivate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPrivate(@Nullable Boolean isPrivate) {
     this.isPrivate = isPrivate;
@@ -261,14 +222,14 @@ public class V1ServiceSpec {
    *
    * @return applicationId
    */
-  @Schema(required = false, description = "application Id")
-  @JsonProperty(value = JSON_PROPERTY_APPLICATION_ID, required = false)
+  @Schema(description = "application Id")
+  @JsonProperty(value = JSON_PROPERTY_APPLICATION_ID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getApplicationId() {
     return applicationId;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_APPLICATION_ID, required = false)
+  @JsonProperty(value = JSON_PROPERTY_APPLICATION_ID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setApplicationId(@Nullable String applicationId) {
     this.applicationId = applicationId;
@@ -341,14 +302,14 @@ public class V1ServiceSpec {
    * @return deprecatedStatus
    */
   @Valid
-  @Schema(required = false, description = "Deprecated status of the service.")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @Schema(description = "Deprecated status of the service.")
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable DeprecatedStatus getDeprecatedStatus() {
     return deprecatedStatus;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedStatus(@Nullable DeprecatedStatus deprecatedStatus) {
     this.deprecatedStatus = deprecatedStatus;
@@ -365,16 +326,15 @@ public class V1ServiceSpec {
    * @return deprecatedMessage
    */
   @Schema(
-      required = false,
       description =
           "Additional info on the deprecated Service (e.g. replacement information/ owner contact details)")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDeprecatedMessage() {
     return deprecatedMessage;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedMessage(@Nullable String deprecatedMessage) {
     this.deprecatedMessage = deprecatedMessage;
@@ -390,14 +350,14 @@ public class V1ServiceSpec {
    *
    * @return securityJustification
    */
-  @Schema(required = false, description = "Each service should describe what is it for.")
-  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION, required = false)
+  @Schema(description = "Each service should describe what is it for.")
+  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getSecurityJustification() {
     return securityJustification;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSecurityJustification(@Nullable String securityJustification) {
     this.securityJustification = securityJustification;

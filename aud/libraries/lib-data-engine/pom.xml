@@ -16,21 +16,8 @@
     <unittests.instruction.coverage>0.80</unittests.instruction.coverage>
     <unittests.branch.coverage>0.80</unittests.branch.coverage>
 
-    <quarkus.azure.services.version>1.2.5</quarkus.azure.services.version>
-    <mutiny-reactor.version>3.3.0</mutiny-reactor.version>
+    <mutiny-reactor.version>3.3.1</mutiny-reactor.version>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkiverse.azureservices</groupId>
-        <artifactId>quarkus-azure-services-bom</artifactId>
-        <version>${quarkus.azure.services.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!--        Quarkus-->
@@ -124,6 +111,12 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine-api</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.junit.platform</groupId>
@@ -136,7 +129,7 @@
   <build>
     <plugins>
       <plugin>
-        <!-- Yandex index needed so that Quarkus discovers beans -->
+        <!-- Jandex index needed so that Quarkus discovers beans -->
         <groupId>io.smallrye</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <version>${jandex-maven-plugin.version}</version>

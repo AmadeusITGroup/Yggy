@@ -8,6 +8,7 @@ import com.amadeus.aud.libraries.yaml.models.ConnectivityRule;
 import com.amadeus.aud.libraries.yaml.models.Endpoint;
 import com.amadeus.aud.libraries.yaml.models.FirewallGroup;
 import com.amadeus.aud.libraries.yaml.models.ObjectGroup;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class ConnectivityRuleFilterTest {
     rule.setSrcObjectGroup(buildObjectGroup("src-group"));
     rule.setDstObjectGroup(buildObjectGroup("dst-group"));
     rule.setPorts(List.of("80", "443"));
-    rule.setProtocol(ConnectivityRule.ProtocolEnum.TCP);
+    rule.setProtocol(ProtocolEnum.TCP);
     rule.setOwner("team-infra");
     rule.setScope("internal");
     rule.setInTransitFirewallGroups(List.of(fg));

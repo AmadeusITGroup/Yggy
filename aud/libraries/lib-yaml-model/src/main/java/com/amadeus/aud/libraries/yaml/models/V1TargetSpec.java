@@ -112,14 +112,14 @@ public class V1TargetSpec {
    *
    * @return cidrs
    */
-  @Schema(required = false, description = "List of vnet")
-  @JsonProperty(value = JSON_PROPERTY_CIDRS, required = false)
+  @Schema(description = "List of vnet")
+  @JsonProperty(value = JSON_PROPERTY_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getCidrs() {
     return cidrs;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CIDRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCidrs(@Nullable List<String> cidrs) {
     this.cidrs = cidrs;
@@ -135,14 +135,14 @@ public class V1TargetSpec {
    *
    * @return isCloud
    */
-  @Schema(required = false, description = "is it a cloud target?")
-  @JsonProperty(value = JSON_PROPERTY_IS_CLOUD, required = false)
+  @Schema(description = "is it a cloud target?")
+  @JsonProperty(value = JSON_PROPERTY_IS_CLOUD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsCloud() {
     return isCloud;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_CLOUD, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_CLOUD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsCloud(@Nullable Boolean isCloud) {
     this.isCloud = isCloud;
@@ -158,14 +158,14 @@ public class V1TargetSpec {
    *
    * @return isAmadeus
    */
-  @Schema(required = false, description = "is is managed by Amadeus?")
-  @JsonProperty(value = JSON_PROPERTY_IS_AMADEUS, required = false)
+  @Schema(description = "is is managed by Amadeus?")
+  @JsonProperty(value = JSON_PROPERTY_IS_AMADEUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsAmadeus() {
     return isAmadeus;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_AMADEUS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_AMADEUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsAmadeus(@Nullable Boolean isAmadeus) {
     this.isAmadeus = isAmadeus;
@@ -181,14 +181,14 @@ public class V1TargetSpec {
    *
    * @return isAudManaged
    */
-  @Schema(required = false, description = "is it AUD managed?")
-  @JsonProperty(value = JSON_PROPERTY_IS_AUD_MANAGED, required = false)
+  @Schema(description = "is it AUD managed?")
+  @JsonProperty(value = JSON_PROPERTY_IS_AUD_MANAGED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsAudManaged() {
     return isAudManaged;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_AUD_MANAGED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_AUD_MANAGED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsAudManaged(@Nullable Boolean isAudManaged) {
     this.isAudManaged = isAudManaged;
@@ -204,14 +204,14 @@ public class V1TargetSpec {
    *
    * @return enableOfficeConnectivity
    */
-  @Schema(required = false, description = "is Office Connectivity enabled?")
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_OFFICE_CONNECTIVITY, required = false)
+  @Schema(description = "is Office Connectivity enabled?")
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_OFFICE_CONNECTIVITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getEnableOfficeConnectivity() {
     return enableOfficeConnectivity;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_OFFICE_CONNECTIVITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_OFFICE_CONNECTIVITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setEnableOfficeConnectivity(@Nullable Boolean enableOfficeConnectivity) {
     this.enableOfficeConnectivity = enableOfficeConnectivity;
@@ -227,14 +227,14 @@ public class V1TargetSpec {
    *
    * @return enableVnetToVnet
    */
-  @Schema(required = false, description = "is Vnet to Vnet enabled?")
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_VNET_TO_VNET, required = false)
+  @Schema(description = "is Vnet to Vnet enabled?")
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_VNET_TO_VNET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getEnableVnetToVnet() {
     return enableVnetToVnet;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_VNET_TO_VNET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_VNET_TO_VNET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setEnableVnetToVnet(@Nullable Boolean enableVnetToVnet) {
     this.enableVnetToVnet = enableVnetToVnet;
@@ -250,14 +250,14 @@ public class V1TargetSpec {
    *
    * @return enableJumpserverConnectivity
    */
-  @Schema(required = false, description = "is Jumpserver Connectivity enabled?")
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_JUMPSERVER_CONNECTIVITY, required = false)
+  @Schema(description = "is Jumpserver Connectivity enabled?")
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_JUMPSERVER_CONNECTIVITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getEnableJumpserverConnectivity() {
     return enableJumpserverConnectivity;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ENABLE_JUMPSERVER_CONNECTIVITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ENABLE_JUMPSERVER_CONNECTIVITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setEnableJumpserverConnectivity(@Nullable Boolean enableJumpserverConnectivity) {
     this.enableJumpserverConnectivity = enableJumpserverConnectivity;
@@ -297,14 +297,14 @@ public class V1TargetSpec {
    *
    * @return continent
    */
-  @Schema(required = false, description = "Name of the continent")
-  @JsonProperty(value = JSON_PROPERTY_CONTINENT, required = false)
+  @Schema(description = "Name of the continent")
+  @JsonProperty(value = JSON_PROPERTY_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getContinent() {
     return continent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setContinent(@Nullable String continent) {
     this.continent = continent;
@@ -320,14 +320,14 @@ public class V1TargetSpec {
    *
    * @return targettype
    */
-  @Schema(required = false, description = "Type of the Target")
-  @JsonProperty(value = JSON_PROPERTY_TARGETTYPE, required = false)
+  @Schema(description = "Type of the Target")
+  @JsonProperty(value = JSON_PROPERTY_TARGETTYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getTargettype() {
     return targettype;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TARGETTYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TARGETTYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTargettype(@Nullable String targettype) {
     this.targettype = targettype;
@@ -343,14 +343,14 @@ public class V1TargetSpec {
    *
    * @return popPrimary
    */
-  @Schema(required = false, description = "Name of the POP target used as primary")
-  @JsonProperty(value = JSON_PROPERTY_POP_PRIMARY, required = false)
+  @Schema(description = "Name of the POP target used as primary")
+  @JsonProperty(value = JSON_PROPERTY_POP_PRIMARY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getPopPrimary() {
     return popPrimary;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_POP_PRIMARY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_POP_PRIMARY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPopPrimary(@Nullable String popPrimary) {
     this.popPrimary = popPrimary;
@@ -366,14 +366,14 @@ public class V1TargetSpec {
    *
    * @return popSecondary
    */
-  @Schema(required = false, description = "Name of the POP target used as backup")
-  @JsonProperty(value = JSON_PROPERTY_POP_SECONDARY, required = false)
+  @Schema(description = "Name of the POP target used as backup")
+  @JsonProperty(value = JSON_PROPERTY_POP_SECONDARY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getPopSecondary() {
     return popSecondary;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_POP_SECONDARY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_POP_SECONDARY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPopSecondary(@Nullable String popSecondary) {
     this.popSecondary = popSecondary;

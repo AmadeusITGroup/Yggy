@@ -1,9 +1,9 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ServiceTagsRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.Scope;
 import com.amadeus.aud.libraries.models.core.db.ServiceTag;
 import com.amadeus.aud.libraries.yaml.models.V1Servicetag;

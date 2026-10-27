@@ -1,18 +1,19 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ApplicationIdsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.BlockedPortsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ServicesRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.ApplicationId;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.Scope;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
 import com.amadeus.aud.libraries.models.core.utils.PortUtils;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1Metadata;
 import com.amadeus.aud.libraries.yaml.models.V1Service;
 import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
@@ -123,13 +124,13 @@ public class ServiceService extends BaseService<Service, V1Service> {
       Service service, V1ServiceSpec spec, BlockedPortsRepository blockedPortsRepository) {
     RangeSet<Integer> portRangeSet = TreeRangeSet.create();
 
-    if (spec.getProtocol() == V1ServiceSpec.ProtocolEnum.ICMP) {
+    if (spec.getProtocol() == ProtocolEnum.ICMP) {
       // auto approved, no governance
       // TODO: Check if it is safe to put ALL_PORTS here instead of empty
       service.setPortsRange(portRangeSet);
-      service.setProtocol(V1ServiceSpec.ProtocolEnum.ICMP);
+      service.setProtocol(ProtocolEnum.ICMP);
       service.setApprovedPorts(TreeRangeSet.create());
-      service.setApprovedProtocol(V1ServiceSpec.ProtocolEnum.ICMP);
+      service.setApprovedProtocol(ProtocolEnum.ICMP);
       service.setServiceNowId("ICMP AUTO approved");
       return;
     }
@@ -156,18 +157,18 @@ public class ServiceService extends BaseService<Service, V1Service> {
 
     servicesRepository.setUdpService(
         createDefaultService(
-            "UDP", "<!>*UDP_SERVICE*<!>", V1ServiceSpec.ProtocolEnum.UDP, blockedPortsRepository));
+            "UDP", ServicesRepository.UDP_SERVICE_NAME, ProtocolEnum.UDP, blockedPortsRepository));
     servicesRepository.setTcpService(
         createDefaultService(
-            "TCP", "<!>*TCP_SERVICE*<!>", V1ServiceSpec.ProtocolEnum.TCP, blockedPortsRepository));
+            "TCP", ServicesRepository.TCP_SERVICE_NAME, ProtocolEnum.TCP, blockedPortsRepository));
     servicesRepository.setAllService(
-        createDefaultService(null, "<!>*ALL_SERVICE*<!>", V1ServiceSpec.ProtocolEnum.STAR, null));
+        createDefaultService(null, ServicesRepository.ALL_SERVICE_NAME, ProtocolEnum.STAR, null));
   }
 
   private Service createDefaultService(
       String blockedPortsProtocol,
       String serviceName,
-      V1ServiceSpec.ProtocolEnum protocol,
+      ProtocolEnum protocol,
       BlockedPortsRepository blockedPortsRepository) {
 
     RangeSet<Integer> portRangeSet = TreeRangeSet.create();

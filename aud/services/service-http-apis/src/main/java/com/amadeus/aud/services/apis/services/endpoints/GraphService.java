@@ -2,12 +2,12 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.graph.models.GraphResponse;
 import com.amadeus.aud.libraries.engine.graph.models.dto.Edge;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;

@@ -1,7 +1,9 @@
 package com.amadeus.aud.services.apis.endpoints;
 
+import com.amadeus.aud.libraries.aud.AudService;
+import com.amadeus.aud.libraries.common.UrlUtils;
+import com.amadeus.aud.libraries.v2.objects.service.StatisticsService;
 import com.amadeus.aud.libraries.yaml.models.Statistics;
-import com.amadeus.aud.services.apis.services.endpoints.StatisticsService;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -26,12 +28,14 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 @Path("")
 public class StatisticsResource {
+  private final AudService audService;
   private final StatisticsService statisticsService;
 
   @Context UriInfo uriInfo;
 
   @Inject
-  public StatisticsResource(StatisticsService statisticsService) {
+  public StatisticsResource(AudService audService, StatisticsService statisticsService) {
+    this.audService = audService;
     this.statisticsService = statisticsService;
   }
 
@@ -62,7 +66,17 @@ public class StatisticsResource {
             schema = @Schema(type = SchemaType.STRING)),
       })
   @Path("version/{version}/statistics")
-  public Uni<Response> getStatisticsWithVersion(@PathParam("version") String version) {
-    return statisticsService.getStatistics(version, uriInfo);
+  public Uni<Response> getStatisticsWithVersion(@PathParam("version") String versionId) {
+    return this.audService
+        .getVersion(versionId)
+        .onItem()
+        .transformToUni(
+            version ->
+                statisticsService.getStatistics(
+                    version,
+                    UrlUtils.getUrl(uriInfo),
+                    UrlUtils.getVersionedUrl(uriInfo, version.getVersionNumber())))
+        .onItem()
+        .transform(statistics -> Response.ok(statistics).build());
   }
 }

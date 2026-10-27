@@ -46,11 +46,10 @@ public class KubernetesObjectsResponse extends ApiMetadata {
    * @return paasComponents
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_PAAS_COMPONENTS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<PAASComponent> getPaasComponents() {
+  public List<@Valid PAASComponent> getPaasComponents() {
     return paasComponents;
   }
 
@@ -79,11 +78,10 @@ public class KubernetesObjectsResponse extends ApiMetadata {
    * @return networkSets
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_NETWORK_SETS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<NetworkSet> getNetworkSets() {
+  public List<@Valid NetworkSet> getNetworkSets() {
     return networkSets;
   }
 

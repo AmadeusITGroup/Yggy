@@ -10,12 +10,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopesRepository;
 import com.amadeus.aud.libraries.engine.data.services.external.AudDataLocalFileService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.LocalFileService;
 import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;

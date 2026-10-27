@@ -8,7 +8,7 @@ import com.amadeus.aud.libraries.common.Constants;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
 import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
-import com.amadeus.aud.libraries.yaml.models.Subnet;
+import com.amadeus.aud.libraries.nsg.models.Subnet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

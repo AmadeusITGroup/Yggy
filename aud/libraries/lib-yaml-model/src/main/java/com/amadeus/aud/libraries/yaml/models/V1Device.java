@@ -29,14 +29,14 @@ public class V1Device {
    *
    * @return deviceType
    */
-  @Schema(required = false, description = "type of the device")
-  @JsonProperty(value = JSON_PROPERTY_DEVICE_TYPE, required = false)
+  @Schema(description = "type of the device")
+  @JsonProperty(value = JSON_PROPERTY_DEVICE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDeviceType() {
     return deviceType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEVICE_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEVICE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeviceType(@Nullable String deviceType) {
     this.deviceType = deviceType;
@@ -52,14 +52,14 @@ public class V1Device {
    *
    * @return name
    */
-  @Schema(required = false, description = "name of the device")
-  @JsonProperty(value = JSON_PROPERTY_NAME, required = false)
+  @Schema(description = "name of the device")
+  @JsonProperty(value = JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getName() {
     return name;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NAME, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName(@Nullable String name) {
     this.name = name;

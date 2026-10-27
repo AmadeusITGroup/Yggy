@@ -1,6 +1,5 @@
 package com.amadeus.aud.services.apis.endpoints;
 
-import com.amadeus.aud.libraries.common.Constants;
 import com.amadeus.aud.services.apis.models.http.responses.GenericResponse;
 import com.amadeus.aud.services.apis.services.endpoints.FullListService;
 import io.smallrye.mutiny.Uni;
@@ -35,68 +34,6 @@ public class FullListResource {
   @Inject
   public FullListResource(FullListService fullListService) {
     this.fullListService = fullListService;
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary = "List of a given object type with all properties. ONLY FOR SDN",
-      deprecated = true)
-  @Tags(value = @Tag(name = "List"))
-  @APIResponses(
-      value = {
-        @APIResponse(
-            responseCode = "200",
-            description = "The full list for that object type",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = GenericResponse.class))),
-        @APIResponse(responseCode = "401", ref = "#/components/responses/UnauthorizedError"),
-        @APIResponse(responseCode = "404", ref = "#/components/responses/NotFoundError"),
-        @APIResponse(responseCode = "500", ref = "#/components/responses/InternalError")
-      })
-  @Parameters(
-      @Parameter(
-          name = "objectType",
-          description = "The object type to get the full list of",
-          required = true,
-          schema = @Schema(type = SchemaType.STRING)))
-  @Path("fulllist/{objectType}")
-  public Uni<Response> getFullListJavaFormat(@PathParam("objectType") String objectType) {
-    return fullListService.getFullListJavaFormat(Constants.LATEST, objectType, uriInfo);
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary = "List of a given object type with all properties. ONLY for E2E.",
-      deprecated = true)
-  @Tags(value = @Tag(name = "List"))
-  @APIResponses(
-      value = {
-        @APIResponse(
-            responseCode = "200",
-            description = "The full list for that object type",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON,
-                    schema = @Schema(implementation = GenericResponse.class))),
-        @APIResponse(responseCode = "401", ref = "#/components/responses/UnauthorizedError"),
-        @APIResponse(responseCode = "404", ref = "#/components/responses/NotFoundError"),
-        @APIResponse(responseCode = "500", ref = "#/components/responses/InternalError")
-      })
-  @Parameters(
-      @Parameter(
-          name = "objectType",
-          description = "The object type to get the full list of",
-          required = true,
-          schema = @Schema(type = SchemaType.STRING)))
-  @Path("v1/fulllist/{objectType}")
-  public Uni<Response> getFullListPythonFormat(@PathParam("objectType") String objectType) {
-    MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-    return fullListService.getFullListPythonFormat(
-        Constants.LATEST, objectType, uriInfo, queryParams);
   }
 
   @GET
@@ -143,7 +80,7 @@ public class FullListResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(
       summary =
-          "List of a given object type with all properties for a given version. ONLY for E2E.",
+          "List of a given object type with all properties for a given version. ONLY for E2E, SNOW and SIGHT.",
       deprecated = true)
   @Tags(value = @Tag(name = "List"))
   @APIResponses(

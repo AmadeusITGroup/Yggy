@@ -1,11 +1,11 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ComponentInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.IPAddressInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.LandingZonesRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
 import com.amadeus.aud.libraries.models.core.db.IPAddressInstance;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;

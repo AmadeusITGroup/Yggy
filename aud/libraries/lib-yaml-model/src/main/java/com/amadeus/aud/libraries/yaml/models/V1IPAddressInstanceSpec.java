@@ -81,16 +81,15 @@ public class V1IPAddressInstanceSpec {
    * @return host
    */
   @Schema(
-      required = false,
       description =
           "This is not a FQDN, nor is it known to the DNS. This field is informational only.")
-  @JsonProperty(value = JSON_PROPERTY_HOST, required = false)
+  @JsonProperty(value = JSON_PROPERTY_HOST)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getHost() {
     return host;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_HOST, required = false)
+  @JsonProperty(value = JSON_PROPERTY_HOST)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setHost(@Nullable String host) {
     this.host = host;
@@ -107,16 +106,15 @@ public class V1IPAddressInstanceSpec {
    * @return advertisedTo
    */
   @Schema(
-      required = false,
       description =
           "For POP IPs located in cbz or dmz, Possibility to make them public toward Internet or Extranet")
-  @JsonProperty(value = JSON_PROPERTY_ADVERTISED_TO, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ADVERTISED_TO)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable AdvertisedToEnum getAdvertisedTo() {
     return advertisedTo;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ADVERTISED_TO, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ADVERTISED_TO)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAdvertisedTo(@Nullable AdvertisedToEnum advertisedTo) {
     this.advertisedTo = advertisedTo;

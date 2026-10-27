@@ -582,14 +582,6 @@ public class PostgresGraphEngineService implements GraphEngineService {
     }
   }
 
-  private static Map<String, Long> toNodeIdByUniqueId(Map<ComponentInstance, Long> nodeIdMap) {
-    Map<String, Long> result = new HashMap<>(nodeIdMap.size());
-    for (Map.Entry<ComponentInstance, Long> entry : nodeIdMap.entrySet()) {
-      result.put(entry.getKey().id(), entry.getValue());
-    }
-    return result;
-  }
-
   // ==================== DELETE OPERATIONS ====================
 
   @Transactional(rollbackOn = Exception.class)

@@ -6,8 +6,8 @@ import com.amadeus.aud.libraries.models.core.db.Component;
 import com.amadeus.aud.libraries.models.core.db.DependencyInstance;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.yaml.models.DeprecatedStatus;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1Service;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -61,7 +61,7 @@ public interface ServiceMixin extends AbstractBaseMixin<V1Service> {
   String getPorts();
 
   @JsonProperty(JSON_PROPERTY_PROTOCOL)
-  V1ServiceSpec.ProtocolEnum getProtocol();
+  ProtocolEnum getProtocol();
 
   @JsonProperty(JSON_PROPERTY_DEPRECATED_STATUS)
   DeprecatedStatus getDeprecatedStatus();
@@ -100,7 +100,7 @@ public interface ServiceMixin extends AbstractBaseMixin<V1Service> {
   RangeSet<Integer> getApprovedPorts();
 
   @JsonIgnore
-  V1ServiceSpec.ProtocolEnum getApprovedProtocol();
+  ProtocolEnum getApprovedProtocol();
 
   @JsonIgnore
   Set<DependencyInstance> getDependencyInstances();

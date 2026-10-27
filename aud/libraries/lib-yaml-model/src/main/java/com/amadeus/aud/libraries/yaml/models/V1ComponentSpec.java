@@ -73,14 +73,14 @@ public class V1ComponentSpec {
    *
    * @return isHosting
    */
-  @Schema(required = false, description = "is it an hosting platform?")
-  @JsonProperty(value = JSON_PROPERTY_IS_HOSTING, required = false)
+  @Schema(description = "is it an hosting platform?")
+  @JsonProperty(value = JSON_PROPERTY_IS_HOSTING)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsHosting() {
     return isHosting;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_HOSTING, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_HOSTING)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsHosting(@Nullable Boolean isHosting) {
     this.isHosting = isHosting;
@@ -97,16 +97,15 @@ public class V1ComponentSpec {
    * @return isContainer
    */
   @Schema(
-      required = false,
       description =
           "is application or service hosted in a hosting platform (e.g. Hadoop, Paas, etc.)")
-  @JsonProperty(value = JSON_PROPERTY_IS_CONTAINER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_CONTAINER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsContainer() {
     return isContainer;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_CONTAINER, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_CONTAINER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsContainer(@Nullable Boolean isContainer) {
     this.isContainer = isContainer;
@@ -122,14 +121,14 @@ public class V1ComponentSpec {
    *
    * @return isTechnical
    */
-  @Schema(required = false, description = "is it used for referencing/inheriting only?")
-  @JsonProperty(value = JSON_PROPERTY_IS_TECHNICAL, required = false)
+  @Schema(description = "is it used for referencing/inheriting only?")
+  @JsonProperty(value = JSON_PROPERTY_IS_TECHNICAL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsTechnical() {
     return isTechnical;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_TECHNICAL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_TECHNICAL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsTechnical(@Nullable Boolean isTechnical) {
     this.isTechnical = isTechnical;
@@ -150,20 +149,19 @@ public class V1ComponentSpec {
    * @return isPublic
    */
   @Schema(
-      required = false,
       description =
           """
   This attribute controls the permission to instantiate your component.
   Set it to true if other teams should be allowed to instantiate your component. (eg. Internet URL component, part of Internet scope, can be instantiated in any scope, to define connectivity from this scope to Internet URL)
   By default (false value), nobody can instantiate your component outside your scope.
   ! \\ is_public is not the opposite of is_private!""")
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPublic() {
     return isPublic;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPublic(@Nullable Boolean isPublic) {
     this.isPublic = isPublic;
@@ -183,7 +181,6 @@ public class V1ComponentSpec {
    * @return isPrivate
    */
   @Schema(
-      required = false,
       description =
           """
   This attribute controls the permission to set your component as a target of a dependency, from another scope than yours.
@@ -191,13 +188,13 @@ public class V1ComponentSpec {
   By default (false value), everyone can connect to your component.
 
   ! \\ is_private is not the opposite of is_public!""")
-  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPrivate() {
     return isPrivate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPrivate(@Nullable Boolean isPrivate) {
     this.isPrivate = isPrivate;
@@ -213,14 +210,14 @@ public class V1ComponentSpec {
    *
    * @return isPublicInheritance
    */
-  @Schema(required = false, description = "Other team can inherit from this component ?")
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_INHERITANCE, required = false)
+  @Schema(description = "Other team can inherit from this component ?")
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_INHERITANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPublicInheritance() {
     return isPublicInheritance;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_INHERITANCE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_INHERITANCE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPublicInheritance(@Nullable Boolean isPublicInheritance) {
     this.isPublicInheritance = isPublicInheritance;
@@ -238,18 +235,17 @@ public class V1ComponentSpec {
    * @return isPublicDependency
    */
   @Schema(
-      required = false,
       description =
           """
   Other team can create dependency from this component?
   If true, dependencies from other scopes can have your component as a source.""")
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_DEPENDENCY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_DEPENDENCY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsPublicDependency() {
     return isPublicDependency;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_DEPENDENCY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_PUBLIC_DEPENDENCY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsPublicDependency(@Nullable Boolean isPublicDependency) {
     this.isPublicDependency = isPublicDependency;
@@ -266,14 +262,14 @@ public class V1ComponentSpec {
    * @return deprecatedStatus
    */
   @Valid
-  @Schema(required = false, description = "Deprecated status of the component.")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @Schema(description = "Deprecated status of the component.")
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable DeprecatedStatus getDeprecatedStatus() {
     return deprecatedStatus;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedStatus(@Nullable DeprecatedStatus deprecatedStatus) {
     this.deprecatedStatus = deprecatedStatus;
@@ -291,16 +287,15 @@ public class V1ComponentSpec {
    * @return deprecatedMessage
    */
   @Schema(
-      required = false,
       description =
           "Additional info on the deprecated component (e.g. replacement information/ owner contact details)")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDeprecatedMessage() {
     return deprecatedMessage;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedMessage(@Nullable String deprecatedMessage) {
     this.deprecatedMessage = deprecatedMessage;
@@ -349,14 +344,14 @@ public class V1ComponentSpec {
    * @return accessControl
    */
   @Valid
-  @Schema(required = false, description = "Access control configuration for the component.")
-  @JsonProperty(value = JSON_PROPERTY_ACCESS_CONTROL, required = false)
+  @Schema(description = "Access control configuration for the component.")
+  @JsonProperty(value = JSON_PROPERTY_ACCESS_CONTROL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable AccessControl getAccessControl() {
     return accessControl;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ACCESS_CONTROL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ACCESS_CONTROL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAccessControl(@Nullable AccessControl accessControl) {
     this.accessControl = accessControl;

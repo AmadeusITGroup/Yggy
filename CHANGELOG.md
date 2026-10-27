@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v2026-10-27]
+
+### Added
+
+- Provided data validity checker library
+- OpenTelemetry tracing is now available in the Connectivity Service
+- Added simple Json Schema Http Service
+- Added Connectivity Service /health endpoint
+
+### Changed
+
+- Upgraded to Quarkus 3.40.1 and dependencies
+- Enhanced edge/node entity indexing and loading
+- Split lib-graph-engine to improve parallelism of the build
+- Added lib-data-engine-api to improve parallelism of the build
+- ScopeVersionDiff response time improvement
+- Removed unversioned endpoint from LandingZoneResource and FulllistResource
+
+### Fixed
+
+- Added a Scope Mixin
+
 ## [v2026-09-11]
 
 ### Added

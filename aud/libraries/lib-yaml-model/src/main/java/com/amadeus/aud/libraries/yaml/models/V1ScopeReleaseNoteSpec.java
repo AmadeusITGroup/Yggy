@@ -49,15 +49,14 @@ public class V1ScopeReleaseNoteSpec {
    */
   @Schema(
       examples = {"2025-02-18T15:31:47.430Z"},
-      required = false,
       description = "Timestamp of scope version creation")
-  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getVersionDatetime() {
     return versionDatetime;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VERSION_DATETIME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVersionDatetime(@Nullable String versionDatetime) {
     this.versionDatetime = versionDatetime;
@@ -75,15 +74,14 @@ public class V1ScopeReleaseNoteSpec {
    */
   @Schema(
       examples = {"1.0.116"},
-      required = false,
       description = "Version of the scope")
-  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getScopeVersion() {
     return scopeVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SCOPE_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setScopeVersion(@Nullable String scopeVersion) {
     this.scopeVersion = scopeVersion;
@@ -107,15 +105,14 @@ public class V1ScopeReleaseNoteSpec {
    *
    * @return commits
    */
-  @Valid
-  @Schema(required = false, description = "List of commits")
-  @JsonProperty(value = JSON_PROPERTY_COMMITS, required = false)
+  @Schema(description = "List of commits")
+  @JsonProperty(value = JSON_PROPERTY_COMMITS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<@Valid V1Commit> getCommits() {
     return commits;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_COMMITS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_COMMITS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setCommits(@Nullable List<@Valid V1Commit> commits) {
     this.commits = commits;
@@ -139,14 +136,14 @@ public class V1ScopeReleaseNoteSpec {
    *
    * @return prs
    */
-  @Schema(required = false, description = "List of PRs")
-  @JsonProperty(value = JSON_PROPERTY_PRS, required = false)
+  @Schema(description = "List of PRs")
+  @JsonProperty(value = JSON_PROPERTY_PRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getPrs() {
     return prs;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPrs(@Nullable List<String> prs) {
     this.prs = prs;
@@ -170,15 +167,14 @@ public class V1ScopeReleaseNoteSpec {
    *
    * @return impactedDevices
    */
-  @Valid
-  @Schema(required = false, description = "List of devices")
-  @JsonProperty(value = JSON_PROPERTY_IMPACTED_DEVICES, required = false)
+  @Schema(description = "List of devices")
+  @JsonProperty(value = JSON_PROPERTY_IMPACTED_DEVICES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<@Valid V1Device> getImpactedDevices() {
     return impactedDevices;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IMPACTED_DEVICES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IMPACTED_DEVICES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setImpactedDevices(@Nullable List<@Valid V1Device> impactedDevices) {
     this.impactedDevices = impactedDevices;

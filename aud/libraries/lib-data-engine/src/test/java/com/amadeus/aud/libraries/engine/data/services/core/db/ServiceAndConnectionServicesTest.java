@@ -23,6 +23,7 @@ import com.amadeus.aud.libraries.models.core.db.MacroPhase;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.ZoneType;
 import com.amadeus.aud.libraries.models.core.db.base.BaseInstance;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1ApplicationPhase;
 import com.amadeus.aud.libraries.yaml.models.V1ApplicationPhaseSpec;
 import com.amadeus.aud.libraries.yaml.models.V1BlockedPort;
@@ -91,42 +92,36 @@ class ServiceAndConnectionServicesTest {
                   "component",
                   "application-id",
                   List.of("443", "8443-8444"),
-                  V1ServiceSpec.ProtocolEnum.TCP),
+                  ProtocolEnum.TCP),
               service(
                   "non-blocked",
                   CoreDbServiceTestFixture.SCOPE_NAME,
                   "component",
                   "",
                   List.of("NonBlockedPorts"),
-                  V1ServiceSpec.ProtocolEnum.UDP),
+                  ProtocolEnum.UDP),
               service(
                   "ping",
                   CoreDbServiceTestFixture.SCOPE_NAME,
                   "",
                   null,
                   List.of(),
-                  V1ServiceSpec.ProtocolEnum.ICMP),
+                  ProtocolEnum.ICMP),
               service(
                   "missing",
                   CoreDbServiceTestFixture.SCOPE_NAME,
                   "missing-component",
                   "missing-application",
                   List.of("80"),
-                  V1ServiceSpec.ProtocolEnum.TCP),
+                  ProtocolEnum.TCP),
               service(
                   "null",
                   CoreDbServiceTestFixture.SCOPE_NAME,
                   null,
                   null,
                   List.of("80"),
-                  V1ServiceSpec.ProtocolEnum.TCP),
-              service(
-                  "orphan",
-                  "missing-scope",
-                  "",
-                  "",
-                  List.of("80"),
-                  V1ServiceSpec.ProtocolEnum.TCP)));
+                  ProtocolEnum.TCP),
+              service("orphan", "missing-scope", "", "", List.of("80"), ProtocolEnum.TCP)));
       ServiceService sut = configure(new ServiceService());
 
       // Act
@@ -148,8 +143,8 @@ class ServiceAndConnectionServicesTest {
       assertThat(https.getPortsRange().contains(8444)).isTrue();
       assertThat(nonBlocked.getPortsRange().contains(52)).isTrue();
       assertThat(nonBlocked.getPortsRange().contains(53)).isFalse();
-      assertThat(ping.getProtocol()).isEqualTo(V1ServiceSpec.ProtocolEnum.ICMP);
-      assertThat(ping.getApprovedProtocol()).isEqualTo(V1ServiceSpec.ProtocolEnum.ICMP);
+      assertThat(ping.getProtocol()).isEqualTo(ProtocolEnum.ICMP);
+      assertThat(ping.getApprovedProtocol()).isEqualTo(ProtocolEnum.ICMP);
       assertThat(ping.getServiceNowId()).isEqualTo("ICMP AUTO approved");
       assertThat(
               repository
@@ -354,7 +349,7 @@ class ServiceAndConnectionServicesTest {
       String component,
       String applicationId,
       List<String> ports,
-      V1ServiceSpec.ProtocolEnum protocol) {
+      ProtocolEnum protocol) {
     return new V1Service()
         .metadata(metadata(name, scopeName))
         .spec(

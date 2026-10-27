@@ -1,10 +1,8 @@
 package com.amadeus.aud.libraries.yaml.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -33,43 +31,6 @@ public class V1ServiceInstanceSpec {
 
   public static final String JSON_PROPERTY_PORTS = "ports";
   private List<String> ports;
-
-  /** The protocol e.g. TCP, UDP, Icmp. */
-  public enum ProtocolEnum {
-    TCP(String.valueOf("Tcp")),
-
-    UDP(String.valueOf("Udp")),
-
-    ICMP(String.valueOf("Icmp")),
-
-    STAR(String.valueOf("*"));
-
-    private String value;
-
-    ProtocolEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static ProtocolEnum fromValue(String value) {
-      for (ProtocolEnum b : ProtocolEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-  }
 
   public static final String JSON_PROPERTY_PROTOCOL = "protocol";
   private ProtocolEnum protocol;
@@ -202,14 +163,14 @@ public class V1ServiceInstanceSpec {
    *
    * @return lbPublicIp
    */
-  @Schema(required = false, description = "TBD")
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_IP, required = false)
+  @Schema(description = "TBD")
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_IP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getLbPublicIp() {
     return lbPublicIp;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_IP, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_IP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLbPublicIp(@Nullable String lbPublicIp) {
     this.lbPublicIp = lbPublicIp;
@@ -225,14 +186,14 @@ public class V1ServiceInstanceSpec {
    *
    * @return lbPublicPort
    */
-  @Schema(required = false, description = "TBD")
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PORT, required = false)
+  @Schema(description = "TBD")
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PORT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Integer getLbPublicPort() {
     return lbPublicPort;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PORT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PORT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLbPublicPort(@Nullable Integer lbPublicPort) {
     this.lbPublicPort = lbPublicPort;
@@ -248,14 +209,14 @@ public class V1ServiceInstanceSpec {
    *
    * @return lbPublicProtocol
    */
-  @Schema(required = false, description = "TBD")
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PROTOCOL, required = false)
+  @Schema(description = "TBD")
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PROTOCOL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getLbPublicProtocol() {
     return lbPublicProtocol;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PROTOCOL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LB_PUBLIC_PROTOCOL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLbPublicProtocol(@Nullable String lbPublicProtocol) {
     this.lbPublicProtocol = lbPublicProtocol;
@@ -271,14 +232,14 @@ public class V1ServiceInstanceSpec {
    *
    * @return dns
    */
-  @Schema(required = false, description = "TBD")
-  @JsonProperty(value = JSON_PROPERTY_DNS, required = false)
+  @Schema(description = "TBD")
+  @JsonProperty(value = JSON_PROPERTY_DNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDns() {
     return dns;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DNS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDns(@Nullable String dns) {
     this.dns = dns;

@@ -1,5 +1,7 @@
 package com.amadeus.aud.libraries.engine.data.services;
 
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
+import com.amadeus.aud.libraries.engine.data.VersionBuilder;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
@@ -42,7 +44,6 @@ import com.amadeus.aud.libraries.engine.data.services.core.db.TargetService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.TargetTypeService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.ZoneInstanceService;
 import com.amadeus.aud.libraries.engine.data.services.core.db.ZoneTypeService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.DataProcessor;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.logging.Log;
@@ -62,7 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
 @ApplicationScoped
-public class VersionService {
+public class VersionService implements VersionBuilder {
 
   private final AtomicReference<String> currentVersion = new AtomicReference<>();
   private final VersionPreInitHook versionPreInitHook;
@@ -247,6 +248,7 @@ public class VersionService {
     return buildVersion(key, null);
   }
 
+  @Override
   public Version buildVersion(String key, @Nullable AudDataRepository overrideDataRepository) {
     Version version = new Version();
     version.setVersionNumber(key);

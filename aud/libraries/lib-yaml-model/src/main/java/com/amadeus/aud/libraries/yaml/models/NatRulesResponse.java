@@ -48,14 +48,14 @@ public class NatRulesResponse {
    *
    * @return url
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUrl() {
     return url;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrl(@Nullable String url) {
     this.url = url;
@@ -71,14 +71,14 @@ public class NatRulesResponse {
    *
    * @return urlVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_URL_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_URL_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUrlVersion() {
     return urlVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_URL_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_URL_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrlVersion(@Nullable String urlVersion) {
     this.urlVersion = urlVersion;
@@ -94,14 +94,14 @@ public class NatRulesResponse {
    *
    * @return version
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getVersion() {
     return version;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVersion(@Nullable String version) {
     this.version = version;
@@ -117,14 +117,14 @@ public class NatRulesResponse {
    *
    * @return apiVersion
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_API_VERSION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_API_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getApiVersion() {
     return apiVersion;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_API_VERSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_API_VERSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setApiVersion(@Nullable String apiVersion) {
     this.apiVersion = apiVersion;
@@ -148,15 +148,14 @@ public class NatRulesResponse {
    *
    * @return natRules
    */
-  @Valid
-  @Schema(required = false, description = "List of NAT Policies")
-  @JsonProperty(value = JSON_PROPERTY_NAT_RULES, required = false)
+  @Schema(description = "List of NAT Policies")
+  @JsonProperty(value = JSON_PROPERTY_NAT_RULES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public @Nullable List<NatRules> getNatRules() {
+  public @Nullable List<@Valid NatRules> getNatRules() {
     return natRules;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NAT_RULES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NAT_RULES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setNatRules(@Nullable List<NatRules> natRules) {
     this.natRules = natRules;

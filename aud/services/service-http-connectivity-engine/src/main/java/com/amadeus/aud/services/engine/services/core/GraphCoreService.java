@@ -1,14 +1,17 @@
 package com.amadeus.aud.services.engine.services.core;
 
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.exceptions.InvalidVersionException;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.graph.models.GraphStatistics;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphVersion;
 import com.amadeus.aud.libraries.engine.graph.services.storage.SimpleGraphVersion;
 import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import com.azure.storage.blob.models.BlobStorageException;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheManager;
 import io.quarkus.cache.CompositeCacheKey;
@@ -44,6 +47,7 @@ public class GraphCoreService {
   private final VersionCacheProducer versionCacheProducer;
   private final CacheManager cacheManager;
   private final Optional<String> forceVersion;
+  private final Tracer tracer;
   private final ConcurrentHashMap<String, Uni<GraphVersion>> inProgressInitializations =
       new ConcurrentHashMap<>();
   private final UnicastProcessor<InitTask> initializationQueue = UnicastProcessor.create();
@@ -54,12 +58,14 @@ public class GraphCoreService {
       GraphEngineService graphDbServiceInstance,
       VersionCacheProducer versionCacheProducer,
       CacheManager cacheManager,
-      @ConfigProperty(name = "graph.init.force-version") Optional<String> forceVersion) {
+      @ConfigProperty(name = "graph.init.force-version") Optional<String> forceVersion,
+      Tracer tracer) {
     this.audVersionsService = audVersionsService;
     this.graphDbService = graphDbServiceInstance;
     this.versionCacheProducer = versionCacheProducer;
     this.cacheManager = cacheManager;
     this.forceVersion = forceVersion;
+    this.tracer = tracer;
   }
 
   @PostConstruct
@@ -158,8 +164,18 @@ public class GraphCoreService {
         .invoke((item, failure) -> inProgressInitializations.remove(versionNumber));
   }
 
+  /**
+   * Runs one queued job. The worker subscription is long-lived (started once in {@link
+   * #startInitializationWorker()}), so without this the job's Uni chain would resume, on completion
+   * of the PREVIOUS job, inside that previous job's still-current OTel/Vert.x context — making
+   * unrelated requests appear to share a single trace ID. Starting a fresh job span here and
+   * keeping it current until the job truly terminates gives every job its own single, coherent
+   * trace, regardless of which request's continuation happened to pull it off the queue.
+   */
   private Uni<Void> runTask(InitTask task) {
     Log.debugf("Acquired initialization slot for version %s", task.versionNumber());
+    Span jobSpan = tracer.spanBuilder("graph.init.task").setNoParent().startSpan();
+    Scope scope = jobSpan.makeCurrent();
     return initializeAndGetGraphAsync(task.versionNumber())
         .onItemOrFailure()
         .invoke(
@@ -172,7 +188,13 @@ public class GraphCoreService {
             })
         .onFailure()
         .recoverWithNull()
-        .replaceWithVoid();
+        .replaceWithVoid()
+        .onTermination()
+        .invoke(
+            () -> {
+              scope.close();
+              jobSpan.end();
+            });
   }
 
   /**

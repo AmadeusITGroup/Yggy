@@ -14,11 +14,8 @@ public class ScopeFilter {
   private StringFilter id;
   private StringFilter name;
   private StringFilter serviceNowId;
-  private StringFilter nanoId;
-  private StringFilter assigneeGroup;
   private StringFilter repositoryVersion;
   private Boolean isDeleted;
-  private StringFilter owner;
   private StringFilter role;
   private StringFilter targetName;
   private StringFilter landingZoneName;
@@ -39,24 +36,12 @@ public class ScopeFilter {
     this.serviceNowId = serviceNowId;
   }
 
-  public void setNanoId(StringFilter nanoId) {
-    this.nanoId = nanoId;
-  }
-
-  public void setAssigneeGroup(StringFilter assigneeGroup) {
-    this.assigneeGroup = assigneeGroup;
-  }
-
   public void setRepositoryVersion(StringFilter repositoryVersion) {
     this.repositoryVersion = repositoryVersion;
   }
 
   public void setIsDeleted(Boolean isDeleted) {
     this.isDeleted = isDeleted;
-  }
-
-  public void setOwner(StringFilter owner) {
-    this.owner = owner;
   }
 
   public void setRole(StringFilter role) {
@@ -99,24 +84,12 @@ public class ScopeFilter {
     return serviceNowId;
   }
 
-  public StringFilter getNanoId() {
-    return nanoId;
-  }
-
-  public StringFilter getAssigneeGroup() {
-    return assigneeGroup;
-  }
-
   public StringFilter getRepositoryVersion() {
     return repositoryVersion;
   }
 
   public Boolean getIsDeleted() {
     return isDeleted;
-  }
-
-  public StringFilter getOwner() {
-    return owner;
   }
 
   public StringFilter getRole() {
@@ -152,11 +125,8 @@ public class ScopeFilter {
         && (id == null || id.matches(scope.id()))
         && (name == null || name.matches(scope.getName()))
         && (serviceNowId == null || serviceNowId.matches(scope.getServiceNowId()))
-        && (nanoId == null || nanoId.matches(scope.getNanoId()))
-        && (assigneeGroup == null || assigneeGroup.matches(scope.getAssigneeGroup()))
         && (repositoryVersion == null || repositoryVersion.matches(scope.getRepositoryVersion()))
         && FilterUtils.matchesBoolean(isDeleted, scope.isDeleted())
-        && FilterUtils.anyStringFilterMatches(owner, scope.getOwners(), o -> o)
         && FilterUtils.anyStringFilterMatches(role, scope.getRolesJsonRepresentation(), r -> r)
         && FilterUtils.anyStringFilterMatches(targetName, scope.getTargets(), AbstractBase::getName)
         && FilterUtils.anyStringFilterMatches(

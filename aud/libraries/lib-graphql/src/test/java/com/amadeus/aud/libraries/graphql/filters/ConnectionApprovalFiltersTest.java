@@ -11,12 +11,6 @@ import org.junit.jupiter.api.Test;
 
 class ConnectionApprovalFiltersTest {
 
-  private StringFilter sf(String value) {
-    StringFilter sf = new StringFilter();
-    sf.setLike(value);
-    return sf;
-  }
-
   // ---------- ConnectionApprovalComponentSkipFilter ----------
 
   private ConnectionApprovalComponentSkip cacs() {

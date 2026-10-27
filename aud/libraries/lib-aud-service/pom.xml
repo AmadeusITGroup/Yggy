@@ -22,13 +22,13 @@
 
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-data-engine</artifactId>
+      <artifactId>lib-data-engine-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-graph-engine</artifactId>
+      <artifactId>lib-graph-engine-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>

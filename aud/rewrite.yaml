@@ -36,10 +36,10 @@ recipeList:
   - org.openrewrite.staticanalysis.MethodNameCasing
   - org.openrewrite.staticanalysis.NeedBraces
   - org.openrewrite.staticanalysis.NullableOnMethodReturnType
-  - org.openrewrite.staticanalysis.RemoveUnusedLocalVariables
-  - org.openrewrite.staticanalysis.RemoveUnusedPrivateFields
-#  - org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods
   - org.openrewrite.staticanalysis.RenameLocalVariablesToCamelCase
   - org.openrewrite.staticanalysis.RenamePrivateFieldsToCamelCase
   - org.openrewrite.staticanalysis.ReplaceLambdaWithMethodReference
   - org.openrewrite.staticanalysis.UseStandardCharset
+  - org.openrewrite.staticanalysis.RemoveUnusedLocalVariables
+  - org.openrewrite.staticanalysis.RemoveUnusedPrivateFields
+  - org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods

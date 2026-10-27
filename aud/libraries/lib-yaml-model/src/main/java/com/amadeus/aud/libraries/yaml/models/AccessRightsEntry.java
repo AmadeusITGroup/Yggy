@@ -88,16 +88,15 @@ public class AccessRightsEntry {
    * @return permission
    */
   @Schema(
-      required = false,
       description =
           "Permission identifier; can be omitted, empty value defaults to COMPONENT_INHERIT in AUD engine; one of")
-  @JsonProperty(value = JSON_PROPERTY_PERMISSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PERMISSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable PermissionEnum getPermission() {
     return permission;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PERMISSION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PERMISSION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPermission(@Nullable PermissionEnum permission) {
     this.permission = permission;
@@ -114,14 +113,14 @@ public class AccessRightsEntry {
    * @return reportIfDenied
    */
   @Valid
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_REPORT_IF_DENIED, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_REPORT_IF_DENIED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable AccessDenialMessage getReportIfDenied() {
     return reportIfDenied;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_REPORT_IF_DENIED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_REPORT_IF_DENIED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setReportIfDenied(@Nullable AccessDenialMessage reportIfDenied) {
     this.reportIfDenied = reportIfDenied;

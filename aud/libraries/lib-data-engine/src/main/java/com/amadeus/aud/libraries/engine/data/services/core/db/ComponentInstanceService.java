@@ -1,5 +1,6 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
@@ -13,7 +14,6 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.SubnetInstance
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ZoneInstancesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ZoneTypesRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.ApplicationPhase;
 import com.amadeus.aud.libraries.models.core.db.AutomaticTemplateInstance;
 import com.amadeus.aud.libraries.models.core.db.Component;

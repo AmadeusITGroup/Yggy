@@ -2,15 +2,14 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudRequirementsRepository;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.yaml.models.Version;
 import com.amadeus.aud.services.apis.models.http.requests.VersionLoadRequest;
 import com.amadeus.aud.services.apis.models.http.responses.VersionsResponse;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
@@ -36,16 +35,13 @@ public class VersionService extends BaseService {
 
   private final VersionCacheProducer versionCacheProducer;
   private final GraphEngineService graphEngineService;
-  private final AudVersionsService audVersionsService;
 
   @Inject
   public VersionService(
       AudService audService,
       AudApiConfig audApiConfig,
       VersionCacheProducer versionCacheProducer,
-      GraphEngineService graphEngineService,
-      AudVersionsService audVersionsService) {
-    this.audVersionsService = audVersionsService;
+      GraphEngineService graphEngineService) {
     this.audApiConfig = audApiConfig;
     this.versionCacheProducer = versionCacheProducer;
     this.graphEngineService = graphEngineService;
@@ -163,15 +159,5 @@ public class VersionService extends BaseService {
                             graphVersions))))
         .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
         .emitOn(Infrastructure.getDefaultWorkerPool());
-  }
-
-  public Uni<Response> getAllAvailableVersionsResponse() {
-    return audVersionsService
-        .listAllVersions()
-        .onItem()
-        .transform(
-            versions -> new com.amadeus.aud.libraries.backend.models.v2.Response<>(versions, null))
-        .onItem()
-        .transform(response -> jakarta.ws.rs.core.Response.ok(response).build());
   }
 }

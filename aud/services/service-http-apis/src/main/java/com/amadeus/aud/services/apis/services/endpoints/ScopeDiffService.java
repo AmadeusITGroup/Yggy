@@ -2,7 +2,7 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
-import com.amadeus.aud.libraries.common.Constants;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.configs.AudModelConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
@@ -18,7 +18,6 @@ import com.amadeus.aud.libraries.yaml.models.ScopeDiff;
 import com.amadeus.aud.libraries.yaml.models.ScopeDiffResponse;
 import com.amadeus.aud.libraries.yaml.models.ScopeDiffs;
 import com.amadeus.aud.libraries.yaml.models.V1Commit;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -114,13 +113,6 @@ public class ScopeDiffService extends BaseService {
     return getOkResponse(response);
   }
 
-  private String getNanoIdFromScope(Scope scope) {
-    if (scope == null || scope.getNanoId() == null) {
-      return Constants.STR_UNKNOWN;
-    }
-    return scope.getNanoId();
-  }
-
   private ScopeDiff createScopeDiff(
       String scopeName,
       Requirement oldRequirement,
@@ -153,7 +145,6 @@ public class ScopeDiffService extends BaseService {
     scopeDiff.setNewVersion(newVersion);
 
     Scope scope = scopesRepository.getData().get(scopeName);
-    scopeDiff.setNanoid(getNanoIdFromScope(scope));
     List<PR> prs = new ArrayList<>();
     List<Message> msgs = new ArrayList<>();
     if (scope != null) {
@@ -183,7 +174,6 @@ public class ScopeDiffService extends BaseService {
     scopeDiff.setNewVersion(newVersion);
 
     Scope scope = scopesRepository.getData().get(scopeName);
-    scopeDiff.setNanoid(getNanoIdFromScope(scope));
     List<PR> prs = new ArrayList<>();
     List<Message> msgs = new ArrayList<>();
     if (scope != null) {

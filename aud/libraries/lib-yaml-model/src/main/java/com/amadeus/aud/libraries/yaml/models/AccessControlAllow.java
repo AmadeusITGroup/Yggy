@@ -39,7 +39,6 @@ public class AccessControlAllow {
    * @return accessRights
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "the section specifying access rights to allow")
   @JsonProperty(value = JSON_PROPERTY_ACCESS_RIGHTS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

@@ -13,16 +13,30 @@
   <inceptionYear>2024</inceptionYear>
 
   <modules>
+    <module>lib-aud-open-api</module>
+    <module>lib-aud-open-service</module>
     <module>lib-aud-service</module>
-    <module>lib-azure-nsg-ports</module>
+    <module>lib-azure-nsg-api</module>
     <module>lib-azure-nsg-service</module>
     <module>lib-backend-apis</module>
+    <module>lib-checker-api</module>
+    <module>lib-checker</module>
     <module>lib-common</module>
+    <module>lib-data-engine-api</module>
     <module>lib-data-engine</module>
+    <module>lib-domain-checks</module>
+    <module>lib-file-checks</module>
+    <module>lib-graph-engine-api</module>
     <module>lib-graph-engine</module>
-    <module>lib-graphql</module>
     <module>lib-graphql-common</module>
+    <module>lib-graphql</module>
+    <module>lib-http-logging</module>
+    <module>lib-ip-report-api</module>
+    <module>lib-ip-report-service</module>
+    <module>lib-json-schema-api</module>
+    <module>lib-json-schema-service</module>
     <module>lib-models</module>
+    <module>lib-v2-objects-service</module>
     <module>lib-yaml-model</module>
   </modules>
 

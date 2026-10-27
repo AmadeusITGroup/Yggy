@@ -18,6 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     indexes = {
       @Index(columnList = "added_in_version_rank, removed_in_version_rank"),
       @Index(columnList = "componentInstanceId"),
+      @Index(columnList = "scopeName"),
     })
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

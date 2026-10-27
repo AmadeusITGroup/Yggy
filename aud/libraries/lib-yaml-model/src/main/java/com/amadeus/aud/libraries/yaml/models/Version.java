@@ -91,14 +91,14 @@ public class Version {
    * @deprecated
    */
   @Deprecated
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_REQUIREMENTS_MD5, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_REQUIREMENTS_MD5)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getRequirementsMd5() {
     return requirementsMd5;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_REQUIREMENTS_MD5, required = false)
+  @JsonProperty(value = JSON_PROPERTY_REQUIREMENTS_MD5)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setRequirementsMd5(@Nullable String requirementsMd5) {
     this.requirementsMd5 = requirementsMd5;

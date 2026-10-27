@@ -3,7 +3,6 @@ package com.amadeus.aud.libraries.yaml.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -29,7 +28,6 @@ public class V1BaseInstance extends V1Base {
    * @return metadata
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_METADATA, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

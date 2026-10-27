@@ -136,11 +136,11 @@ class TokenTracingFilterTest {
           """
           {
             "iss": "https://login.microsoftonline.com/tid/v2.0",
-            "aud": "6a4db7a0-f3c8-4b9c-b966-2d07ccbecdb9",
+            "aud": "3f91c6e2-7a0d-4e58-9c14-b8e2f5a3d710",
             "appid": "client-app-123",
             "oid": "object-id-456",
             "sub": "subject-789",
-            "tid": "7d7761c0-8b7a-49bb-8975-a6aa1be7c38b",
+            "tid": "b72e4f08-1d6a-4c93-8f52-e0a9c7b3461d",
             "roles": ["Read.All"],
             "scp": "user_impersonation"
           }
@@ -161,11 +161,11 @@ class TokenTracingFilterTest {
           """
           {
             "iss": "https://sts.windows.net/tid/",
-            "aud": "6a4db7a0-f3c8-4b9c-b966-2d07ccbecdb9",
+            "aud": "3f91c6e2-7a0d-4e58-9c14-b8e2f5a3d710",
             "azp": "legacy-client-456",
             "oid": "oid-1",
             "sub": "sub-1",
-            "tid": "7d7761c0-8b7a-49bb-8975-a6aa1be7c38b",
+            "tid": "b72e4f08-1d6a-4c93-8f52-e0a9c7b3461d",
             "roles": ["SomeOtherRole"]
           }
           """;

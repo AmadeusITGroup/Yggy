@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.amadeus.aud.libraries.graphql.utils.StringFilter;
 import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.utils.PortUtils;
-import com.amadeus.aud.libraries.yaml.models.V1ServiceSpec;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +30,8 @@ class ServiceFilterTest {
     when(s.getComponentName()).thenReturn("comp-api");
     when(s.getApplicationIdName()).thenReturn("app-portal");
     when(s.getServiceNowId()).thenReturn("RITM0001");
-    when(s.getProtocol()).thenReturn(V1ServiceSpec.ProtocolEnum.TCP);
-    when(s.getApprovedProtocol()).thenReturn(V1ServiceSpec.ProtocolEnum.TCP);
+    when(s.getProtocol()).thenReturn(ProtocolEnum.TCP);
+    when(s.getApprovedProtocol()).thenReturn(ProtocolEnum.TCP);
     when(s.isPrivate()).thenReturn(false);
     when(s.isPci()).thenReturn(false);
     when(s.isPii()).thenReturn(false);

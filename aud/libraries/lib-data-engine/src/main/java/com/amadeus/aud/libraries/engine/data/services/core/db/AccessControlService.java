@@ -5,6 +5,7 @@ import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentReposit
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.AccessControlEntitiesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.AccessRightsEntryEntitiesRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopesRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseModelEntityService;
 import com.amadeus.aud.libraries.models.core.db.AccessControlEntity;
 import com.amadeus.aud.libraries.models.core.db.AccessRightsEntryEntity;
@@ -20,7 +21,6 @@ import com.amadeus.aud.libraries.yaml.models.AccessRightsEntryScopes;
 import com.amadeus.aud.libraries.yaml.models.V1Component;
 import io.quarkus.logging.Log;
 import jakarta.inject.Singleton;
-import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -154,11 +154,11 @@ public class AccessControlService
 
   private static Set<AccessRightsEntryEntity> initAccessRightsList(
       Version version,
-      @Valid List<AccessRightsEntry> accessRights,
+      List<AccessRightsEntry> accessRights,
       ConcurrentRepository<AccessRightsEntryEntity> accessRightEntriesRepository) {
 
     Set<AccessRightsEntryEntity> accessRightsSet = new LinkedHashSet<>();
-    var scopeRepo = version.getScopesRepository();
+    ScopesRepository scopeRepo = version.getScopesRepository();
     if (scopeRepo == null) {
       Log.errorf("Scopes Repository not found for version %s", version);
       return accessRightsSet;

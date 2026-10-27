@@ -12,8 +12,21 @@
   <inceptionYear>2024</inceptionYear>
 
   <modules>
+    <module>service-aud-open-http</module>
     <module>service-azure-nsg-http</module>
     <module>service-http-apis</module>
     <module>service-http-connectivity-engine</module>
+    <module>service-ip-report-http</module>
+    <module>service-json-schema-http</module>
+    <module>service-v2-objects-http</module>
   </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-http-logging</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>

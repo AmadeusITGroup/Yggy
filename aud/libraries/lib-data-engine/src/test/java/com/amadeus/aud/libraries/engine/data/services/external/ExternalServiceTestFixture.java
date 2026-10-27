@@ -24,8 +24,6 @@ final class ExternalServiceTestFixture {
         name: Governance
         scope: Governance
       spec:
-        owners:
-          - platform
         roles:
           - Governance
       ---
@@ -35,8 +33,6 @@ final class ExternalServiceTestFixture {
         name: Application
         scope: Governance
       spec:
-        owners:
-          - application-owner
         roles:
           - Application
       """;
@@ -50,7 +46,7 @@ final class ExternalServiceTestFixture {
         name: Application
         scope: Governance
       spec:
-        owners:
+        roles:
           - first
       ---
       apiVersion: v1
@@ -59,7 +55,7 @@ final class ExternalServiceTestFixture {
         name: Application
         scope: Governance
       spec:
-        owners:
+        roles:
           - second
       """;
 
@@ -70,7 +66,7 @@ final class ExternalServiceTestFixture {
           "apiVersion": "v1",
           "kind": "Scope",
           "metadata": {"name": "JsonScope", "scope": "JsonScope"},
-          "spec": {"owners": ["json-owner"], "roles": ["Application"]}
+          "spec": {"roles": ["Application"]}
         }
       ]
       """;

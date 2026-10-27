@@ -22,10 +22,10 @@ import java.util.Set;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
-/// Traces inbound bearer tokens on every HTTP request without blocking.
-/// Extracts JWT claims, logs token details, and emits Prometheus metrics.
-/// This filter never aborts the request, it is purely observational: it exists to
-/// measure which callers use which tokens before authentication is enforced.
+/// Traces inbound bearer tokens on every HTTP request without blocking. Extracts JWT claims, logs
+/// token details, and emits Prometheus metrics. This filter never aborts the request, it is purely
+/// observational: it exists to measure which callers use which tokens before authentication is
+/// enforced.
 @Provider
 @PreMatching
 @Priority(Priorities.AUTHENTICATION + 1)

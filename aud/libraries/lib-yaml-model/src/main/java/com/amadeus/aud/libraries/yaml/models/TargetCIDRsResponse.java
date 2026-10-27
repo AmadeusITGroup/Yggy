@@ -78,11 +78,10 @@ public class TargetCIDRsResponse extends ApiMetadata {
    * @return landingzoneCidrs
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_LANDINGZONE_CIDRS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<SpokeCIDRs> getLandingzoneCidrs() {
+  public List<@Valid SpokeCIDRs> getLandingzoneCidrs() {
     return landingzoneCidrs;
   }
 

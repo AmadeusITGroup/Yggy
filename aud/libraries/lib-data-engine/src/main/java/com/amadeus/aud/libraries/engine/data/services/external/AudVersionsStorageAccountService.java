@@ -1,12 +1,12 @@
 package com.amadeus.aud.libraries.engine.data.services.external;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
+import com.amadeus.aud.libraries.engine.data.models.core.internals.SingleVersion;
 import com.amadeus.aud.libraries.engine.data.services.external.qualifiers.StorageAccountQualifier;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.BlobService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.SingleVersion;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.StorageAccountService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import com.amadeus.aud.libraries.yaml.models.ModelElement;
 import com.amadeus.aud.libraries.yaml.models.utils.ModelElementMixin;

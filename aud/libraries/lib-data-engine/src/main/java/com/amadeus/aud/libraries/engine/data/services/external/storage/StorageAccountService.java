@@ -1,7 +1,7 @@
 package com.amadeus.aud.libraries.engine.data.services.external.storage;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.repositories.base.BaseRepository;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.BlobServiceAsyncClient;

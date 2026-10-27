@@ -67,14 +67,14 @@ public class V1SubnetInstanceSpec {
    *
    * @return vlan
    */
-  @Schema(required = false, description = "The vlan that correspond to the subnet")
-  @JsonProperty(value = JSON_PROPERTY_VLAN, required = false)
+  @Schema(description = "The vlan that correspond to the subnet")
+  @JsonProperty(value = JSON_PROPERTY_VLAN)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getVlan() {
     return vlan;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_VLAN, required = false)
+  @JsonProperty(value = JSON_PROPERTY_VLAN)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setVlan(@Nullable String vlan) {
     this.vlan = vlan;
@@ -114,14 +114,14 @@ public class V1SubnetInstanceSpec {
    *
    * @return isGroup
    */
-  @Schema(required = false, description = "is it a group of subnet?")
-  @JsonProperty(value = JSON_PROPERTY_IS_GROUP, required = false)
+  @Schema(description = "is it a group of subnet?")
+  @JsonProperty(value = JSON_PROPERTY_IS_GROUP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsGroup() {
     return isGroup;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_GROUP, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_GROUP)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsGroup(@Nullable Boolean isGroup) {
     this.isGroup = isGroup;
@@ -137,14 +137,14 @@ public class V1SubnetInstanceSpec {
    *
    * @return isNetworkPrivate
    */
-  @Schema(required = false, description = "is the subnet for network team private usage?")
-  @JsonProperty(value = JSON_PROPERTY_IS_NETWORK_PRIVATE, required = false)
+  @Schema(description = "is the subnet for network team private usage?")
+  @JsonProperty(value = JSON_PROPERTY_IS_NETWORK_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsNetworkPrivate() {
     return isNetworkPrivate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_NETWORK_PRIVATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_NETWORK_PRIVATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsNetworkPrivate(@Nullable Boolean isNetworkPrivate) {
     this.isNetworkPrivate = isNetworkPrivate;
@@ -208,14 +208,14 @@ public class V1SubnetInstanceSpec {
    *
    * @return parent
    */
-  @Schema(required = false, description = "Name of parent in case of grouping")
-  @JsonProperty(value = JSON_PROPERTY_PARENT, required = false)
+  @Schema(description = "Name of parent in case of grouping")
+  @JsonProperty(value = JSON_PROPERTY_PARENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getParent() {
     return parent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PARENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PARENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setParent(@Nullable String parent) {
     this.parent = parent;
@@ -256,14 +256,14 @@ public class V1SubnetInstanceSpec {
    * @return deprecatedStatus
    */
   @Valid
-  @Schema(required = false, description = "Deprecated status of the subnet instance.")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @Schema(description = "Deprecated status of the subnet instance.")
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable DeprecatedStatus getDeprecatedStatus() {
     return deprecatedStatus;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_STATUS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedStatus(@Nullable DeprecatedStatus deprecatedStatus) {
     this.deprecatedStatus = deprecatedStatus;
@@ -281,16 +281,15 @@ public class V1SubnetInstanceSpec {
    * @return deprecatedMessage
    */
   @Schema(
-      required = false,
       description =
           "Additional info on the deprecated component (e.g. replacement information/ owner contact details)")
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDeprecatedMessage() {
     return deprecatedMessage;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DEPRECATED_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDeprecatedMessage(@Nullable String deprecatedMessage) {
     this.deprecatedMessage = deprecatedMessage;

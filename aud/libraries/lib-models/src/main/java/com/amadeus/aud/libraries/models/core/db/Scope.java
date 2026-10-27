@@ -6,15 +6,12 @@ import com.amadeus.aud.libraries.yaml.models.V1ScopeSpec;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.util.HashSet;
 import java.util.Set;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 public class Scope extends AbstractBase<V1Scope> {
@@ -22,10 +19,6 @@ public class Scope extends AbstractBase<V1Scope> {
   private String defaultScopesBitbucketProject = "AUD";
 
   @OneToOne private Requirement requirement;
-
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(length = 8192)
-  private Set<String> owners;
 
   /**
    * Roles that are used by this scope This points to the {@code Role} object unlike the {@code
@@ -157,13 +150,6 @@ public class Scope extends AbstractBase<V1Scope> {
     super();
   }
 
-  public @Nullable String getOwnersName() {
-    if (owners == null) {
-      return null;
-    }
-    return String.join(",", owners);
-  }
-
   public @Nullable Set<String> getRolesJsonRepresentation() {
     if (roles == null) {
       return null;
@@ -180,17 +166,6 @@ public class Scope extends AbstractBase<V1Scope> {
       return null;
     }
     return requirement.getVersion();
-  }
-
-  public @Nullable String getNanoId() {
-    if (getData() == null) {
-      return null;
-    }
-    V1ScopeSpec spec = getData().getSpec();
-    if (spec == null) {
-      return null;
-    }
-    return spec.getNanoID();
   }
 
   public boolean isDeleted() {
@@ -210,28 +185,6 @@ public class Scope extends AbstractBase<V1Scope> {
 
   public void setRequirement(Requirement requirement) {
     this.requirement = requirement;
-  }
-
-  public Set<String> getOwners() {
-    return owners;
-  }
-
-  public void setOwners(Set<String> owners) {
-    this.owners = owners;
-  }
-
-  public void addOwner(String owner) {
-    if (owners == null) {
-      owners = new HashSet<>();
-    }
-    owners.add(owner);
-  }
-
-  public void addOwners(Set<String> owners) {
-    if (this.owners == null) {
-      this.owners = new HashSet<>();
-    }
-    this.owners.addAll(owners);
   }
 
   public Set<Role> getDefinedRoles() {
@@ -1062,17 +1015,6 @@ public class Scope extends AbstractBase<V1Scope> {
       this.scopeVersionMapping = new HashSet<>();
     }
     this.scopeVersionMapping.addAll(scopeVersionMappings);
-  }
-
-  public @Nullable String getAssigneeGroup() {
-    if (getData() == null) {
-      return null;
-    }
-    V1ScopeSpec spec = getData().getSpec();
-    if (spec == null) {
-      return null;
-    }
-    return spec.getAssigneeGroup();
   }
 
   public void addConnectionApprovalComponentSkip(

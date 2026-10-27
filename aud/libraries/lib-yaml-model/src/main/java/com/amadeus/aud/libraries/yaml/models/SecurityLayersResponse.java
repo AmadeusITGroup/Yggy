@@ -40,11 +40,10 @@ public class SecurityLayersResponse extends ApiMetadata {
    * @return securityLayers
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "List of securityLayer")
   @JsonProperty(value = JSON_PROPERTY_SECURITY_LAYERS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<SecurityLayer> getSecurityLayers() {
+  public List<@Valid SecurityLayer> getSecurityLayers() {
     return securityLayers;
   }
 

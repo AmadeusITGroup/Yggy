@@ -41,11 +41,10 @@ public class ConnectivityRulesResponse extends ApiMetadata {
    * @return connectivityRules
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "List of Connectivity Rules")
   @JsonProperty(value = JSON_PROPERTY_CONNECTIVITY_RULES, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<ConnectivityRule> getConnectivityRules() {
+  public List<@Valid ConnectivityRule> getConnectivityRules() {
     return connectivityRules;
   }
 

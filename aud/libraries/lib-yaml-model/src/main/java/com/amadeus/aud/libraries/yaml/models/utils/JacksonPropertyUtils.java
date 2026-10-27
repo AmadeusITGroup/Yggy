@@ -9,9 +9,12 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.google.common.base.CaseFormat;
 import jakarta.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 // TODO: This class is needed because in the OpenAPI spec and respective yaml files there is no
 //   consistency in the naming of the properties. This class is used to map the properties to be
@@ -21,7 +24,6 @@ public class JacksonPropertyUtils {
   // TODO: Fix the following property names in the OpenAPI spec in PRD and remove the Mapping.
   private final Map<String, String> propertyFixes =
       Map.of(
-          "nanoID", "nanoId",
           "isNSGNeeded", "is_nsg_needed",
           "isPCI", "is_pci",
           "isPII", "is_pii",
@@ -45,6 +47,15 @@ public class JacksonPropertyUtils {
     return fieldMap;
   }
 
+  public Set<String> getAcceptedPropertyNames(String propertyName) {
+    String normalizedName = propertyFixes.getOrDefault(propertyName, propertyName);
+    String camelCaseName = toCamelCase(normalizedName);
+    Set<String> acceptedNames = new LinkedHashSet<>();
+    acceptedNames.add(camelCaseName);
+    acceptedNames.add(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, camelCaseName));
+    return Collections.unmodifiableSet(acceptedNames);
+  }
+
   private Map<String, JacksonProperty> buildFieldMapping(
       Class<?> targetClass, String parentPrefix) {
     JavaType javaType = objectMapper.constructType(targetClass);
@@ -58,8 +69,8 @@ public class JacksonPropertyUtils {
       String originalFieldName = propertyName.getSimpleName();
       String fieldName = propertyFixes.getOrDefault(originalFieldName, originalFieldName);
 
-      String camelCaseName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_CAMEL, fieldName);
-      String snakeCaseName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldName);
+      String camelCaseName = toCamelCase(fieldName);
+      String snakeCaseName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, camelCaseName);
 
       String fullCamelCaseName =
           parentPrefix.isEmpty() ? camelCaseName : String.join(".", parentPrefix, camelCaseName);
@@ -104,5 +115,12 @@ public class JacksonPropertyUtils {
       }
     }
     return fieldMap;
+  }
+
+  private static String toCamelCase(String propertyName) {
+    if (propertyName.indexOf('_') >= 0) {
+      return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, propertyName);
+    }
+    return propertyName;
   }
 }

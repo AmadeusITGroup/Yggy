@@ -4,7 +4,7 @@ import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
 import com.amadeus.aud.libraries.engine.data.configs.AudScopesConfig;
 import com.amadeus.aud.libraries.engine.data.interfaces.BlobFormat;
 import com.amadeus.aud.libraries.engine.data.interfaces.ModelElementsProducerContext;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.AbstractDocumentParsingService;
+import com.amadeus.aud.libraries.models.parsing.AbstractDocumentParsingService;
 import jakarta.annotation.Nullable;
 import java.nio.file.Path;
 import java.time.Duration;

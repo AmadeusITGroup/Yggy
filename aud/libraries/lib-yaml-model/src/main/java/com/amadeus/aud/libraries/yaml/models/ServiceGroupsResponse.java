@@ -40,11 +40,10 @@ public class ServiceGroupsResponse extends ApiMetadata {
    * @return serviceGroups
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "List of service groups")
   @JsonProperty(value = JSON_PROPERTY_SERVICE_GROUPS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<ServiceGroup> getServiceGroups() {
+  public List<@Valid ServiceGroup> getServiceGroups() {
     return serviceGroups;
   }
 

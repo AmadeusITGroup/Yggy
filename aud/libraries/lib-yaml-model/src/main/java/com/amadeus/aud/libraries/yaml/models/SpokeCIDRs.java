@@ -64,14 +64,14 @@ public class SpokeCIDRs extends ObjectMetadata {
    *
    * @return landingzonetype
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_LANDINGZONETYPE, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_LANDINGZONETYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getLandingzonetype() {
     return landingzonetype;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LANDINGZONETYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LANDINGZONETYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLandingzonetype(@Nullable String landingzonetype) {
     this.landingzonetype = landingzonetype;

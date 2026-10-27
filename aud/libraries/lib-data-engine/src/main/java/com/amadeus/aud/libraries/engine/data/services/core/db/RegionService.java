@@ -1,11 +1,11 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ContinentsRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ProvidersRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.RegionsRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.Continent;
 import com.amadeus.aud.libraries.models.core.db.Provider;
 import com.amadeus.aud.libraries.models.core.db.Region;

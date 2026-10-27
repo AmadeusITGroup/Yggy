@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public final class UrlUtils {
+  private static final Pattern VERSION_PATTERN = Pattern.compile("^/version/[^/]*");
 
   private UrlUtils() {}
 
@@ -26,7 +28,7 @@ public final class UrlUtils {
         .append(uri.getHost())
         .append("/version/")
         .append(versionNumber)
-        .append(uri.getPath())
+        .append(VERSION_PATTERN.matcher(uri.getPath()).replaceFirst(""))
         .toString();
   }
 

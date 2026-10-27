@@ -5,7 +5,7 @@ This is Yggy v1, also called AUD for historical reasons.
 ## Development requirements
 
 - java 25
-- latest maven or maven daemon 3.9.x
+- latest maven or maven daemon 3.10.x
 
 Install your environment with `just setup`.
 
@@ -57,7 +57,8 @@ The directory must contain the four aggregated files the API expects:
 | `requirements.yml` | the scope list with source repository and file names    |
 | `release.yml`      | one `ScopeReleaseNote` per scope                        |
 
-A ready-made fixture set is not part of this release, so you supply the descriptors and build those four files yourself:
+A ready-made fixture set is now part of this repository, inside `aud/example-data`. If you want to supply your own
+descriptors and build those four files yourself:
 
 ```shell
 just generate-network-data <your-descriptor-dir>
@@ -66,3 +67,10 @@ just generate-network-data <your-descriptor-dir>
 The descriptor directory needs a `Scope/` folder of scope YAML documents plus one folder per scope, and the aggregated
 output is written to `<your-descriptor-dir>/network-data` — which is the path to mount or pass to `just
 start-api-local`. See [`scripts/generateNetworkData.java`](./scripts/generateNetworkData.java) for the layout it walks.
+
+In order to run the example fixtures:
+
+```shell
+just start-api-local example-data/network-data/
+```
+

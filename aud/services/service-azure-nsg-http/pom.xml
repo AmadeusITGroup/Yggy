@@ -32,6 +32,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
@@ -47,13 +51,14 @@
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-azure-nsg-ports</artifactId>
+      <artifactId>lib-azure-nsg-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
       <artifactId>lib-azure-nsg-service</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 

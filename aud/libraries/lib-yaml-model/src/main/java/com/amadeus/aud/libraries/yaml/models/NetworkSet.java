@@ -68,7 +68,6 @@ public class NetworkSet extends ObjectMetadata {
    * @return endpoints
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_ENDPOINTS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

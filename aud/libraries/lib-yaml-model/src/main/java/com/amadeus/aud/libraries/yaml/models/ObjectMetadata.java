@@ -7,7 +7,6 @@ import jakarta.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /** ObjectMetadata */
 @JsonPropertyOrder({ObjectMetadata.JSON_PROPERTY_LABELS})
@@ -36,14 +35,13 @@ public class ObjectMetadata {
    *
    * @return labels
    */
-  @Schema(required = false, description = "labels to further describe the resource.")
-  @JsonProperty(value = JSON_PROPERTY_LABELS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LABELS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Map<String, String> getLabels() {
     return labels;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LABELS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LABELS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLabels(@Nullable Map<String, String> labels) {
     this.labels = labels;

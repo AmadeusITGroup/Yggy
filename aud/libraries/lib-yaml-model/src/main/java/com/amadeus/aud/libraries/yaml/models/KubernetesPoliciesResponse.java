@@ -41,11 +41,10 @@ public class KubernetesPoliciesResponse extends ApiMetadata {
    * @return kubernetesPolicies
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_KUBERNETES_POLICIES, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<KubernetesPolicy> getKubernetesPolicies() {
+  public List<@Valid KubernetesPolicy> getKubernetesPolicies() {
     return kubernetesPolicies;
   }
 

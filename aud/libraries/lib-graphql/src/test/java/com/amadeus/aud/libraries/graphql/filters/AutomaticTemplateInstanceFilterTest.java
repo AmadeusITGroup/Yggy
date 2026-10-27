@@ -54,11 +54,8 @@ class AutomaticTemplateInstanceFilterTest {
     Scope scope = mock(Scope.class);
     when(scope.getName()).thenReturn("scope-prod");
     when(scope.getServiceNowId()).thenReturn(null);
-    when(scope.getNanoId()).thenReturn(null);
-    when(scope.getAssigneeGroup()).thenReturn(null);
     when(scope.getRepositoryVersion()).thenReturn(null);
     when(scope.isDeleted()).thenReturn(false);
-    when(scope.getOwners()).thenReturn(null);
     when(scope.getRolesJsonRepresentation()).thenReturn(null);
     when(scope.getTargets()).thenReturn(null);
     when(scope.getLandingZones()).thenReturn(null);

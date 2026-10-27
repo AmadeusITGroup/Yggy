@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -33,15 +34,11 @@ public class V1Base implements ModelElement {
     return this;
   }
 
-  /**
-   * Version of the API to user.
-   *
-   * @return apiVersion
-   */
   @NotNull
-  @Schema(required = true, description = "Version of the API to user.")
+  @Schema(required = true, description = "AUD Model Version")
   @JsonProperty(value = JSON_PROPERTY_API_VERSION, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
+  @Pattern(regexp = "v1")
   public String getApiVersion() {
     return apiVersion;
   }

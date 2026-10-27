@@ -22,7 +22,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     indexes = {
       @Index(
           name = "idx_edges_version_rank",
-          columnList = "added_in_version_rank, removed_in_version_rank")
+          columnList = "added_in_version_rank, removed_in_version_rank"),
+      @Index(name = "idx_edges_sourcenode_id", columnList = "sourcenode_id"),
+      @Index(name = "idx_edges_destinationnode_id", columnList = "destinationnode_id"),
     })
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

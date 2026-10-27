@@ -68,7 +68,6 @@ public class Statistics extends ApiMetadata {
    * @return scopes
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_SCOPES, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

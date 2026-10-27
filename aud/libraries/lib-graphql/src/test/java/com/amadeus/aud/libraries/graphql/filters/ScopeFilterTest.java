@@ -28,11 +28,8 @@ class ScopeFilterTest {
     when(s.getName()).thenReturn(name);
     when(s.id()).thenReturn("scope-" + name.hashCode());
     when(s.getServiceNowId()).thenReturn("RITM0001");
-    when(s.getNanoId()).thenReturn("nano-01");
-    when(s.getAssigneeGroup()).thenReturn("team-ops");
     when(s.getRepositoryVersion()).thenReturn("main");
     when(s.isDeleted()).thenReturn(false);
-    when(s.getOwners()).thenReturn(Set.of("owner-alice"));
     when(s.getRolesJsonRepresentation()).thenReturn(Set.of("role-admin"));
 
     Target t = mock(Target.class);
@@ -105,34 +102,6 @@ class ScopeFilterTest {
   }
 
   @Test
-  void filterByNanoId_match() {
-    ScopeFilter f = new ScopeFilter();
-    f.setNanoId(sf("NANO-01"));
-    assertThat(f.matches(scope("scope-prod"))).isTrue();
-  }
-
-  @Test
-  void filterByNanoId_noMatch() {
-    ScopeFilter f = new ScopeFilter();
-    f.setNanoId(sf("nano-99"));
-    assertThat(f.matches(scope("scope-prod"))).isFalse();
-  }
-
-  @Test
-  void filterByAssigneeGroup_match() {
-    ScopeFilter f = new ScopeFilter();
-    f.setAssigneeGroup(sf("TEAM-OPS"));
-    assertThat(f.matches(scope("scope-prod"))).isTrue();
-  }
-
-  @Test
-  void filterByAssigneeGroup_noMatch() {
-    ScopeFilter f = new ScopeFilter();
-    f.setAssigneeGroup(sf("team-dev"));
-    assertThat(f.matches(scope("scope-prod"))).isFalse();
-  }
-
-  @Test
   void filterByRepositoryVersion_match() {
     ScopeFilter f = new ScopeFilter();
     f.setRepositoryVersion(sf("main"));
@@ -158,31 +127,6 @@ class ScopeFilterTest {
     ScopeFilter f = new ScopeFilter();
     f.setIsDeleted(true);
     assertThat(f.matches(scope("scope-prod"))).isFalse();
-  }
-
-  @Test
-  void filterByOwner_match() {
-    ScopeFilter f = new ScopeFilter();
-    f.setOwner(sf("OWNER-ALICE"));
-    assertThat(f.matches(scope("scope-prod"))).isTrue();
-  }
-
-  @Test
-  void filterByOwner_noMatch() {
-    ScopeFilter f = new ScopeFilter();
-    f.setOwner(sf("owner-bob"));
-    assertThat(f.matches(scope("scope-prod"))).isFalse();
-  }
-
-  @Test
-  void filterByOwner_nullOwners_noMatch() {
-    Scope s = mock(Scope.class);
-    when(s.getName()).thenReturn("scope-1");
-    when(s.getOwners()).thenReturn(null);
-
-    ScopeFilter f = new ScopeFilter();
-    f.setOwner(sf("owner-alice"));
-    assertThat(f.matches(s)).isFalse();
   }
 
   @Test
@@ -367,11 +311,8 @@ class ScopeFilterTest {
     stringFilter.setLike("n");
     f.setName(stringFilter);
     f.setServiceNowId(sf("sn"));
-    f.setNanoId(sf("ni"));
-    f.setAssigneeGroup(sf("ag"));
     f.setRepositoryVersion(sf("v"));
     f.setIsDeleted(true);
-    f.setOwner(sf("o"));
     f.setRole(sf("r"));
     f.setTargetName(sf("t"));
     f.setLandingZoneName(sf("lz"));
@@ -382,11 +323,8 @@ class ScopeFilterTest {
 
     assertThat(f.getName()).isEqualTo(stringFilter);
     assertThat(f.getServiceNowId()).isNotNull();
-    assertThat(f.getNanoId()).isNotNull();
-    assertThat(f.getAssigneeGroup()).isNotNull();
     assertThat(f.getRepositoryVersion()).isNotNull();
     assertThat(f.getIsDeleted()).isTrue();
-    assertThat(f.getOwner()).isNotNull();
     assertThat(f.getRole()).isNotNull();
     assertThat(f.getTargetName()).isNotNull();
     assertThat(f.getLandingZoneName()).isNotNull();

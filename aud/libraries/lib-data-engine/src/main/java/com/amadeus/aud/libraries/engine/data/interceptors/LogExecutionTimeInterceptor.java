@@ -1,6 +1,6 @@
 package com.amadeus.aud.libraries.engine.data.interceptors;
 
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 import jakarta.annotation.Priority;

@@ -16,11 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/// All addresses here are synthetic fixtures chosen only for their arithmetic:
-/// 10.1.x for the /22-/23 family, 10.2.x for the /25-/26 split family and 10.3.x
-/// for the boundary-overlap family. They are not, and must not be replaced by,
-/// addresses from any real network. Where a test pairs a decimal `BigInteger` with
-/// an expected CIDR string, the two have to be changed together.
+/// All addresses here are synthetic fixtures chosen only for their arithmetic: 10.1.x for the
+/// /22-/23 family, 10.2.x for the /25-/26 split family and 10.3.x for the boundary-overlap family.
+/// They are not, and must not be replaced by, addresses from any real network. Where a test pairs a
+/// decimal `BigInteger` with an expected CIDR string, the two have to be changed together.
 class IPv4UtilsTest {
 
   @Nested

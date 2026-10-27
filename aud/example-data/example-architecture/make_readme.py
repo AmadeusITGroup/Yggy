@@ -46,10 +46,10 @@ Multi-cloud hub-and-spoke reference across **Azure (West Europe)** and **GCP (us
 Security zones are implemented as subnets, and management services (DNS, Jump, Active Directory)
 are centralized in each hub.
 
-![Hub & Spoke Network Architecture](docs/network_architecture.png)
+![Hub & Spoke Network Architecture](assets/network_architecture.png)
 
-> Vector source: [`docs/network_architecture.svg`](docs/network_architecture.svg) &nbsp;·&nbsp;
-> High-res raster: [`docs/network_architecture.png`](docs/network_architecture.png)
+> Vector source: [`assets/network_architecture.svg`](assets/network_architecture.svg) &nbsp;·&nbsp;
+> High-res raster: [`assets/network_architecture.png`](assets/network_architecture.png)
 
 ## Topology
 
@@ -101,10 +101,10 @@ The diagram is generated from [`build_arch.py`](build_arch.py) (Python + `cairos
 from a fixed random seed so the diagram and the tables above stay in sync.
 
 ```bash
-python build_arch.py                              # writes docs/network_architecture.svg
+python build_arch.py                              # writes assets/network_architecture.svg
 python -c "import cairosvg; cairosvg.svg2png( \\
-  url='docs/network_architecture.svg', \\
-  write_to='docs/network_architecture.png', output_width=2400)"
+  url='assets/network_architecture.svg', \\
+  write_to='assets/network_architecture.png', output_width=2400)"
 python make_readme.py                             # regenerates this README
 ```
 
@@ -115,13 +115,13 @@ network-architecture/
 ├── README.md                      # this file (diagram + addressing)
 ├── build_arch.py                  # diagram generator
 ├── make_readme.py                 # README generator
-└── docs/
+└── assets/
     ├── network_architecture.svg   # vector diagram
     └── network_architecture.png   # raster diagram (embedded above)
 ```
 """
 
-os.makedirs("./docs", exist_ok=True)
+os.makedirs("./assets", exist_ok=True)
 with open("./README.md", "w", encoding="utf-8") as f:
     f.write(readme)
 print("README bytes:", len(readme))

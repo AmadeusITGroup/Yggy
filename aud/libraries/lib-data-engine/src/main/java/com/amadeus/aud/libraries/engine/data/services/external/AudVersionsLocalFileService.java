@@ -1,14 +1,17 @@
 package com.amadeus.aud.libraries.engine.data.services.external;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
+import com.amadeus.aud.libraries.engine.data.models.core.internals.SingleVersion;
 import com.amadeus.aud.libraries.engine.data.services.external.qualifiers.LocalFileQualifier;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.LocalFileService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.utils.VersionUtils;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 import org.jboss.logging.Logger;
 
 @LocalFileQualifier
@@ -45,25 +48,12 @@ public class AudVersionsLocalFileService implements AudVersionsService {
   }
 
   @Override
-  public Uni<
-          java.util.List<
-              com.amadeus.aud.libraries.engine.data.services.external.storage.SingleVersion>>
-      listAllVersions() {
+  public Uni<List<SingleVersion>> listAllVersions() {
     return Uni.createFrom()
-        .item(
-            () ->
-                io.smallrye.mutiny.unchecked.Unchecked.supplier(localFileService::findAllVersions)
-                    .get())
+        .item(() -> Unchecked.supplier(localFileService::findAllVersions).get())
         .runSubscriptionOn(io.smallrye.mutiny.infrastructure.Infrastructure.getDefaultWorkerPool())
         .onItem()
-        .transform(
-            versions ->
-                versions.stream()
-                    .map(
-                        v ->
-                            new com.amadeus.aud.libraries.engine.data.services.external.storage
-                                .SingleVersion(v, null, 0))
-                    .toList())
+        .transform(versions -> versions.stream().map(v -> new SingleVersion(v, null, 0)).toList())
         .onFailure()
         .invoke(e -> Log.error("Failed to list versions from the Local File System. Error:", e));
   }

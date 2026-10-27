@@ -4,9 +4,9 @@ import com.amadeus.aud.libraries.engine.graph.models.Edge;
 import com.amadeus.aud.libraries.engine.graph.services.exceptions.GraphSaveException;
 import com.amadeus.aud.libraries.models.core.db.ComponentInstance;
 import io.quarkus.logging.Log;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +19,11 @@ import javax.sql.DataSource;
 /**
  * Handles PostgreSQL binary COPY operations for bulk edge inserts. Extracted from {@link
  * PostgresEdgeRepository} to reduce class coupling (S1200).
+ *
+ * <p>Streams row data directly to {@link org.postgresql.copy.CopyIn} through a bounded buffer
+ * ({@link CopyInOutputStream}) instead of building the whole payload in memory first - a prior
+ * version that buffered everything in one growing byte array hit Java's array size limit on the
+ * real ~5.1M edge dataset.
  */
 final class PostgresEdgeCopyWriter {
 
@@ -56,15 +61,6 @@ final class PostgresEdgeCopyWriter {
             "Connection is not a PostgreSQL connection, cannot use COPY BINARY");
       }
 
-      ByteArrayOutputStream binaryData = new ByteArrayOutputStream();
-      DataOutputStream dataStream = new DataOutputStream(binaryData);
-      int validEdgeCount = writeBinaryEdgeData(dataStream, edges, nodeIdMap, versionRank);
-
-      Log.debugf(
-          "Processing %d valid edges out of %d total edges using COPY BINARY format",
-          validEdgeCount, edges.size());
-
-      byte[] data = binaryData.toByteArray();
       String copySQL =
           """
                     COPY edges (name, dependencyinstanceid, serviceid, governanceactive, \
@@ -72,8 +68,7 @@ final class PostgresEdgeCopyWriter {
                     sourcecomponentinstanceid, destinationcomponentinstanceid) FROM STDIN WITH (FORMAT BINARY)""";
       org.postgresql.copy.CopyManager copyManager =
           copyManagerFactory.create((org.postgresql.core.BaseConnection) unwrappedConnection);
-      executeBinaryCopyOperation(
-          copyManager, copySQL, data, validEdgeCount, String.valueOf(versionRank));
+      streamBinaryCopyOperation(copyManager, copySQL, edges, nodeIdMap, versionRank);
 
     } catch (GraphSaveException e) {
       throw e;
@@ -171,33 +166,38 @@ final class PostgresEdgeCopyWriter {
   }
 
   /**
-   * Executes a PostgreSQL COPY BINARY operation, streaming binary edge data in chunks and verifying
-   * the inserted row count. Cancels the COPY operation on failure.
+   * Opens the COPY BINARY stream and writes edge rows directly into it through a bounded buffer
+   * ({@link CopyInOutputStream}), verifying the inserted row count and cancelling the COPY on
+   * failure. Never holds the full edge payload in memory at once.
    */
-  private static void executeBinaryCopyOperation(
+  private static void streamBinaryCopyOperation(
       org.postgresql.copy.CopyManager copyManager,
       String copySQL,
-      byte[] data,
-      int expectedRowCount,
-      String versionLabel)
+      Collection<Edge> edges,
+      Map<ComponentInstance, Long> nodeIdMap,
+      int versionRank)
       throws SQLException {
+    String versionLabel = String.valueOf(versionRank);
     org.postgresql.copy.CopyIn copyIn = copyManager.copyIn(copySQL);
     try {
-      int chunkSize = COPY_BUFFER_SIZE;
-      for (int offset = 0; offset < data.length; offset += chunkSize) {
-        int len = Math.min(chunkSize, data.length - offset);
-        copyIn.writeToCopy(data, offset, len);
-      }
+      DataOutputStream dataStream =
+          new DataOutputStream(new CopyInOutputStream(copyIn, COPY_BUFFER_SIZE));
+      int validEdgeCount = writeBinaryEdgeData(dataStream, edges, nodeIdMap, versionRank);
+
+      Log.debugf(
+          "Processing %d valid edges out of %d total edges using COPY BINARY format",
+          validEdgeCount, edges.size());
+
       long copiedRows = copyIn.endCopy();
       Log.debugf("COPY BINARY inserted %d rows", copiedRows);
 
-      if (copiedRows != expectedRowCount) {
+      if (copiedRows != validEdgeCount) {
         throw new GraphSaveException(
             String.format(
                 """
                                 COPY BINARY edge row count mismatch for version %s: expected %d, got %d. \
                                 Possible data corruption or driver error.""",
-                versionLabel, expectedRowCount, copiedRows));
+                versionLabel, validEdgeCount, copiedRows));
       }
     } catch (SQLException | GraphSaveException e) {
       cancelCopyOperation(copyIn, "edges", versionLabel, e);
@@ -235,5 +235,58 @@ final class PostgresEdgeCopyWriter {
   interface CopyManagerFactory {
     org.postgresql.copy.CopyManager create(org.postgresql.core.BaseConnection connection)
         throws SQLException;
+  }
+
+  /**
+   * Buffers writes up to a fixed size and flushes each full buffer straight to {@link
+   * org.postgresql.copy.CopyIn#writeToCopy}, so the caller never has to materialize the whole COPY
+   * payload as a single byte array (that's what overflowed Java's array size limit on the real
+   * ~5.1M edge dataset. Package-private (not private) so it can be exercised directly by tests.
+   */
+  static final class CopyInOutputStream extends OutputStream {
+    private final org.postgresql.copy.CopyIn copyIn;
+    private final byte[] buffer;
+    private int position;
+
+    CopyInOutputStream(org.postgresql.copy.CopyIn copyIn, int bufferSize) {
+      this.copyIn = copyIn;
+      this.buffer = new byte[bufferSize];
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      if (position == buffer.length) {
+        flush();
+      }
+      buffer[position++] = (byte) b;
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      int remaining = len;
+      int srcOffset = off;
+      while (remaining > 0) {
+        if (position == buffer.length) {
+          flush();
+        }
+        int toCopy = Math.min(buffer.length - position, remaining);
+        System.arraycopy(b, srcOffset, buffer, position, toCopy);
+        position += toCopy;
+        srcOffset += toCopy;
+        remaining -= toCopy;
+      }
+    }
+
+    @Override
+    public void flush() throws IOException {
+      if (position > 0) {
+        try {
+          copyIn.writeToCopy(buffer, 0, position);
+        } catch (SQLException e) {
+          throw new IOException("Failed to stream binary COPY data to PostgreSQL", e);
+        }
+        position = 0;
+      }
+    }
   }
 }

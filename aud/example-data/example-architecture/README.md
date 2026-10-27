@@ -4,10 +4,10 @@ Multi-cloud hub-and-spoke reference across **Azure (West Europe)** and **GCP (us
 Security zones are implemented as subnets, and management services (DNS, Jump, Active Directory)
 are centralized in each hub.
 
-![Hub & Spoke Network Architecture](docs/network_architecture.png)
+![Hub & Spoke Network Architecture](assets/network_architecture.png)
 
-> Vector source: [`docs/network_architecture.svg`](docs/network_architecture.svg) &nbsp;·&nbsp;
-> High-res raster: [`docs/network_architecture.png`](docs/network_architecture.png)
+> Vector source: [`assets/network_architecture.svg`](assets/network_architecture.svg) &nbsp;·&nbsp;
+> High-res raster: [`assets/network_architecture.png`](assets/network_architecture.png)
 
 ## Topology
 
@@ -109,69 +109,21 @@ The diagram is generated from [`build_arch.py`](build_arch.py) (Python + `cairos
 from a fixed random seed so the diagram and the tables above stay in sync.
 
 ```bash
-python build_arch.py                              # writes docs/network_architecture.svg
+python build_arch.py                              # writes assets/network_architecture.svg
 python -c "import cairosvg; cairosvg.svg2png( \
-  url='docs/network_architecture.svg', \
-  write_to='docs/network_architecture.png', output_width=2400)"
+  url='assets/network_architecture.svg', \
+  write_to='assets/network_architecture.png', output_width=2400)"
 python make_readme.py                             # regenerates this README
 ```
 
 ## Repository layout
 
 ```
-aud/example-data/example-architecture/
+network-architecture/
 ├── README.md                      # this file (diagram + addressing)
 ├── build_arch.py                  # diagram generator
 ├── make_readme.py                 # README generator
-└── docs/
+└── assets/
     ├── network_architecture.svg   # vector diagram
     └── network_architecture.png   # raster diagram (embedded above)
 ```
-
-# Hub & Spoke Network Architecture — Addressing Reference
-
-A static site documenting a multi-cloud hub-and-spoke network across **Azure (West Europe)** and **GCP (us-central1 / Iowa)**, with security zones implemented as subnets and centralized hub management (DNS, Jump, Active Directory).
-
-## Contents
-
-| File | Purpose |
-|------|---------|
-| `index.html` | The page. Diagram is embedded as **inline SVG**; includes the component→zone mapping and the **full addressing plan**. Self-contained, no build step. |
-| `network_architecture.svg` | Standalone vector copy of the diagram (open in any browser / editor / draw.io). |
-| `network_architecture.png` | High-resolution raster copy (docs, wikis, chat). |
-
-## Topology at a glance
-
-- **Azure hub** (`10.21.0.0/16`) → 2 spokes: **LZ1** (`10.4.0.0/16`), **LZ2** (`10.23.0.0/16`)
-- **GCP hub** (`172.16.0.0/16`) → 1 spoke: **LZ3** (`172.23.0.0/16`)
-- **App-1** in all three landing zones; **App-2** in LZ1 + LZ3
-- Security zones per spoke: **DMZ → App → Data Stores → Cardholder Data (CDE)**
-- **DNS / Jump / Active Directory** centralized in each hub's Management subnets
-
-> Full per-subnet CIDRs and host assignments are in the addressing table on the page.
-
-## Publish on GitHub Pages
-
-1. Add these files to a repo root.
-   ```bash
-   git init
-   git add index.html network_architecture.svg network_architecture.png README.md
-   git commit -m "Add hub & spoke network architecture page"
-   git branch -M main
-   git remote add origin https://github.com/<your-user>/network-architecture.git
-   git push -u origin main
-   ```
-2. **Settings -> Pages -> Source:** *Deploy from a branch* -> **`main`** / **`/ (root)`** -> Save.
-3. Live at `https://<your-user>.github.io/network-architecture/` (~1 min).
-
-## Preview locally
-
-```bash
-python -m http.server 8000   # then open http://localhost:8000
-```
-
-## Editing
-
-- **Addressing / mapping:** edit the tables in `index.html`.
-- **Diagram:** the vector is inline in `index.html` (and mirrored in `network_architecture.svg`).
-

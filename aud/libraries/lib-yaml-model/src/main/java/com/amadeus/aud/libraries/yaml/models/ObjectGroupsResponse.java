@@ -40,11 +40,10 @@ public class ObjectGroupsResponse extends ApiMetadata {
    * @return objectGroups
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "List of object groups")
   @JsonProperty(value = JSON_PROPERTY_OBJECT_GROUPS, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<ObjectGroup> getObjectGroups() {
+  public List<@Valid ObjectGroup> getObjectGroups() {
     return objectGroups;
   }
 

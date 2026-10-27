@@ -2,6 +2,7 @@ package com.amadeus.aud.libraries.engine.graph.services.storage.postgres;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -28,6 +29,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -258,6 +260,100 @@ class PostgresEntitiesAndCopyWritersTest {
                       ds, 1, List.of(edge), Map.of(src, 1L, dst, 2L), bc -> null))
           .isInstanceOf(GraphSaveException.class)
           .hasMessageContaining("Failed to batch insert edges");
+    }
+
+    private javax.sql.DataSource dataSourceWrappingPostgresConnection() throws Exception {
+      javax.sql.DataSource ds = mock(javax.sql.DataSource.class);
+      java.sql.Connection conn = mock(java.sql.Connection.class);
+      org.postgresql.core.BaseConnection baseConnection =
+          mock(org.postgresql.core.BaseConnection.class);
+      doReturn(conn).when(ds).getConnection();
+      doReturn(true).when(conn).isWrapperFor(org.postgresql.core.BaseConnection.class);
+      doReturn(baseConnection).when(conn).unwrap(org.postgresql.core.BaseConnection.class);
+      return ds;
+    }
+
+    @Test
+    void batchInsertEdgesCopyBinaryStreamsRowsWithoutBufferingWholePayload() throws Exception {
+      ComponentInstance src = component("src");
+      ComponentInstance dst = component("dst");
+      Edge edge = buildEdge(src, dst);
+
+      javax.sql.DataSource ds = dataSourceWrappingPostgresConnection();
+      org.postgresql.copy.CopyManager copyManager = mock(org.postgresql.copy.CopyManager.class);
+      CopyIn copyIn = mock(CopyIn.class);
+      doReturn(copyIn).when(copyManager).copyIn(anyString());
+      doReturn(1L).when(copyIn).endCopy(); // matches the single valid edge
+
+      PostgresEdgeCopyWriter.batchInsertEdgesCopyBinary(
+          ds, 1, List.of(edge), Map.of(src, 1L, dst, 2L), bc -> copyManager);
+
+      verify(copyIn, org.mockito.Mockito.atLeastOnce())
+          .writeToCopy(any(byte[].class), anyInt(), anyInt());
+      verify(copyIn).endCopy();
+    }
+
+    @Test
+    void batchInsertEdgesCopyBinaryCancelsCopyOnRowCountMismatch() throws Exception {
+      ComponentInstance src = component("src");
+      ComponentInstance dst = component("dst");
+      Edge edge = buildEdge(src, dst);
+
+      javax.sql.DataSource ds = dataSourceWrappingPostgresConnection();
+      org.postgresql.copy.CopyManager copyManager = mock(org.postgresql.copy.CopyManager.class);
+      CopyIn copyIn = mock(CopyIn.class);
+      doReturn(copyIn).when(copyManager).copyIn(anyString());
+      doReturn(0L).when(copyIn).endCopy(); // mismatch: 1 valid edge expected, 0 reported
+      doReturn(true).when(copyIn).isActive();
+
+      assertThatThrownBy(
+              () ->
+                  PostgresEdgeCopyWriter.batchInsertEdgesCopyBinary(
+                      ds, 1, List.of(edge), Map.of(src, 1L, dst, 2L), bc -> copyManager))
+          .isInstanceOf(GraphSaveException.class)
+          .hasMessageContaining("row count mismatch");
+
+      verify(copyIn).cancelCopy();
+    }
+
+    @Test
+    void copyInOutputStreamFlushesWhenBufferFillsAndOnExplicitFlush() throws Exception {
+      CopyIn copyIn = mock(CopyIn.class);
+      PostgresEdgeCopyWriter.CopyInOutputStream out =
+          new PostgresEdgeCopyWriter.CopyInOutputStream(copyIn, 4);
+
+      out.write(new byte[] {1, 2, 3, 4, 5}); // overflows the 4-byte buffer once
+      out.flush();
+
+      verify(copyIn).writeToCopy(any(byte[].class), eq(0), eq(4));
+      verify(copyIn).writeToCopy(any(byte[].class), eq(0), eq(1));
+    }
+
+    @Test
+    void copyInOutputStreamSingleByteWriteFlushesAtBoundary() throws Exception {
+      CopyIn copyIn = mock(CopyIn.class);
+      PostgresEdgeCopyWriter.CopyInOutputStream out =
+          new PostgresEdgeCopyWriter.CopyInOutputStream(copyIn, 1);
+
+      out.write('a');
+      out.write('b');
+
+      verify(copyIn, times(1)).writeToCopy(any(byte[].class), eq(0), eq(1));
+    }
+
+    @Test
+    void copyInOutputStreamWrapsSqlExceptionAsIOException() throws Exception {
+      CopyIn copyIn = mock(CopyIn.class);
+      doThrow(new SQLException("write failed"))
+          .when(copyIn)
+          .writeToCopy(any(byte[].class), anyInt(), anyInt());
+      PostgresEdgeCopyWriter.CopyInOutputStream out =
+          new PostgresEdgeCopyWriter.CopyInOutputStream(copyIn, 4);
+
+      out.write(1);
+      assertThatThrownBy(out::flush)
+          .isInstanceOf(IOException.class)
+          .hasMessageContaining("Failed to stream binary COPY data");
     }
   }
 

@@ -16,10 +16,10 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.ZoneInstancesR
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
 import com.amadeus.aud.libraries.nsg.models.LandingZoneNotFound;
+import com.amadeus.aud.libraries.nsg.models.Network;
 import com.amadeus.aud.libraries.nsg.models.NetworkConfig;
+import com.amadeus.aud.libraries.nsg.models.Subnet;
 import com.amadeus.aud.libraries.nsg.ports.NetworkConfigPort;
-import com.amadeus.aud.libraries.yaml.models.Network;
-import com.amadeus.aud.libraries.yaml.models.Subnet;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;

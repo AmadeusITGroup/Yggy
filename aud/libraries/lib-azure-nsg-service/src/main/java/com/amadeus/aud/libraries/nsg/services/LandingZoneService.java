@@ -19,12 +19,15 @@ import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
 import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
 import com.amadeus.aud.libraries.nsg.models.LandingZoneNotFound;
+import com.amadeus.aud.libraries.nsg.models.Network;
 import com.amadeus.aud.libraries.nsg.models.NetworkSecurity;
 import com.amadeus.aud.libraries.nsg.models.SecurityGroupMap;
+import com.amadeus.aud.libraries.nsg.models.Subnet;
 import com.amadeus.aud.libraries.nsg.models.ZoneSecurityGroups;
 import com.amadeus.aud.libraries.nsg.ports.LandingZoneNetworkSecurityPort;
-import com.amadeus.aud.libraries.yaml.models.Network;
-import com.amadeus.aud.libraries.yaml.models.Subnet;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -40,13 +43,15 @@ public class LandingZoneService extends BaseService implements LandingZoneNetwor
   private final NsgService nsgService;
   private final AudApiConfig audApiConfig;
   private final AudService audService;
+  private final Tracer tracer;
 
   @Inject
   public LandingZoneService(
-      NsgService nsgService, AudApiConfig audApiConfig, AudService audService) {
+      NsgService nsgService, AudApiConfig audApiConfig, AudService audService, Tracer tracer) {
     this.nsgService = nsgService;
     this.audApiConfig = audApiConfig;
     this.audService = audService;
+    this.tracer = tracer;
   }
 
   @Override
@@ -80,6 +85,27 @@ public class LandingZoneService extends BaseService implements LandingZoneNetwor
 
   @CacheResult(cacheName = "getNetworkSecurity", keyGenerator = VersionCacheKeyGenerator.class)
   public NetworkSecurity buildNetworkSecurity(
+      Version version, LandingZone landingZone, Target landingZoneTarget) {
+    Span span =
+        tracer
+            .spanBuilder("nsg.build-network-security")
+            .setAttribute("aud.version", version.getVersionNumber())
+            .setAttribute("aud.landing_zone", landingZone.getName())
+            .startSpan();
+    io.opentelemetry.context.Scope scope = span.makeCurrent();
+    try {
+      return buildNetworkSecurityInternal(version, landingZone, landingZoneTarget);
+    } catch (RuntimeException e) {
+      span.recordException(e);
+      span.setStatus(StatusCode.ERROR);
+      throw e;
+    } finally {
+      scope.close();
+      span.end();
+    }
+  }
+
+  private NetworkSecurity buildNetworkSecurityInternal(
       Version version, LandingZone landingZone, Target landingZoneTarget) {
     String versionNumber = version.getVersionNumber();
 

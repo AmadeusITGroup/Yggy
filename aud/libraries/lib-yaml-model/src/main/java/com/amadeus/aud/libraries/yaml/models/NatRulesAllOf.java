@@ -60,14 +60,14 @@ public class NatRulesAllOf {
    *
    * @return uid
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_UID, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_UID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUid() {
     return uid;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_UID, required = false)
+  @JsonProperty(value = JSON_PROPERTY_UID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUid(@Nullable String uid) {
     this.uid = uid;
@@ -83,14 +83,14 @@ public class NatRulesAllOf {
    *
    * @return name
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_NAME, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getName() {
     return name;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NAME, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setName(@Nullable String name) {
     this.name = name;
@@ -106,14 +106,14 @@ public class NatRulesAllOf {
    *
    * @return description
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getDescription() {
     return description;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESCRIPTION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDescription(@Nullable String description) {
     this.description = description;
@@ -129,14 +129,14 @@ public class NatRulesAllOf {
    *
    * @return macrophase
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_MACROPHASE, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getMacrophase() {
     return macrophase;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_MACROPHASE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_MACROPHASE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setMacrophase(@Nullable String macrophase) {
     this.macrophase = macrophase;
@@ -152,14 +152,14 @@ public class NatRulesAllOf {
    *
    * @return zoneType
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getZoneType() {
     return zoneType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ZONE_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setZoneType(@Nullable String zoneType) {
     this.zoneType = zoneType;
@@ -175,14 +175,14 @@ public class NatRulesAllOf {
    *
    * @return continent
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_CONTINENT, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getContinent() {
     return continent;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CONTINENT, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CONTINENT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setContinent(@Nullable String continent) {
     this.continent = continent;
@@ -198,14 +198,14 @@ public class NatRulesAllOf {
    *
    * @return protocol
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_PROTOCOL, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_PROTOCOL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getProtocol() {
     return protocol;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PROTOCOL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PROTOCOL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setProtocol(@Nullable String protocol) {
     this.protocol = protocol;
@@ -221,14 +221,14 @@ public class NatRulesAllOf {
    *
    * @return originalPacket
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_ORIGINAL_PACKET, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_ORIGINAL_PACKET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Object getOriginalPacket() {
     return originalPacket;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_ORIGINAL_PACKET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_ORIGINAL_PACKET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setOriginalPacket(@Nullable Object originalPacket) {
     this.originalPacket = originalPacket;
@@ -244,14 +244,14 @@ public class NatRulesAllOf {
    *
    * @return translatedPacket
    */
-  @Schema(required = false, description = "")
-  @JsonProperty(value = JSON_PROPERTY_TRANSLATED_PACKET, required = false)
+  @Schema(description = "")
+  @JsonProperty(value = JSON_PROPERTY_TRANSLATED_PACKET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Object getTranslatedPacket() {
     return translatedPacket;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_TRANSLATED_PACKET, required = false)
+  @JsonProperty(value = JSON_PROPERTY_TRANSLATED_PACKET)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setTranslatedPacket(@Nullable Object translatedPacket) {
     this.translatedPacket = translatedPacket;

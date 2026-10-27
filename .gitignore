@@ -11,7 +11,7 @@ aud/.mvn/.develocity/
 **/.env.local
 **/benchmark/.dataset.json
 **/benchmark/logs/
-**/reports/**
+**/benchmark/reports/**
 **/.env
 **/.venv
 pom.xml.versionsBackup

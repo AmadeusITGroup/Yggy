@@ -1,5 +1,6 @@
 package com.amadeus.aud.libraries.engine.data.services.core.db;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
@@ -11,7 +12,6 @@ import com.amadeus.aud.libraries.engine.data.repositories.core.db.RegionsReposit
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.ScopesRepository;
 import com.amadeus.aud.libraries.engine.data.repositories.core.db.TargetsRepository;
 import com.amadeus.aud.libraries.engine.data.services.core.db.base.BaseService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
 import com.amadeus.aud.libraries.models.core.db.LandingZone;
 import com.amadeus.aud.libraries.models.core.db.LandingZoneFunctionalType;
 import com.amadeus.aud.libraries.models.core.db.LandingZoneType;

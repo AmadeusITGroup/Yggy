@@ -34,14 +34,14 @@ public class V1NamespaceSpec {
    *
    * @return isShared
    */
-  @Schema(required = false, description = "is Namespace authorized in other scopes ?")
-  @JsonProperty(value = JSON_PROPERTY_IS_SHARED, required = false)
+  @Schema(description = "is Namespace authorized in other scopes ?")
+  @JsonProperty(value = JSON_PROPERTY_IS_SHARED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Boolean getIsShared() {
     return isShared;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_IS_SHARED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_IS_SHARED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setIsShared(@Nullable Boolean isShared) {
     this.isShared = isShared;
@@ -65,14 +65,14 @@ public class V1NamespaceSpec {
    *
    * @return authorizedScopes
    */
-  @Schema(required = false, description = "List of scopes allowed to use this namespace")
-  @JsonProperty(value = JSON_PROPERTY_AUTHORIZED_SCOPES, required = false)
+  @Schema(description = "List of scopes allowed to use this namespace")
+  @JsonProperty(value = JSON_PROPERTY_AUTHORIZED_SCOPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getAuthorizedScopes() {
     return authorizedScopes;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_AUTHORIZED_SCOPES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_AUTHORIZED_SCOPES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setAuthorizedScopes(@Nullable List<String> authorizedScopes) {
     this.authorizedScopes = authorizedScopes;

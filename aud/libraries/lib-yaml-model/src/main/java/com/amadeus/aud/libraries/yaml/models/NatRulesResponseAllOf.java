@@ -37,15 +37,14 @@ public class NatRulesResponseAllOf {
    *
    * @return natRules
    */
-  @Valid
-  @Schema(required = false, description = "List of NAT Policies")
-  @JsonProperty(value = JSON_PROPERTY_NAT_RULES, required = false)
+  @Schema(description = "List of NAT Policies")
+  @JsonProperty(value = JSON_PROPERTY_NAT_RULES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public @Nullable List<NatRules> getNatRules() {
+  public @Nullable List<@Valid NatRules> getNatRules() {
     return natRules;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_NAT_RULES, required = false)
+  @JsonProperty(value = JSON_PROPERTY_NAT_RULES)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setNatRules(@Nullable List<NatRules> natRules) {
     this.natRules = natRules;

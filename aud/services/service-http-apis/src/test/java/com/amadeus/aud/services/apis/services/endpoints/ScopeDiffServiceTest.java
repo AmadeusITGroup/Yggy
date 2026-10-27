@@ -77,13 +77,12 @@ class ScopeDiffServiceTest {
     return req;
   }
 
-  private Scope createScope(String nanoId) {
-    return createScope(nanoId, new HashSet<>());
+  private Scope createScope() {
+    return createScope(new HashSet<>());
   }
 
-  private Scope createScope(String nanoId, Set<ScopeReleaseNote> releaseNotes) {
+  private Scope createScope(Set<ScopeReleaseNote> releaseNotes) {
     Scope scope = mock(Scope.class);
-    when(scope.getNanoId()).thenReturn(nanoId);
     when(scope.getScopeReleaseNotes()).thenReturn(releaseNotes);
     return scope;
   }
@@ -186,7 +185,7 @@ class ScopeDiffServiceTest {
       ScopeReleaseNote note15 = createReleaseNote("1.5.0", List.of("101"));
       ScopeReleaseNote note20 = createReleaseNote("2.0.0", List.of("102"));
 
-      Scope firewall = createScope("fw-nano", new HashSet<>(List.of(note15, note20)));
+      Scope firewall = createScope(new HashSet<>(List.of(note15, note20)));
       when(audModelConfig.defaultScopesBitbucketUrlPrefix())
           .thenReturn("https://bitbucket.example.com/projects/AUD/repos/");
 
@@ -241,7 +240,7 @@ class ScopeDiffServiceTest {
   private ConcurrentHashMap<String, Scope> createScopesMap(String... scopeNames) {
     ConcurrentHashMap<String, Scope> map = new ConcurrentHashMap<>();
     for (String name : scopeNames) {
-      map.put(name, createScope(name + "-nano"));
+      map.put(name, createScope());
     }
     return map;
   }

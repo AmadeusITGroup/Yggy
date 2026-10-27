@@ -16,6 +16,7 @@ import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.models.core.db.TargetType;
 import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
+import com.amadeus.aud.libraries.yaml.models.ProtocolEnum;
 import com.amadeus.aud.libraries.yaml.models.V1ApplicationID;
 import com.amadeus.aud.libraries.yaml.models.V1Metadata;
 import com.amadeus.aud.libraries.yaml.models.V1MetadataInstance;
@@ -96,7 +97,8 @@ class FullListServiceTest {
     v1Service.setMetadata(metadata);
     v1Service.setSpec(spec);
 
-    return new Service(v1Service);
+    Service svc = new Service(v1Service);
+    return svc;
   }
 
   private void setupCommonMocks() throws Exception {
@@ -724,7 +726,7 @@ class FullListServiceTest {
       setupCommonMocks();
       Service matchingService = createService("matching-service");
       matchingService.setServiceNowId("snow-42");
-      matchingService.setProtocol(V1ServiceSpec.ProtocolEnum.TCP);
+      matchingService.setProtocol(ProtocolEnum.TCP);
       matchingService.setApplicationId(createApplicationId("application-one"));
       stubRepository("service", matchingService);
 

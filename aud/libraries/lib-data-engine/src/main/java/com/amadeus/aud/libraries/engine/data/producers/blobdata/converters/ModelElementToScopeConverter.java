@@ -11,7 +11,6 @@ import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -108,8 +107,6 @@ public class ModelElementToScopeConverter
       data.setSpec(scopeSpec);
 
       scope.setName(governanceScope.getMetadata().getName());
-      List<String> owners = scopeSpec.getOwners();
-      scope.setOwners(owners != null ? Set.copyOf(owners) : Set.of());
     }
 
     return scope;

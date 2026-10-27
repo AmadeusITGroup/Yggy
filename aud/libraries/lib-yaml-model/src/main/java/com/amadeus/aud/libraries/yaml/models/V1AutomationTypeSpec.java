@@ -46,16 +46,14 @@ public class V1AutomationTypeSpec {
    *
    * @return granularity
    */
-  @Schema(
-      required = false,
-      description = "granularity of the automation (e.g. target, landingzone, ...)")
-  @JsonProperty(value = JSON_PROPERTY_GRANULARITY, required = false)
+  @Schema(description = "granularity of the automation (e.g. target, landingzone, ...)")
+  @JsonProperty(value = JSON_PROPERTY_GRANULARITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getGranularity() {
     return granularity;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_GRANULARITY, required = false)
+  @JsonProperty(value = JSON_PROPERTY_GRANULARITY)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setGranularity(@Nullable String granularity) {
     this.granularity = granularity;
@@ -71,14 +69,14 @@ public class V1AutomationTypeSpec {
    *
    * @return url
    */
-  @Schema(required = false, description = "The url allowing to trigger this automation")
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @Schema(description = "The url allowing to trigger this automation")
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getUrl() {
     return url;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_URL, required = false)
+  @JsonProperty(value = JSON_PROPERTY_URL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setUrl(@Nullable String url) {
     this.url = url;
@@ -94,14 +92,14 @@ public class V1AutomationTypeSpec {
    *
    * @return contentType
    */
-  @Schema(required = false, description = "The content type of the payload")
-  @JsonProperty(value = JSON_PROPERTY_CONTENT_TYPE, required = false)
+  @Schema(description = "The content type of the payload")
+  @JsonProperty(value = JSON_PROPERTY_CONTENT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getContentType() {
     return contentType;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_CONTENT_TYPE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_CONTENT_TYPE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setContentType(@Nullable String contentType) {
     this.contentType = contentType;
@@ -118,16 +116,15 @@ public class V1AutomationTypeSpec {
    * @return payloadTemplate
    */
   @Schema(
-      required = false,
       description =
           "The payload template that will be sent to the automation url (use Jinja2 template)")
-  @JsonProperty(value = JSON_PROPERTY_PAYLOAD_TEMPLATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PAYLOAD_TEMPLATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getPayloadTemplate() {
     return payloadTemplate;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PAYLOAD_TEMPLATE, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PAYLOAD_TEMPLATE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPayloadTemplate(@Nullable String payloadTemplate) {
     this.payloadTemplate = payloadTemplate;
@@ -151,14 +148,14 @@ public class V1AutomationTypeSpec {
    *
    * @return predecessors
    */
-  @Schema(required = false, description = "List of preceding automation types")
-  @JsonProperty(value = JSON_PROPERTY_PREDECESSORS, required = false)
+  @Schema(description = "List of preceding automation types")
+  @JsonProperty(value = JSON_PROPERTY_PREDECESSORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getPredecessors() {
     return predecessors;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_PREDECESSORS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_PREDECESSORS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setPredecessors(@Nullable List<String> predecessors) {
     this.predecessors = predecessors;

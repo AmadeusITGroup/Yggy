@@ -38,7 +38,6 @@ public class ScopeDiffs {
    * @return diff
    */
   @NotNull
-  @Valid
   @Schema(required = true, description = "")
   @JsonProperty(value = JSON_PROPERTY_DIFF, required = true)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)

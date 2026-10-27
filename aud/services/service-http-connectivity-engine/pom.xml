@@ -117,22 +117,43 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-logging-json</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.azureservices</groupId>
+      <artifactId>quarkus-azure-storage-blob</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-data-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
       <artifactId>lib-data-engine</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amadeus.aud.libraries</groupId>
+      <artifactId>lib-graph-engine-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
       <artifactId>lib-graph-engine</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!--        Test Dependencies-->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-testing</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -157,19 +178,8 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.version}</version>
         <extensions>true</extensions>
         <executions>
-          <execution>
-            <id>track-prod-config-changes</id>
-            <goals>
-              <goal>track-config-changes</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <dumpCurrentWhenRecordedUnavailable>true</dumpCurrentWhenRecordedUnavailable>
-            </configuration>
-          </execution>
           <execution>
             <goals>
               <goal>build</goal>
@@ -203,7 +213,7 @@
         </executions>
       </plugin>
       <plugin>
-        <!-- Yandex index needed so that Quarkus discovers the http service as well -->
+        <!-- Jandex index needed so that Quarkus discovers the http service as well -->
         <groupId>io.smallrye</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <version>${jandex-maven-plugin.version}</version>

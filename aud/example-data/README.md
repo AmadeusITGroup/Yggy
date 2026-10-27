@@ -46,7 +46,6 @@ metadata:
   scope: Application-1
 spec:
   scope_version: 1.0.1
-  network_version: 1.0.1
   version_datetime: 2026-07-02T12:00:00Z
 ```
 

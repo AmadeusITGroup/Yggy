@@ -36,6 +36,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit</artifactId>
       <scope>test</scope>
     </dependency>
@@ -68,7 +72,7 @@
     </dependency>
     <dependency>
       <groupId>com.amadeus.aud.libraries</groupId>
-      <artifactId>lib-data-engine</artifactId>
+      <artifactId>lib-data-engine-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
@@ -89,7 +93,7 @@
   <build>
     <plugins>
       <plugin>
-        <!-- Yandex index needed so that Quarkus discovers beans -->
+        <!-- Jandex index needed so that Quarkus discovers beans -->
         <groupId>io.smallrye</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <version>${jandex-maven-plugin.version}</version>

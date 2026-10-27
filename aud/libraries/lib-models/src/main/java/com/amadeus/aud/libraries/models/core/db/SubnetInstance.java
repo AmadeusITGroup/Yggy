@@ -60,7 +60,9 @@ public class SubnetInstance extends BaseInstance<V1SubnetInstance> implements Wi
 
     String cidr = subnetInstance.getSpec().getCidr();
     Range<BigInteger> cidrRangeTmp = null;
-    if (!cidr.startsWith(Constants.GLOBAL) && !Objects.equals(cidr, Constants.N_A)) {
+    if (cidr != null
+        && !cidr.startsWith(Constants.GLOBAL)
+        && !Objects.equals(cidr, Constants.N_A)) {
       try {
         cidrRangeTmp = IPv4Utils.toRange(cidr);
       } catch (Exception e) {

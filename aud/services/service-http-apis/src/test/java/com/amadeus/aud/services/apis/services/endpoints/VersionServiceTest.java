@@ -6,11 +6,10 @@ import static org.mockito.Mockito.when;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.engine.data.AudVersionsService;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheProducer;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudRequirementsRepository;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.AudVersionsService;
-import com.amadeus.aud.libraries.engine.data.services.external.storage.SingleVersion;
 import com.amadeus.aud.libraries.engine.graph.services.storage.GraphEngineService;
 import com.amadeus.aud.libraries.yaml.models.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +19,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,8 +48,7 @@ class VersionServiceTest {
   @BeforeEach
   void setUp() throws Exception {
     service =
-        new VersionService(
-            audService, audApiConfig, versionCacheProducer, graphEngineService, audVersionsService);
+        new VersionService(audService, audApiConfig, versionCacheProducer, graphEngineService);
 
     objectMapper = EndpointTestObjectMapper.get();
     Field objectMapperField = BaseService.class.getDeclaredField("objectMapper");
@@ -224,27 +221,5 @@ class VersionServiceTest {
     @SuppressWarnings("unchecked")
     java.util.Map<String, Integer> count = (java.util.Map<String, Integer>) body.get("count");
     assertThat(count).containsEntry("model_versions", 2).containsEntry("graph_versions", 3);
-  }
-
-  @Test
-  @DisplayName("should get all available versions from external service")
-  void getAllAvailableVersionsResponse() throws Exception {
-    SingleVersion version1 = new SingleVersion("1.0.0", null, 0);
-    SingleVersion version2 = new SingleVersion("1.5.0", null, 0);
-    SingleVersion version3 = new SingleVersion("2.0.0", null, 0);
-
-    when(audVersionsService.listAllVersions())
-        .thenReturn(Uni.createFrom().item(List.of(version1, version2, version3)));
-
-    Response response = service.getAllAvailableVersionsResponse().await().indefinitely();
-
-    assertThat(response.getStatus()).isEqualTo(200);
-
-    @SuppressWarnings("unchecked")
-    com.amadeus.aud.libraries.backend.models.v2.Response<List<String>> body =
-        (com.amadeus.aud.libraries.backend.models.v2.Response<List<String>>) response.getEntity();
-
-    assertThat(body).isNotNull();
-    assertThat(body.data()).hasSize(3);
   }
 }

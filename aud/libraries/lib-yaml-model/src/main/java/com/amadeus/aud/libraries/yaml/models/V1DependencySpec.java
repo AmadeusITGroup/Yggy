@@ -86,14 +86,14 @@ public class V1DependencySpec {
    *
    * @return securityJustification
    */
-  @Schema(required = false, description = "Each dependency should be justified.")
-  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION, required = false)
+  @Schema(description = "Each dependency should be justified.")
+  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable String getSecurityJustification() {
     return securityJustification;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION, required = false)
+  @JsonProperty(value = JSON_PROPERTY_SECURITY_JUSTIFICATION)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setSecurityJustification(@Nullable String securityJustification) {
     this.securityJustification = securityJustification;

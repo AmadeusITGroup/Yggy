@@ -353,21 +353,6 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
 
     Set<Endpoint> endpoints = getInternalEndpoints(direction);
 
-    String assigneeGroup = null;
-    Component component = getComponent();
-    if (component != null && component.isContainer()) {
-      ComponentInstance platform = getDeployComponentInstance();
-      if (platform != null) {
-        Scope scope = platform.getScope();
-        if (scope != null) {
-          assigneeGroup = scope.getAssigneeGroup();
-        }
-      }
-    }
-    if (assigneeGroup == null) {
-      assigneeGroup = getScope().getAssigneeGroup();
-    }
-
     String internalZoneType = getInternalZoneTypeNames(direction, true);
     if (Objects.equals(internalZoneType, "dmz_vip")) {
       internalZoneType = "internet";
@@ -396,7 +381,6 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
     objectGroup.setZoneType(internalZoneType);
     objectGroup.setType(ObjectGroup.TypeEnum.valueOf(type.name()));
     objectGroup.setEndpoints(EndpointUtils.translateDataEndpointsToYamlEndpoints(endpoints));
-    objectGroup.setOwner(assigneeGroup);
     objectGroup.setLabels(labels);
 
     objectGroupDirectionCache.put(cacheKey, objectGroup);
@@ -1427,7 +1411,7 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
       }
     }
     addZoneSubnetCidrs(inBucket, inZoneInstance);
-    addHostingPlatformSubnetCidrs(inBucket);
+    addHostingPlatformSubnetCidrs(inBucket, Direction.IN);
     addIpAddressCidrs(inBucket);
     if (!inBucket.isEmpty()) {
       result.put("in", sortedCidrRanges(inBucket));
@@ -1441,7 +1425,7 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
       }
     }
     addZoneSubnetCidrs(outBucket, outZoneInstance);
-    addHostingPlatformSubnetCidrs(outBucket);
+    addHostingPlatformSubnetCidrs(outBucket, Direction.OUT);
     addIpAddressCidrs(outBucket);
     if (!outBucket.isEmpty()) {
       result.put("out", sortedCidrRanges(outBucket));
@@ -1481,14 +1465,61 @@ public class ComponentInstance extends BaseInstance<V1ComponentInstance>
     }
   }
 
-  private void addHostingPlatformSubnetCidrs(Map<String, CidrRange> bucket) {
+  private void addHostingPlatformSubnetCidrs(Map<String, CidrRange> bucket, Direction direction) {
+    if (hostingPlatform != null
+        && component != null
+        && component.isContainer()
+        && hostingPlatform.getData() != null
+        && hostingPlatform.getData().getSpec() != null
+        && hostingPlatform.getEndpointType()
+            == V1ComponentInstanceSpec.EndpointTypeEnum.ZONED_PAA_S) {
+      if (direction == Direction.IN) {
+        addZonedPaasPlatformInCidrs(bucket);
+      } else if (outZoneInstance == null && outSubnetInstance == null) {
+        addSubnetCidrs(bucket, hostingPlatform.getPaasZoneOutSubnetInstances());
+      }
+      return;
+    }
     if (hostingPlatform == null
         || hostingPlatform.getLandingZone() == null
         || hostingPlatform.getLandingZone().getZoneInstances() == null) {
       return;
     }
     for (ZoneInstance zone : hostingPlatform.getLandingZone().getZoneInstances()) {
+      if (component.isContainer() && !Objects.equals(zone.getZoneType(), zoneType)) {
+        continue;
+      }
       addZoneSubnetCidrs(bucket, zone);
+    }
+  }
+
+  private void addZonedPaasPlatformInCidrs(Map<String, CidrRange> bucket) {
+    if (inZoneInstance != null) {
+      return;
+    }
+    if (Objects.equals(getZoneTypeName(), "TechnicalZone")) {
+      addSubnetCidrs(bucket, hostingPlatform.getPaasZoneOutSubnetInstances());
+      return;
+    }
+    Set<SubnetInstance> platformInSubnets = hostingPlatform.getPaasZoneInSubnetInstances();
+    if (platformInSubnets == null) {
+      return;
+    }
+    for (SubnetInstance subnet : platformInSubnets) {
+      if (subnet.getZoneInstance() != null
+          && Objects.equals(zoneType, subnet.getZoneInstance().getZoneType())) {
+        addSubnetCidr(bucket, subnet);
+      }
+    }
+  }
+
+  private static void addSubnetCidrs(
+      Map<String, CidrRange> bucket, @Nullable Set<SubnetInstance> subnets) {
+    if (subnets == null) {
+      return;
+    }
+    for (SubnetInstance subnet : subnets) {
+      addSubnetCidr(bucket, subnet);
     }
   }
 

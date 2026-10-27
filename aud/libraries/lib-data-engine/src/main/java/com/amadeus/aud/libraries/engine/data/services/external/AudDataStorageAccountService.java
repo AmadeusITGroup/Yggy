@@ -1,17 +1,18 @@
 package com.amadeus.aud.libraries.engine.data.services.external;
 
+import com.amadeus.aud.libraries.common.LogExecutionTime;
+import com.amadeus.aud.libraries.engine.data.AudDataLoader;
 import com.amadeus.aud.libraries.engine.data.configs.AudDataConfig;
 import com.amadeus.aud.libraries.engine.data.configs.AudModelConfig;
 import com.amadeus.aud.libraries.engine.data.configs.YamlValidationConfig;
 import com.amadeus.aud.libraries.engine.data.repositories.core.AudDataRepository;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.JsonService;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.ObjectMapperFactory;
-import com.amadeus.aud.libraries.engine.data.services.external.parsing.YamlService;
 import com.amadeus.aud.libraries.engine.data.services.external.qualifiers.StorageAccountQualifier;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.BlobService;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.StorageAccountDataProcessor;
 import com.amadeus.aud.libraries.engine.data.services.external.storage.StorageAccountService;
-import com.amadeus.aud.libraries.engine.data.utils.LogExecutionTime;
+import com.amadeus.aud.libraries.models.parsing.JsonService;
+import com.amadeus.aud.libraries.models.parsing.ObjectMapperFactory;
+import com.amadeus.aud.libraries.models.parsing.YamlService;
 import com.amadeus.aud.libraries.yaml.models.ModelElement;
 import com.amadeus.aud.libraries.yaml.models.V1Base;
 import com.amadeus.aud.libraries.yaml.models.deserializers.KindBasedDeserializer;
@@ -46,7 +47,7 @@ import java.util.concurrent.ConcurrentMap;
 @StorageAccountQualifier
 @Singleton
 public final class AudDataStorageAccountService
-    implements StorageAccountDataProcessor<AudDataRepository> {
+    implements StorageAccountDataProcessor<AudDataRepository>, AudDataLoader {
   private static final String BLOB_NAME_API_YAML = "api.yml.gz";
   public static final String BLOB_NAME_API_JSON = "api.json.gz";
   private static final String BLOB_NAME_RELEASE_YAML = "release.yml";

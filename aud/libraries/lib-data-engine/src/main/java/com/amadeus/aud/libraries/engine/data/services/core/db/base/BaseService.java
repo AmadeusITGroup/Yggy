@@ -110,7 +110,7 @@ public abstract class BaseService<T extends AbstractBase<N>, N extends ModelElem
 
     Log.infof("Completed loading %d %s", map.size(), toClazzName);
     if (duplicatedCount.get() > 0) {
-      Log.warnf("Found %d Duplicated %s", duplicatedCount.get(), toClazzName);
+      Log.infof("Found %d Duplicated %s", duplicatedCount.get(), toClazzName);
     }
 
     ConcurrentRepository<T> repository = getRepository(version);

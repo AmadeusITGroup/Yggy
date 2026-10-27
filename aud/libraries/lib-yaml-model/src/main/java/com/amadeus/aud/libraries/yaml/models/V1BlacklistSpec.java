@@ -171,16 +171,15 @@ public class V1BlacklistSpec {
    * @return destinationHostFqdns
    */
   @Schema(
-      required = false,
       description =
           "FQDN list (supports *.domain or *), mutually exclusive with destination_host_cidrs")
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_FQDNS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_FQDNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getDestinationHostFqdns() {
     return destinationHostFqdns;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_FQDNS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_FQDNS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDestinationHostFqdns(@Nullable List<String> destinationHostFqdns) {
     this.destinationHostFqdns = destinationHostFqdns;
@@ -205,16 +204,15 @@ public class V1BlacklistSpec {
    * @return destinationHostCidrs
    */
   @Schema(
-      required = false,
       description =
           "CIDR list (e.g., 10.0.0.0/8 or *), mutually exclusive with destination_host_fqdns")
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_CIDRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<String> getDestinationHostCidrs() {
     return destinationHostCidrs;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_CIDRS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_HOST_CIDRS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDestinationHostCidrs(@Nullable List<String> destinationHostCidrs) {
     this.destinationHostCidrs = destinationHostCidrs;
@@ -338,14 +336,14 @@ public class V1BlacklistSpec {
    *
    * @return destinationApplicationProtocols
    */
-  @Schema(required = false, description = "Application protocols (http, https, etc. Optional)")
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_APPLICATION_PROTOCOLS, required = false)
+  @Schema(description = "Application protocols (http, https, etc. Optional)")
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_APPLICATION_PROTOCOLS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable List<DestinationApplicationProtocolsEnum> getDestinationApplicationProtocols() {
     return destinationApplicationProtocols;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_DESTINATION_APPLICATION_PROTOCOLS, required = false)
+  @JsonProperty(value = JSON_PROPERTY_DESTINATION_APPLICATION_PROTOCOLS)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setDestinationApplicationProtocols(
       @Nullable List<DestinationApplicationProtocolsEnum> destinationApplicationProtocols) {

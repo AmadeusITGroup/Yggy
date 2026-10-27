@@ -2,10 +2,14 @@ package com.amadeus.aud.services.apis.services.endpoints;
 
 import com.amadeus.aud.libraries.aud.AudService;
 import com.amadeus.aud.libraries.aud.BaseService;
+import com.amadeus.aud.libraries.backend.ObjectTypeListNamesEnum;
+import com.amadeus.aud.libraries.common.UrlUtils;
 import com.amadeus.aud.libraries.engine.data.configs.AudApiConfig;
 import com.amadeus.aud.libraries.engine.data.models.core.internals.Version;
 import com.amadeus.aud.libraries.engine.data.producers.VersionCacheKeyGenerator;
 import com.amadeus.aud.libraries.engine.data.repositories.base.ConcurrentRepository;
+import com.amadeus.aud.libraries.engine.data.repositories.core.db.ServicesRepository;
+import com.amadeus.aud.libraries.models.core.db.Service;
 import com.amadeus.aud.libraries.models.core.db.SubnetInstance;
 import com.amadeus.aud.libraries.models.core.db.Target;
 import com.amadeus.aud.libraries.models.core.db.TargetType;
@@ -13,8 +17,8 @@ import com.amadeus.aud.libraries.models.core.db.ZoneInstance;
 import com.amadeus.aud.libraries.models.core.db.base.BomElement;
 import com.amadeus.aud.services.apis.models.http.responses.GenericResponse;
 import com.amadeus.aud.services.apis.utils.FullListResponseTransformer;
-import com.amadeus.aud.services.apis.utils.UrlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
@@ -162,7 +166,23 @@ public class FullListService extends BaseService {
     if (data == null) {
       values = new ArrayList<>();
     } else {
-      values = data.values();
+      // Some clients do not accept generated service names
+      if (ObjectTypeListNamesEnum.SERVICES.getRepositoryKey().equals(javaType)) {
+        Collection<BomElement> svcs = new ArrayList<>();
+        for (BomElement entry : data.values()) {
+          if (entry instanceof Service svc
+              && (ServicesRepository.ALL_SERVICE_NAME.equals(svc.getName())
+                  || ServicesRepository.TCP_SERVICE_NAME.equals(svc.getName())
+                  || ServicesRepository.UDP_SERVICE_NAME.equals(svc.getName()))) {
+            continue;
+          }
+
+          svcs.add(entry);
+        }
+        values = svcs;
+      } else {
+        values = data.values();
+      }
     }
 
     Collection<? extends BomElement> filteredValues =
@@ -305,7 +325,8 @@ public class FullListService extends BaseService {
           return result.toString();
         }
       }
-    } catch (Exception e) {
+    } catch (Exception _) {
+      // passthru
     }
     return null;
   }
@@ -322,7 +343,7 @@ public class FullListService extends BaseService {
 
     try {
       return method.invoke(item);
-    } catch (Exception e) {
+    } catch (Exception _) {
       return null;
     }
   }
@@ -357,19 +378,11 @@ public class FullListService extends BaseService {
           parent = parent.getSuperclass();
         }
       }
-    } catch (Exception e) {
+    } catch (Exception _) {
+      // passthru
     }
 
     return null;
-  }
-
-  private @Nullable Object tryGetterOnClass(BomElement item, Class<?> clazz, String getterName) {
-    try {
-      java.lang.reflect.Method getter = clazz.getMethod(getterName);
-      return getter.invoke(item);
-    } catch (Exception e) {
-      return null;
-    }
   }
 
   private @Nullable java.lang.reflect.Method findMethodCaseInsensitive(
@@ -380,7 +393,8 @@ public class FullListService extends BaseService {
           return method;
         }
       }
-    } catch (Exception e) {
+    } catch (Exception _) {
+      // passthru
     }
     return null;
   }
@@ -479,8 +493,7 @@ public class FullListService extends BaseService {
 
     for (BomElement item : items) {
       Map<String, Object> itemMap =
-          objectMapper.convertValue(
-              item, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+          objectMapper.convertValue(item, new TypeReference<Map<String, Object>>() {});
 
       switch (lowerCase) {
         case TARGET_TYPE:
@@ -506,6 +519,8 @@ public class FullListService extends BaseService {
             itemMap.put("subnet_instances", subnets);
           }
           break;
+        default:
+          continue;
       }
 
       enrichedList.add(itemMap);
@@ -522,7 +537,7 @@ public class FullListService extends BaseService {
     }
     try {
       return Integer.parseInt(val);
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       throw new BadRequestException(paramName + " must be an integer: " + val);
     }
   }

@@ -221,15 +221,14 @@ public class StatisticsObject {
    */
   @Schema(
       examples = {"12"},
-      required = false,
       description = "")
-  @JsonProperty(value = JSON_PROPERTY_LINKS_APPROVED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LINKS_APPROVED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public @Nullable Integer getLinksApproved() {
     return linksApproved;
   }
 
-  @JsonProperty(value = JSON_PROPERTY_LINKS_APPROVED, required = false)
+  @JsonProperty(value = JSON_PROPERTY_LINKS_APPROVED)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLinksApproved(@Nullable Integer linksApproved) {
     this.linksApproved = linksApproved;
